@@ -15,6 +15,7 @@ import { usePayrollWizardStore } from "@/stores/payrollWizard";
 import { useWalletStore } from "@/stores/walletStore";
 import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
+import PayrollReceipt from "./PayrollReceipt";
 import type { PayrollWizardStep } from "@/types";
 
 const STEPS: { key: PayrollWizardStep; label: string }[] = [
@@ -190,6 +191,8 @@ function PayrollWizard() {
             status={submissionStatus}
             error={submissionError}
             transactionHash={transactionHash}
+            totalAmount={totalAmount}
+            employeeCount={employeeIds.length}
             onRetry={handleSubmit}
             onReset={reset}
           />
@@ -422,12 +425,16 @@ function SubmitStep({
   status,
   error,
   transactionHash,
+  totalAmount,
+  employeeCount,
   onRetry,
   onReset,
 }: {
   status: "idle" | "submitting" | "success" | "error";
   error: string | null;
   transactionHash: string | null;
+  totalAmount: number;
+  employeeCount: number;
   onRetry: () => void;
   onReset: () => void;
 }) {
@@ -445,27 +452,12 @@ function SubmitStep({
       )}
 
       {status === "success" && (
-        <div className="text-center py-8 space-y-3">
-          <CheckCircle className="w-12 h-12 text-green-600 mx-auto" />
-          <h4 className="text-lg font-semibold text-gray-900">
-            Payroll Submitted
-          </h4>
-          <p className="text-sm text-gray-600">
-            The transaction has been submitted to the network.
-          </p>
-          {transactionHash && (
-            <p className="font-mono text-xs text-gray-500 break-all">
-              Tx: {transactionHash}
-            </p>
-          )}
-          <button
-            type="button"
-            onClick={onReset}
-            className="mt-4 px-6 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
-          >
-            Start New Payroll
-          </button>
-        </div>
+        <PayrollReceipt 
+          totalAmount={totalAmount}
+          employeeCount={employeeCount}
+          transactionHash={transactionHash}
+          onReset={onReset}
+        />
       )}
 
       {status === "error" && (
