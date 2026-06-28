@@ -1,3 +1,5 @@
+export type OnboardingStatus = "not_started" | "in_progress" | "completed";
+
 export interface Employee {
   id: string;
   address: string;
@@ -8,6 +10,7 @@ export interface Employee {
   salaryCommitment: string;
   isActive: boolean;
   status?: "active" | "inactive" | "pending";
+  onboardingStatus: OnboardingStatus;
   startDate: string;
   lastPayment?: string;
 }

@@ -6,6 +6,8 @@ import { useEmployeeStore } from "@/stores/employees";
 import { MOCK_EMPLOYEES } from "@/lib/api/mockData";
 import type { Employee } from "@/types";
 import EmptyState from "@/components/ui/EmptyState";
+import OnboardingBadge from "./OnboardingBadge";
+import EmployeeDetail from "./EmployeeDetail";
 
 type StatusFilter = "all" | "active" | "inactive" | "pending";
 
@@ -26,6 +28,8 @@ function EmployeeDirectory() {
   const { employees: storedEmployees, isLoading: storeLoading } = useEmployeeStore();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [localLoading, setLocalLoading] = useState(true);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setLocalLoading(false), 850);
@@ -48,6 +52,11 @@ function EmployeeDirectory() {
     }
     return result;
   }, [employees]);
+
+  const handleRowClick = (emp: Employee) => {
+    setSelectedEmployee(emp);
+    setIsDetailOpen(true);
+  };
 
   return (
     <section aria-labelledby="employee-directory-heading">
@@ -88,6 +97,7 @@ function EmployeeDirectory() {
                   <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Department</th>
                   <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Salary</th>
                   <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Status</th>
+                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Onboarding</th>
                   <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Start Date</th>
                 </tr>
               </thead>
@@ -106,6 +116,9 @@ function EmployeeDirectory() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="h-6 bg-gray-200 rounded-full w-14"></div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="h-6 bg-gray-200 rounded-full w-20"></div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="h-4 bg-gray-200 rounded w-24"></div>
@@ -142,7 +155,11 @@ function EmployeeDirectory() {
               {filtered.map((emp) => {
                 const status = deriveStatus(emp);
                 return (
-                  <li key={emp.id} className="px-4 py-4">
+                  <li 
+                    key={emp.id} 
+                    className="px-4 py-4 hover:bg-gray-50 active:bg-gray-100 cursor-pointer transition-colors"
+                    onClick={() => handleRowClick(emp)}
+                  >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">{emp.name}</p>
@@ -152,15 +169,18 @@ function EmployeeDirectory() {
                         <p className="text-xs text-gray-500 mt-1">
                           {emp.department ?? "—"} · ${emp.salary.toLocaleString()}
                         </p>
-                        <p className="text-xs text-gray-400 mt-0.5">
+                        <div className="mt-2 flex gap-2 flex-wrap">
+                          <span
+                            className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${STATUS_BADGE[status]}`}
+                          >
+                            {status}
+                          </span>
+                          <OnboardingBadge status={emp.onboardingStatus} showIcon={false} />
+                        </div>
+                        <p className="text-[10px] text-gray-400 mt-2">
                           Since {new Date(emp.startDate).toLocaleDateString()}
                         </p>
                       </div>
-                      <span
-                        className={`flex-shrink-0 px-2 py-1 text-xs font-medium rounded-full ${STATUS_BADGE[status]}`}
-                      >
-                        {status}
-                      </span>
                     </div>
                   </li>
                 );
@@ -176,6 +196,7 @@ function EmployeeDirectory() {
                   <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">Department</th>
                   <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">Salary</th>
                   <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">Status</th>
+                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">Onboarding</th>
                   <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-600 uppercase">Start Date</th>
                 </tr>
               </thead>
@@ -183,7 +204,11 @@ function EmployeeDirectory() {
                 {filtered.map((emp) => {
                   const status = deriveStatus(emp);
                   return (
-                    <tr key={emp.id}>
+                    <tr 
+                      key={emp.id} 
+                      className="hover:bg-gray-50 cursor-pointer transition-colors group"
+                      onClick={() => handleRowClick(emp)}
+                    >
                       <td className="px-6 py-4">
                         <div className="text-sm font-medium text-gray-900">{emp.name}</div>
                         {emp.email && (
@@ -198,6 +223,9 @@ function EmployeeDirectory() {
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${STATUS_BADGE[status]}`}>
                           {status}
                         </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <OnboardingBadge status={emp.onboardingStatus} />
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-600">
                         {new Date(emp.startDate).toLocaleDateString()}
@@ -216,6 +244,12 @@ function EmployeeDirectory() {
           </div>
         )}
       </div>
+
+      <EmployeeDetail 
+        employee={selectedEmployee} 
+        isOpen={isDetailOpen} 
+        onClose={() => setIsDetailOpen(false)} 
+      />
     </section>
   );
 }
