@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Link from "next/link";
 import { Users, Loader2 } from "lucide-react";
 import { useEmployeeStore } from "@/stores/employees";
 import { MOCK_EMPLOYEES } from "@/lib/api/mockData";
@@ -123,9 +124,14 @@ function EmployeeDirectory() {
               {filtered.map((emp) => {
                 const status = deriveStatus(emp);
                 return (
-                  <tr key={emp.id}>
+                  <tr key={emp.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900">{emp.name}</div>
+                      <Link
+                        href={`/employees/${emp.id}`}
+                        className="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline"
+                      >
+                        {emp.name}
+                      </Link>
                       {emp.email && (
                         <div className="text-xs text-gray-500">{emp.email}</div>
                       )}
