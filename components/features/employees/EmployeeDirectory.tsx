@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { Users, Loader2 } from "lucide-react";
+
+import { Users, Loader2, UserPlus }
 import { useEmployeeStore } from "@/stores/employees";
 import { MOCK_EMPLOYEES } from "@/lib/api/mockData";
 import type { Employee } from "@/types";
 import EmptyState from "@/components/ui/EmptyState";
 import OnboardingBadge from "./OnboardingBadge";
 import EmployeeDetail from "./EmployeeDetail";
+import { AddEmployeeModal } from "./AddEmployeeModal";
 
 type StatusFilter = "all" | "active" | "inactive" | "pending";
 
@@ -27,6 +29,7 @@ const STATUS_BADGE: Record<"active" | "inactive" | "pending", string> = {
 function EmployeeDirectory() {
   const { employees: storedEmployees, isLoading: storeLoading } = useEmployeeStore();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [localLoading, setLocalLoading] = useState(true);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -69,22 +72,32 @@ function EmployeeDirectory() {
             Employee Directory
           </h3>
           <div className="flex items-center gap-2 flex-wrap">
-            {(["all", "active", "inactive", "pending"] as StatusFilter[]).map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setStatusFilter(s)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors min-h-[32px] ${
-                  statusFilter === s
-                    ? "bg-indigo-600 text-white"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                {s === "all"
-                  ? `All (${employees.length})`
-                  : `${s.charAt(0).toUpperCase() + s.slice(1)} (${counts[s]})`}
-              </button>
-            ))}
+            {(["all", "active", "inactive", "pending"] as StatusFilter[]).map(
+              (s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setStatusFilter(s)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                    statusFilter === s
+                      ? "bg-indigo-600 text-white"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  {s === "all"
+                    ? `All (${employees.length})`
+                    : `${s.charAt(0).toUpperCase() + s.slice(1)} (${counts[s]})`}
+                </button>
+              ),
+            )}
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+            >
+              <UserPlus className="w-3.5 h-3.5" aria-hidden="true" />
+              Add Employee
+            </button>
           </div>
         </div>
 
@@ -249,6 +262,9 @@ function EmployeeDirectory() {
         employee={selectedEmployee} 
         isOpen={isDetailOpen} 
         onClose={() => setIsDetailOpen(false)} 
+      <AddEmployeeModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
       />
     </section>
   );
