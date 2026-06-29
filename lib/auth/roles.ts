@@ -11,7 +11,7 @@ export type NavigationAccess = 'enabled' | 'disabled';
 export interface NavigationItem {
   label: string;
   href: string;
-  icon: 'home' | 'users' | 'play' | 'history' | 'shield' | 'building' | 'treasury' | 'settings' | 'file-search' | 'alert' | 'clipboard' | 'upload';
+  icon: 'home' | 'users' | 'play' | 'history' | 'shield' | 'building' | 'treasury' | 'settings' | 'file-search' | 'alert' | 'clipboard' | 'upload' | 'calendar';
   roles: UserRole[];
   access?: Partial<Record<UserRole, NavigationAccess>>;
   disabledReason?: Partial<Record<UserRole, string>>;
@@ -76,6 +76,7 @@ export const ROUTE_ROLE_RULES: Array<{ prefix: string; roles: UserRole[] }> = [
   { prefix: '/employees/add', roles: ['admin'] },
   { prefix: '/employees', roles: ['admin', 'operator'] },
   { prefix: '/payroll/execute', roles: ['admin', 'operator'] },
+  { prefix: '/payroll/run', roles: ['admin'] },
   { prefix: '/payroll/exceptions', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/payroll/runs', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/payroll/run', roles: ['admin'] },

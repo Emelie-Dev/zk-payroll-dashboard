@@ -25,12 +25,9 @@ describe("Payroll Run Detail", () => {
     expect(screen.getByText("abc123def456")).toBeInTheDocument();
   });
 
-  it("links back to history page", () => {
+  it("provides back navigation button", () => {
     render(<PayrollRunDetail run={MOCK_PAYROLL_RUNS[0]} />);
 
-    expect(screen.getByRole("link", { name: /view transaction history/i })).toHaveAttribute(
-      "href",
-      "/history",
-    );
+    expect(screen.getByRole("button", { name: /back/i })).toBeInTheDocument();
   });
 });
