@@ -4,7 +4,8 @@ import { useEffect, useState, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { 
   Search, Keyboard, Users, History, FileText, 
-  Settings, Landmark, Lock, Play, ShieldAlert, Sparkles 
+  Settings, Landmark, Lock, Play, ShieldAlert, Sparkles,
+  UserPlus, Key, Upload, ClipboardList, FileSearch
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -12,7 +13,7 @@ interface CommandItem {
   id: string;
   title: string;
   description: string;
-  category: "Navigation" | "Actions" | "System";
+  category: "Navigation" | "Actions" | "System" | "Create";
   icon: React.ComponentType<any>;
   action?: () => void;
   route?: string;
@@ -26,7 +27,6 @@ export default function CommandPalette({ isOpen, onClose }: { isOpen: boolean; o
   const overlayRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Focus input when opened
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 50);
@@ -39,7 +39,6 @@ export default function CommandPalette({ isOpen, onClose }: { isOpen: boolean; o
     };
   }, [isOpen]);
 
-  // Click outside to close
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === overlayRef.current) {
       onClose();
@@ -88,12 +87,55 @@ export default function CommandPalette({ isOpen, onClose }: { isOpen: boolean; o
       route: "/treasury",
     },
     {
-      id: "action-payroll",
+      id: "nav-import-review",
+      title: "Go to Import Review Queue",
+      description: "Review and approve bulk-imported employee records before onboarding.",
+      category: "Navigation",
+      icon: ClipboardList,
+      route: "/employees/import-review",
+    },
+    {
+      id: "nav-incidents-runbook",
+      title: "Go to Launch-Day Runbook",
+      description: "Incident response procedures, triage guides, and operator playbooks.",
+      category: "Navigation",
+      icon: FileSearch,
+      route: "/incidents/runbook",
+    },
+    {
+      id: "create-payroll",
       title: "Create New Payroll Run",
       description: "Generate proofs, approve, and execute on-chain batch payments.",
-      category: "Actions",
+      category: "Create",
       icon: Play,
       route: "/payroll/execute",
+      adminOnly: true,
+    },
+    {
+      id: "create-employee",
+      title: "Add New Employee",
+      description: "Onboard a new team member with Stellar wallet and ZK salary commitment.",
+      category: "Create",
+      icon: UserPlus,
+      route: "/employees",
+      adminOnly: true,
+    },
+    {
+      id: "create-view-key",
+      title: "Generate Auditor View Key",
+      description: "Create a time-limited view key for auditor access to payroll records.",
+      category: "Create",
+      icon: Key,
+      route: "/compliance",
+      adminOnly: true,
+    },
+    {
+      id: "create-import",
+      title: "Import Employees in Bulk",
+      description: "Upload a CSV file to import multiple employee records at once.",
+      category: "Create",
+      icon: Upload,
+      route: "/employees/import-review",
       adminOnly: true,
     },
     {
@@ -121,9 +163,25 @@ export default function CommandPalette({ isOpen, onClose }: { isOpen: boolean; o
         });
       },
     },
+    {
+      id: "nav-setup",
+      title: "Go to Company Setup",
+      description: "Configure your company profile, admin wallet, and treasury address.",
+      category: "Navigation",
+      icon: Landmark,
+      route: "/setup",
+      adminOnly: true,
+    },
+    {
+      id: "nav-exceptions",
+      title: "Go to Payroll Exceptions",
+      description: "Monitor and retry failed or pending payroll runs.",
+      category: "Navigation",
+      icon: ShieldAlert,
+      route: "/payroll/exceptions",
+    },
   ], [onClose]);
 
-  // Filter commands
   const filtered = useMemo(() => {
     const query = search.toLowerCase().trim();
     if (!query) return commands;
@@ -151,12 +209,21 @@ export default function CommandPalette({ isOpen, onClose }: { isOpen: boolean; o
     onClose();
   };
 
+  const handleOverlayKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      onClose();
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
       ref={overlayRef}
       onClick={handleOverlayClick}
+      onKeyDown={handleOverlayKeyDown}
+      tabIndex={-1}
       className="fixed inset-0 z-50 flex items-start justify-center pt-[10vh] px-4 bg-gray-900/60 backdrop-blur-sm transition-opacity"
       role="dialog"
       aria-modal="true"
@@ -168,7 +235,7 @@ export default function CommandPalette({ isOpen, onClose }: { isOpen: boolean; o
           <input
             ref={inputRef}
             type="text"
-            placeholder="Type a command or search actions... (e.g. print, payroll)"
+            placeholder="Type a command or search actions... (e.g. create, payroll, audit)"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 bg-transparent border-0 outline-none text-gray-800 placeholder-gray-400 text-sm py-1.5 focus:ring-0"
@@ -179,9 +246,8 @@ export default function CommandPalette({ isOpen, onClose }: { isOpen: boolean; o
           </div>
         </div>
 
-        {/* Role configuration inside the command palette to easily demonstrate role constraints */}
         <div className="px-4 py-2 border-b bg-indigo-50/50 flex items-center justify-between text-xs text-indigo-900">
-          <span className="font-medium">Role-Based Access Limit Demo:</span>
+          <span className="font-medium">Role-Based Access Control:</span>
           <div className="flex items-center gap-1.5">
             <span className="text-gray-500">Current Role:</span>
             <select
@@ -198,7 +264,7 @@ export default function CommandPalette({ isOpen, onClose }: { isOpen: boolean; o
         <div className="flex-1 overflow-y-auto p-2 space-y-4">
           {filtered.length === 0 ? (
             <div className="text-center py-12 text-gray-500 text-sm">
-              No actions or navigation found matching "{search}"
+              No actions or navigation found matching &quot;{search}&quot;
             </div>
           ) : (
             <div>
@@ -223,7 +289,11 @@ export default function CommandPalette({ isOpen, onClose }: { isOpen: boolean; o
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-semibold text-gray-900">{item.title}</span>
-                          <span className="text-[10px] text-gray-400 font-medium px-1.5 py-0.5 rounded-full bg-gray-100">
+                          <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                            item.category === "Create"
+                              ? "text-green-700 bg-green-50"
+                              : "text-gray-400 bg-gray-100"
+                          }`}>
                             {item.category}
                           </span>
                           {item.adminOnly && (

@@ -9,6 +9,11 @@ import {
   Search,
   Landmark,
   History,
+  UserPlus,
+  Play,
+  ClipboardCheck,
+  Shield,
+  Upload,
 } from "lucide-react";
 
 // ─── Screen-specific empty-state definitions ─────────────────────
@@ -26,7 +31,12 @@ export type EmptyStateScreen =
   | "treasury"
   | "company"
   | "generic"
-  | "search";
+  | "search"
+  | "first-employee"
+  | "first-payroll"
+  | "onboarding-incomplete"
+  | "first-audit"
+  | "import-review-empty";
 
 export interface EmptyStateDefinition {
   icon: LucideIcon;
@@ -104,6 +114,40 @@ export const EMPTY_STATE_COPY: Record<EmptyStateScreen, EmptyStateDefinition> =
       icon: Search,
       title: "No results found",
       description: "Try a different search term or adjust your filters.",
+    },
+    "first-employee": {
+      icon: UserPlus,
+      title: "Welcome! Start by adding your first employee",
+      description:
+        "Your team directory is empty. Add an employee with their Stellar wallet address to begin setting up payroll. Salary data is secured with zero-knowledge proofs.",
+      actionLabel: "Add your first employee",
+    },
+    "first-payroll": {
+      icon: Play,
+      title: "Your first payroll run is ready to configure",
+      description:
+        "You have employees in the directory but haven't run payroll yet. Review the team, generate a ZK proof, and submit your first batch payment on Stellar.",
+      actionLabel: "Execute first payroll",
+    },
+    "onboarding-incomplete": {
+      icon: ClipboardCheck,
+      title: "Complete your team setup",
+      description:
+        "Finish adding employees, verify their wallet addresses, and configure department assignments before running payroll. Everything else depends on accurate employee records.",
+      actionLabel: "Continue onboarding",
+    },
+    "first-audit": {
+      icon: Shield,
+      title: "No audit trail configured",
+      description:
+        "Generate a view key to give your auditor read-only or full-audit access to payroll records. View keys expire automatically based on the duration you set.",
+      actionLabel: "Create view key",
+    },
+    "import-review-empty": {
+      icon: Upload,
+      title: "No imported records awaiting review",
+      description:
+        "When you import employee records in bulk, they will appear here for validation before being added to the directory. Use the bulk import flow to get started.",
     },
   };
 

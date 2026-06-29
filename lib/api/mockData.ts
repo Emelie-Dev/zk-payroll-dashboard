@@ -1,4 +1,4 @@
-import { Employee, Company, PayrollTransaction, PayrollRun, ViewKey } from "@/types/models";
+import { Employee, Company, PayrollTransaction, PayrollRun, ViewKey, AuditAccessRequest } from "@/types/models";
 
 export const MOCK_EMPLOYEES: Employee[] = [
   {
@@ -153,5 +153,41 @@ export const MOCK_VIEW_KEYS: ViewKey[] = [
     expiresAt: "2025-12-01T08:00:00Z",
     isActive: false,
     revokedAt: "2025-11-15T14:30:00Z",
+  },
+];
+
+export const MOCK_AUDIT_REQUESTS: AuditAccessRequest[] = [
+  {
+    id: "req_001",
+    requesterName: "Michael Chang",
+    requesterOrg: "PwC",
+    requesterEmail: "m.chang@pwc.com",
+    scope: "full-audit",
+    rationale: "Annual compliance audit for Q1-Q2 2025.",
+    status: "pending",
+    createdAt: "2025-06-25T09:00:00Z",
+  },
+  {
+    id: "req_002",
+    requesterName: "Elena Rodriguez",
+    requesterOrg: "EY",
+    requesterEmail: "elena.r@ey.com",
+    scope: "read-only",
+    rationale: "Preliminary review of transaction volumes.",
+    status: "approved",
+    createdAt: "2025-06-20T14:30:00Z",
+    updatedAt: "2025-06-21T10:00:00Z",
+    viewKeyId: "vk_001",
+  },
+  {
+    id: "req_003",
+    requesterName: "David Kim",
+    requesterOrg: "Independent",
+    requesterEmail: "david@dkim-audit.net",
+    scope: "full-audit",
+    rationale: "Investigating specific anomaly report.",
+    status: "rejected",
+    createdAt: "2025-05-10T11:15:00Z",
+    updatedAt: "2025-05-11T09:45:00Z",
   },
 ];

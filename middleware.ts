@@ -59,7 +59,7 @@ function applySecurityHeaders(response: NextResponse): void {
 
 const PUBLIC_PATHS = ['/', '/login', '/api/health', '/api/csp-report'];
 const PUBLIC_PREFIXES = ['/api/auth/'];
-const PROTECTED_PREFIXES = ['/dashboard', '/payroll', '/employees', '/settings', '/history', '/treasury', '/compliance', '/setup'];
+const PROTECTED_PREFIXES = ['/dashboard', '/payroll', '/employees', '/settings', '/history', '/treasury', '/compliance', '/setup', '/incidents', '/admin'];
 
 function isPublicRoute(pathname: string): boolean {
   if (PUBLIC_PATHS.includes(pathname)) return true;

@@ -76,3 +76,16 @@ export interface PayrollWizardState {
   submissionError: string | null;
   transactionHash: string | null;
 }
+
+export interface AuditAccessRequest {
+  id: string;
+  requesterName: string;
+  requesterOrg: string;
+  requesterEmail: string;
+  scope: "read-only" | "full-audit";
+  rationale: string;
+  status: "pending" | "approved" | "rejected";
+  createdAt: string;
+  updatedAt?: string;
+  viewKeyId?: string;
+}
