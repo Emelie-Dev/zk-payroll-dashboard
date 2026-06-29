@@ -180,7 +180,7 @@ export const StellarProvider: React.FC<{ children: React.ReactNode }> = ({
         };
 
         initialize();
-    }, []);
+    }, [setConnected, setLoading, setPublicKey, syncNetworkFromFreighter]);
 
     useEffect(() => {
         if (!isFreighterInstalled) return;

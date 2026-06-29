@@ -14,7 +14,8 @@ The **ZK Payroll Dashboard** is a privacy-first web application designed for man
 - **Connect Wallet**: Seamless integration with Stellar-compatible wallets (Freighter, Albedo).
 - **Privacy-Preserving Payroll**: Execute batch payroll transactions where salary amounts are hidden using ZK commitments.
 - **Employee Management**: Register and manage employees with encrypted metadata.
-- **Transaction History**: verifiable history of all payroll events.
+- **Transaction History**: Verifiable history of all payroll events.
+- **Transaction Detail View**: 🆕 Comprehensive transaction inspection with verification metadata, timestamps, and blockchain details.
 - **Compliance View**: Optional view-key generation for auditing purposes.
 
 ## 🛠 Tech Stack
@@ -76,11 +77,19 @@ zk-payroll-dashboard/
 │   ├── layout.tsx        # Root layout with providers
 │   └── page.tsx          # Dashboard home
 ├── components/           # React UI components
+│   ├── features/         # Feature-specific components
+│   │   └── transactions/ # Transaction-related components
+│   │       ├── TransactionHistory.tsx
+│   │       └── TransactionDetailDrawer.tsx 🆕
 │   ├── layout/           # Structural components (Sidebar, Header)
-│   ├── ui/               # Reusable UI elements (Buttons, Cards)
-│   ├── PayrollSummary.tsx
-│   ├── TransactionHistory.tsx
-│   └── WalletConnect.tsx
+│   └── ui/               # Reusable UI elements
+│       ├── button.tsx
+│       ├── badge.tsx 🆕
+│       ├── sheet.tsx 🆕
+│       └── scroll-area.tsx 🆕
+├── docs/                 # Documentation 🆕
+│   ├── TRANSACTION_DETAIL_FEATURE.md
+│   └── TRANSACTION_DETAIL_USAGE.md
 ├── lib/                  # Utilities and helper functions
 ├── public/               # Static assets
 └── package.json
@@ -88,7 +97,7 @@ zk-payroll-dashboard/
 
 ## 📖 Usage Guide
 
-### 1. connect Wallet
+### 1. Connect Wallet
 
 Click the **"Connect Wallet"** button in the top right header. Select your preferred Stellar wallet.
 
@@ -100,6 +109,17 @@ Navigate to the **Dashboard** tab. You will see a summary of active employees an
 
 Once the transaction is confirmed, it will appear in the **Transaction History** table. The "Verified" status indicates that the on-chain ZK verifier successfully validated the payment proof.
 
+### 4. Transaction Details 🆕
+
+Click any transaction row or the "Details" button to open a comprehensive detail view that shows:
+- **Transaction Summary**: Total amount and employee count
+- **Verification Status**: With detailed metadata and explanations
+- **Zero-Knowledge Proof**: Masked by default for privacy, viewable on demand
+- **Blockchain Details**: Transaction hash with explorer link
+- **Timeline**: Creation and verification timestamps
+- **Privacy Protection**: Clear indication of what remains encrypted
+
+For detailed usage instructions, see [Transaction Detail Usage Guide](docs/TRANSACTION_DETAIL_USAGE.md).
 ## 📚 Operator docs
 
 - [Dashboard setup guide](docs/SETUP_GUIDE.md)
