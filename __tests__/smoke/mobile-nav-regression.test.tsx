@@ -57,7 +57,7 @@ describe("Smoke: Mobile navigation regression", () => {
 
       const dialog = screen.getByRole("dialog", { name: /navigation menu/i });
       const activeLink = within(dialog).queryByRole("link", { current: "page" });
-      expect(activeLink).toBeTruthy();
+      expect(activeLink).not.toBeNull();
     });
   });
 
@@ -82,7 +82,7 @@ describe("Smoke: Mobile navigation regression", () => {
       expect(screen.getByRole("dialog")).toBeInTheDocument();
 
       const closeButton = screen.getByRole("button", { name: /close navigation menu/i });
-      expect(closeButton).toHaveFocus() || closeButton.focus();
+      expect(closeButton).toHaveFocus();
 
       fireEvent.keyDown(closeButton, { key: "Escape" });
     });

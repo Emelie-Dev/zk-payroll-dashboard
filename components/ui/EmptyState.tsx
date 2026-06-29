@@ -1,6 +1,7 @@
 "use client";
 
 import { type LucideIcon } from "lucide-react";
+import Link from "next/link";
 import {
   Users,
   Receipt,
@@ -9,6 +10,11 @@ import {
   Search,
   Landmark,
   History,
+  UserPlus,
+  Play,
+  ClipboardCheck,
+  Shield,
+  Upload,
 } from "lucide-react";
 
 // ─── Screen-specific empty-state definitions ─────────────────────
@@ -26,7 +32,12 @@ export type EmptyStateScreen =
   | "treasury"
   | "company"
   | "generic"
-  | "search";
+  | "search"
+  | "first-employee"
+  | "first-payroll"
+  | "onboarding-incomplete"
+  | "first-audit"
+  | "import-review-empty";
 
 export interface EmptyStateDefinition {
   icon: LucideIcon;
@@ -105,6 +116,40 @@ export const EMPTY_STATE_COPY: Record<EmptyStateScreen, EmptyStateDefinition> =
       title: "No results found",
       description: "Try a different search term or adjust your filters.",
     },
+    "first-employee": {
+      icon: UserPlus,
+      title: "Welcome! Start by adding your first employee",
+      description:
+        "Your team directory is empty. Add an employee with their Stellar wallet address to begin setting up payroll. Salary data is secured with zero-knowledge proofs.",
+      actionLabel: "Add your first employee",
+    },
+    "first-payroll": {
+      icon: Play,
+      title: "Your first payroll run is ready to configure",
+      description:
+        "You have employees in the directory but haven't run payroll yet. Review the team, generate a ZK proof, and submit your first batch payment on Stellar.",
+      actionLabel: "Execute first payroll",
+    },
+    "onboarding-incomplete": {
+      icon: ClipboardCheck,
+      title: "Complete your team setup",
+      description:
+        "Finish adding employees, verify their wallet addresses, and configure department assignments before running payroll. Everything else depends on accurate employee records.",
+      actionLabel: "Continue onboarding",
+    },
+    "first-audit": {
+      icon: Shield,
+      title: "No audit trail configured",
+      description:
+        "Generate a view key to give your auditor read-only or full-audit access to payroll records. View keys expire automatically based on the duration you set.",
+      actionLabel: "Create view key",
+    },
+    "import-review-empty": {
+      icon: Upload,
+      title: "No imported records awaiting review",
+      description:
+        "When you import employee records in bulk, they will appear here for validation before being added to the directory. Use the bulk import flow to get started.",
+    },
   };
 
 interface EmptyStateProps {
@@ -115,7 +160,8 @@ interface EmptyStateProps {
   description?: string;
   action?: {
     label: string;
-    onClick: () => void;
+    onClick?: () => void;
+    href?: string;
   };
 }
 
@@ -141,17 +187,25 @@ function EmptyState({
 
   return (
     <div className="text-center py-12">
-      <IconComponent
-        className="w-10 h-10 text-gray-400 mx-auto mb-3"
-        aria-hidden="true"
-      />
-      <h3 className="text-sm font-semibold text-gray-900 mb-1">
-        {resolvedTitle}
-      </h3>
-      <p className="text-sm text-gray-500 mb-4 max-w-sm mx-auto">
-        {resolvedDescription}
-      </p>
-      {resolvedAction && resolvedAction.label && (
+<IconComponent
+      className="w-10 h-10 text-gray-400 mx-auto mb-3"
+      aria-hidden="true"
+    />
+    <h3 className="text-sm font-semibold text-gray-900 mb-1">
+      {resolvedTitle}
+    </h3>
+    <p className="text-sm text-gray-500 mb-4 max-w-sm mx-auto">
+      {resolvedDescription}
+    </p>
+    {resolvedAction && resolvedAction.label && (
+      resolvedAction.href ? (
+        <Link
+          href={resolvedAction.href}
+          className="inline-flex px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+        >
+          {resolvedAction.label}
+        </Link>
+      ) : (
         <button
           type="button"
           onClick={resolvedAction.onClick}
@@ -159,10 +213,10 @@ function EmptyState({
         >
           {resolvedAction.label}
         </button>
-      )}
+      )
+    )}
     </div>
   );
 }
 
 export default EmptyState;
-export { EMPTY_STATE_COPY };

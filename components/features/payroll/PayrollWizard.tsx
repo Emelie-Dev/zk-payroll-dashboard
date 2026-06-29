@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useEffect, useState, useRef } from "react";
 import {
   CheckCircle,
   Circle,
@@ -9,6 +9,9 @@ import {
   ArrowLeft,
   ArrowRight,
   RotateCcw,
+  Save,
+  Trash2,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { usePayrollWizardStore } from "@/stores/payrollWizard";
@@ -16,6 +19,7 @@ import { useWalletStore } from "@/stores/walletStore";
 import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
 import type { PayrollWizardStep } from "@/types";
+import { trackEvent, mapErrorToType, bucketEmployeeCount } from "@/lib/telemetry";
 
 const STEPS: { key: PayrollWizardStep; label: string }[] = [
   { key: "review", label: "Review" },
@@ -48,7 +52,18 @@ function PayrollWizard() {
     setSubmissionError,
     setTransactionHash,
     reset,
+    hasDraft,
+    restoreDraft,
+    clearDraft,
   } = usePayrollWizardStore();
+  const [showDraftBanner, setShowDraftBanner] = useState(false);
+  const draftResolvedRef = useRef(false);
+
+  useEffect(() => {
+    if (!draftResolvedRef.current && hasDraft() && employeeIds.length > 0 && submissionStatus !== "success") {
+      setShowDraftBanner(true);
+    }
+  }, [employeeIds.length, hasDraft, submissionStatus]);
 
   const network = useWalletStore((s) => s.network);
   const isWrongNetwork = network !== EXPECTED_NETWORK;
@@ -59,8 +74,13 @@ function PayrollWizard() {
   );
 
   const handleStartPayroll = useCallback(() => {
-    setEmployeeIds(MOCK_EMPLOYEES.map((e) => e.id));
+    const selected = MOCK_EMPLOYEES.map((e) => e.id);
+    setEmployeeIds(selected);
     setTotalAmount(MOCK_EMPLOYEES.reduce((sum, e) => sum + e.salary, 0));
+
+    trackEvent('payroll_wizard_started', {
+      employeeCountBucket: bucketEmployeeCount(selected.length)
+    });
   }, [setEmployeeIds, setTotalAmount]);
 
   const handleGenerateProof = useCallback(async () => {
@@ -72,13 +92,17 @@ function PayrollWizard() {
     const success = Math.random() > 0.2;
     if (success) {
       setProofStatus("success");
+      trackEvent('payroll_proof_generation_completed', { success: true });
       toast.success("Proof generated successfully");
       nextStep();
     } else {
       setProofStatus("error");
-      setProofError(
-        "Proof generation failed: circuit constraint mismatch. Please retry.",
-      );
+      const errMsg = "Proof generation failed: circuit constraint mismatch. Please retry.";
+      setProofError(errMsg);
+      trackEvent('payroll_proof_generation_completed', {
+        success: false,
+        error_type: mapErrorToType(errMsg)
+      });
       toast.error("Proof generation failed", {
         description: "Circuit constraint mismatch.",
       });
@@ -95,15 +119,19 @@ function PayrollWizard() {
     if (success) {
       setSubmissionStatus("success");
       setTransactionHash(`0x${Date.now().toString(16)}abc`);
+      trackEvent('payroll_submission_completed', { success: true });
       toast.success("Payroll submitted successfully", {
         description: "Transaction submitted to the Stellar network.",
       });
       nextStep();
     } else {
       setSubmissionStatus("error");
-      setSubmissionError(
-        "Submission failed: network timeout. The transaction may still be processing.",
-      );
+      const errMsg = "Submission failed: network timeout. The transaction may still be processing.";
+      setSubmissionError(errMsg);
+      trackEvent('payroll_submission_completed', {
+        success: false,
+        error_type: mapErrorToType(errMsg)
+      });
       toast.error("Submission failed", {
         description: "Network timeout. The transaction may still be processing.",
       });
@@ -117,6 +145,58 @@ function PayrollWizard() {
       <h2 id="payroll-wizard-heading" className="text-lg font-semibold text-gray-900">
         Execute Payroll
       </h2>
+
+      {showDraftBanner && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+          <Save className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+          <div className="flex-1">
+            <h3 className="text-sm font-medium text-amber-800">Draft Payroll Recovered</h3>
+            <p className="text-sm text-amber-700 mt-1">
+              An in-progress payroll draft was found. {employeeIds.length} employee
+              {employeeIds.length !== 1 ? "s" : ""} selected, total amount: $
+              {totalAmount.toLocaleString()}. Your progress was automatically saved.
+            </p>
+            <p className="text-xs text-amber-600 mt-2">
+              Sensitive fields (proof artifacts, transaction hashes) are never persisted in drafts.
+            </p>
+            <div className="flex items-center gap-2 mt-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDraftBanner(false);
+                  draftResolvedRef.current = true;
+                }}
+                className="px-3 py-1.5 rounded-md text-xs font-medium bg-amber-600 text-white hover:bg-amber-700 transition-colors"
+              >
+                Continue with draft
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  clearDraft();
+                  setShowDraftBanner(false);
+                  draftResolvedRef.current = true;
+                }}
+                className="px-3 py-1.5 rounded-md text-xs font-medium bg-white text-amber-700 hover:bg-amber-50 border border-amber-300 transition-colors inline-flex items-center gap-1"
+              >
+                <Trash2 className="w-3 h-3" />
+                Discard draft
+              </button>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setShowDraftBanner(false);
+              draftResolvedRef.current = true;
+            }}
+            className="text-amber-400 hover:text-amber-600 transition-colors"
+            aria-label="Dismiss draft banner"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       <nav aria-label="Payroll execution progress" className="flex items-center">
         {STEPS.map((step, i) => (

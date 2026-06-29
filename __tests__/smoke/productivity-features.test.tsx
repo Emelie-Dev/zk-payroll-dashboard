@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import TransactionHistory from "@/components/features/transactions/TransactionHistory";
 import EmployeeDirectory from "@/components/features/employees/EmployeeDirectory";
 
@@ -70,14 +70,14 @@ describe("Smoke: Productivity features", () => {
       expect(buttons.length).toBeGreaterThanOrEqual(0);
     });
 
-    it("renders table structure suitable for printing", () => {
+    it("renders table structure suitable for printing", async () => {
       render(<TransactionHistory />);
-      const table = screen.queryByRole("table", { name: /payroll transactions/i });
-      if (table) {
+      await waitFor(() => {
+        const table = screen.getByRole("table", { name: /payroll transactions/i });
         expect(table).toBeInTheDocument();
         const headerCells = table.querySelectorAll("th");
         expect(headerCells.length).toBeGreaterThan(0);
-      }
+      });
     });
 
     it("employee directory renders in card format for printing", () => {
@@ -86,27 +86,29 @@ describe("Smoke: Productivity features", () => {
       expect(cards.length || 0).toBeGreaterThanOrEqual(0);
     });
 
-    it("maintains data integrity in print-ready format", () => {
+    it("maintains data integrity in print-ready format", async () => {
       render(<TransactionHistory />);
-      const tableOrList = screen.queryByRole("table", { name: /payroll transactions/i }) ||
-                         screen.queryByRole("list", { name: /payroll transactions/i });
-      expect(tableOrList).toBeInTheDocument();
+      await waitFor(() => {
+        const table = screen.getByRole("table", { name: /payroll transactions/i });
+        expect(table).toBeInTheDocument();
+      });
     });
 
-    it("footer shows data summary for printing", () => {
+    it("footer shows data summary for printing", async () => {
       render(<TransactionHistory />);
-      const footerText = screen.queryByText(/showing|display|items|total/i);
-      expect(footerText || "").toBeTruthy();
+      await waitFor(() => {
+        expect(screen.getByText(/showing/i)).toBeInTheDocument();
+      });
     });
   });
 
   describe("Feature integration", () => {
-    it("filter and export work together", () => {
+    it("filter and export work together", async () => {
       render(<TransactionHistory />);
+      await waitFor(() => {
+        expect(screen.getByRole("table", { name: /payroll transactions/i })).toBeInTheDocument();
+      });
       const filterButton = screen.queryByRole("button", { name: /filter/i });
-      const dataContainer = screen.queryByRole("table") || screen.queryByRole("list");
-
-      expect(dataContainer).toBeInTheDocument();
       if (filterButton) {
         fireEvent.click(filterButton);
       }
@@ -120,13 +122,13 @@ describe("Smoke: Productivity features", () => {
       expect(actionButtons.length).toBeGreaterThanOrEqual(0);
     });
 
-    it("print view accessible from all productivity screens", () => {
+    it("print view accessible from all productivity screens", async () => {
       const { rerender } = render(<TransactionHistory />);
-      let printArea = screen.queryByRole("table") || screen.queryByRole("list");
+      let printArea = await screen.findByRole("table", { name: /payroll transactions/i });
       expect(printArea).toBeInTheDocument();
 
       rerender(<EmployeeDirectory />);
-      printArea = screen.queryByRole("table") || screen.queryByRole("list");
+      printArea = await screen.findByRole("table", { name: /employee directory/i });
       expect(printArea).toBeInTheDocument();
     });
   });

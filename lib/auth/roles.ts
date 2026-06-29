@@ -11,7 +11,7 @@ export type NavigationAccess = 'enabled' | 'disabled';
 export interface NavigationItem {
   label: string;
   href: string;
-  icon: 'home' | 'users' | 'play' | 'history' | 'shield' | 'building' | 'treasury' | 'settings';
+  icon: 'home' | 'users' | 'play' | 'history' | 'shield' | 'building' | 'treasury' | 'settings' | 'file-search' | 'alert' | 'clipboard' | 'upload';
   roles: UserRole[];
   access?: Partial<Record<UserRole, NavigationAccess>>;
   disabledReason?: Partial<Record<UserRole, string>>;
@@ -75,12 +75,16 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
 export const ROUTE_ROLE_RULES: Array<{ prefix: string; roles: UserRole[] }> = [
   { prefix: '/employees', roles: ['admin'] },
   { prefix: '/payroll/execute', roles: ['admin', 'operator'] },
+  { prefix: '/payroll/exceptions', roles: ['admin', 'operator', 'auditor'] },
+  { prefix: '/payroll/runs', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/treasury', roles: ['admin'] },
   { prefix: '/compliance', roles: ['admin', 'auditor'] },
   { prefix: '/setup', roles: ['admin'] },
   { prefix: '/history', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/settings', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/dashboard', roles: ['admin', 'operator', 'auditor'] },
+  { prefix: '/incidents', roles: ['admin', 'operator', 'auditor'] },
+  { prefix: '/admin', roles: ['admin'] },
 ];
 
 export function getNavigationForRole(role: UserRole): NavigationItem[] {

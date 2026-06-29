@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AlertTriangle, CheckCircle, ArrowDownLeft, Plus } from "lucide-react";
 import { MOCK_TREASURY_BALANCE, MOCK_TRANSACTIONS, MOCK_COMPANIES } from "@/lib/api/mockData";
+import FundingForecast from "./FundingForecast";
 
 function TreasuryView() {
   const [toastVisible, setToastVisible] = useState(false);
@@ -81,6 +82,8 @@ function TreasuryView() {
           </div>
         </article>
       </div>
+
+      <FundingForecast />
 
       {company && (
         <div className="bg-white rounded-lg shadow-sm p-6">
