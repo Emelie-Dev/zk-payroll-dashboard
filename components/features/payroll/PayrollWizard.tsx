@@ -20,6 +20,7 @@ import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
 import PayrollReceipt from "./PayrollReceipt";
 import type { PayrollWizardStep } from "@/types";
+import { trackEvent, mapErrorToType, bucketEmployeeCount } from "@/lib/telemetry";
 
 const STEPS: { key: PayrollWizardStep; label: string }[] = [
   { key: "review", label: "Review" },
@@ -74,8 +75,13 @@ function PayrollWizard() {
   );
 
   const handleStartPayroll = useCallback(() => {
-    setEmployeeIds(MOCK_EMPLOYEES.map((e) => e.id));
+    const selected = MOCK_EMPLOYEES.map((e) => e.id);
+    setEmployeeIds(selected);
     setTotalAmount(MOCK_EMPLOYEES.reduce((sum, e) => sum + e.salary, 0));
+
+    trackEvent('payroll_wizard_started', {
+      employeeCountBucket: bucketEmployeeCount(selected.length)
+    });
   }, [setEmployeeIds, setTotalAmount]);
 
   const handleGenerateProof = useCallback(async () => {
@@ -87,13 +93,17 @@ function PayrollWizard() {
     const success = Math.random() > 0.2;
     if (success) {
       setProofStatus("success");
+      trackEvent('payroll_proof_generation_completed', { success: true });
       toast.success("Proof generated successfully");
       nextStep();
     } else {
       setProofStatus("error");
-      setProofError(
-        "Proof generation failed: circuit constraint mismatch. Please retry.",
-      );
+      const errMsg = "Proof generation failed: circuit constraint mismatch. Please retry.";
+      setProofError(errMsg);
+      trackEvent('payroll_proof_generation_completed', {
+        success: false,
+        error_type: mapErrorToType(errMsg)
+      });
       toast.error("Proof generation failed", {
         description: "Circuit constraint mismatch.",
       });
@@ -110,15 +120,19 @@ function PayrollWizard() {
     if (success) {
       setSubmissionStatus("success");
       setTransactionHash(`0x${Date.now().toString(16)}abc`);
+      trackEvent('payroll_submission_completed', { success: true });
       toast.success("Payroll submitted successfully", {
         description: "Transaction submitted to the Stellar network.",
       });
       nextStep();
     } else {
       setSubmissionStatus("error");
-      setSubmissionError(
-        "Submission failed: network timeout. The transaction may still be processing.",
-      );
+      const errMsg = "Submission failed: network timeout. The transaction may still be processing.";
+      setSubmissionError(errMsg);
+      trackEvent('payroll_submission_completed', {
+        success: false,
+        error_type: mapErrorToType(errMsg)
+      });
       toast.error("Submission failed", {
         description: "Network timeout. The transaction may still be processing.",
       });

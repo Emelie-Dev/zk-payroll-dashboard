@@ -141,9 +141,9 @@ export default function BulkStatusUpdate() {
       </h3>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <label htmlFor="bulk-status-select" className="text-sm font-medium text-gray-700">Set status to</label>
+        <label htmlFor="bulk-target-status" className="text-sm font-medium text-gray-700">Target status</label>
         <select
-          id="bulk-status-select"
+          id="bulk-target-status"
           value={targetStatus}
           onChange={(e) => setTargetStatus(e.target.value as TargetStatus)}
           className="rounded-md border px-3 py-1.5 text-sm text-gray-700"

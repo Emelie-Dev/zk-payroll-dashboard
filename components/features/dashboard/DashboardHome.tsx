@@ -8,6 +8,8 @@ import WalletConnect from "@/components/features/wallet/WalletConnect";
 import PayrollSummary from "@/components/features/payroll/PayrollSummary";
 import SystemStatus from "@/components/features/dashboard/SystemStatus";
 import QuickActions from "@/components/features/dashboard/QuickActions";
+import OnboardingChecklistPanel from "@/components/features/dashboard/OnboardingChecklistPanel";
+import PinnedAlertsPanel from "@/components/features/dashboard/PinnedAlertsPanel";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
 function DashboardHome() {
@@ -18,7 +20,10 @@ function DashboardHome() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-3">
-        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" aria-hidden="true" />
+        <Loader2
+          className="w-8 h-8 text-indigo-600 animate-spin"
+          aria-hidden="true"
+        />
         <p className="text-sm text-gray-500">Connecting to wallet…</p>
       </div>
     );
@@ -35,7 +40,8 @@ function DashboardHome() {
             Connect your wallet to get started
           </h2>
           <p className="text-sm text-gray-500 mb-4">
-            ZK Payroll requires a Freighter wallet on Stellar Testnet. Connect to access the dashboard.
+            ZK Payroll requires a Freighter wallet on Stellar Testnet. Connect
+            to access the dashboard.
           </p>
           <WalletConnect />
         </div>
@@ -47,9 +53,14 @@ function DashboardHome() {
     return (
       <div className="space-y-6">
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
-          <Building2 className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" aria-hidden="true" />
+          <Building2
+            className="w-5 h-5 text-amber-600 mt-0.5 shrink-0"
+            aria-hidden="true"
+          />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-amber-800">Company setup required</p>
+            <p className="text-sm font-medium text-amber-800">
+              Company setup required
+            </p>
             <p className="text-sm text-amber-700 mt-0.5">
               Complete your company setup to start managing payroll.
             </p>
@@ -72,17 +83,52 @@ function DashboardHome() {
     );
   }
 
+  // Sample alerts and tasks for demo purposes
+  const sampleAlerts = [
+    {
+      id: "alert-1",
+      title: "Treasury balance below threshold",
+      message:
+        "Current balance may be insufficient for next scheduled payroll run",
+      severity: "warning" as const,
+      status: "pending" as const,
+      createdAt: new Date(Date.now() - 3600000).toISOString(),
+      link: "/treasury",
+      actionLabel: "Fund treasury",
+    },
+  ];
+
+  const sampleTasks = [
+    {
+      id: "task-1",
+      title: "Review pending audit request",
+      description: "New audit access request requires approval",
+      priority: "high" as const,
+      status: "pending" as const,
+      link: "/compliance",
+      actionLabel: "Review request",
+    },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">{company.name}</h2>
+          <h2 className="text-lg font-semibold text-gray-900">
+            {company.name}
+          </h2>
           <p className="text-sm text-gray-500">Admin dashboard</p>
         </div>
         <WalletConnect />
       </div>
       <ErrorBoundary>
+        <PinnedAlertsPanel alerts={sampleAlerts} tasks={sampleTasks} />
+      </ErrorBoundary>
+      <ErrorBoundary>
         <QuickActions />
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <OnboardingChecklistPanel />
       </ErrorBoundary>
       <ErrorBoundary>
         <SystemStatus />

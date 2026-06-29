@@ -1,6 +1,7 @@
 "use client";
 
 import { type LucideIcon } from "lucide-react";
+import Link from "next/link";
 import {
   Users,
   Receipt,
@@ -159,7 +160,8 @@ interface EmptyStateProps {
   description?: string;
   action?: {
     label: string;
-    onClick: () => void;
+    onClick?: () => void;
+    href?: string;
   };
 }
 
@@ -185,17 +187,25 @@ function EmptyState({
 
   return (
     <div className="text-center py-12">
-      <IconComponent
-        className="w-10 h-10 text-gray-400 mx-auto mb-3"
-        aria-hidden="true"
-      />
-      <h3 className="text-sm font-semibold text-gray-900 mb-1">
-        {resolvedTitle}
-      </h3>
-      <p className="text-sm text-gray-500 mb-4 max-w-sm mx-auto">
-        {resolvedDescription}
-      </p>
-      {resolvedAction && resolvedAction.label && (
+<IconComponent
+      className="w-10 h-10 text-gray-400 mx-auto mb-3"
+      aria-hidden="true"
+    />
+    <h3 className="text-sm font-semibold text-gray-900 mb-1">
+      {resolvedTitle}
+    </h3>
+    <p className="text-sm text-gray-500 mb-4 max-w-sm mx-auto">
+      {resolvedDescription}
+    </p>
+    {resolvedAction && resolvedAction.label && (
+      resolvedAction.href ? (
+        <Link
+          href={resolvedAction.href}
+          className="inline-flex px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+        >
+          {resolvedAction.label}
+        </Link>
+      ) : (
         <button
           type="button"
           onClick={resolvedAction.onClick}
@@ -203,10 +213,10 @@ function EmptyState({
         >
           {resolvedAction.label}
         </button>
-      )}
+      )
+    )}
     </div>
   );
 }
 
 export default EmptyState;
-export { EMPTY_STATE_COPY };

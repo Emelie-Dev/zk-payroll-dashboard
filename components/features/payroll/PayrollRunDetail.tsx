@@ -2,6 +2,7 @@
 
 import { useMemo, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   ArrowLeft,
   Calendar,
@@ -15,8 +16,14 @@ import {
   EyeOff,
   AlertTriangle,
 } from "lucide-react";
-import { MOCK_PAYROLL_RUNS, MOCK_EMPLOYEES } from "@/lib/api/mockData";
-import type { PayrollRun } from "@/types";
+import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
+import type { PayrollRun } from "@/types/models";
+import {
+  classifyRun,
+  formatPayrollDate,
+  getRunDate,
+  RUN_KIND_STYLES,
+} from "@/lib/payroll/scheduleUtils";
 
 const STATUS_STYLES: Record<string, string> = {
   verified: "bg-green-100 text-green-800",
@@ -24,27 +31,40 @@ const STATUS_STYLES: Record<string, string> = {
   failed: "bg-red-100 text-red-800",
 };
 
-const STATUS_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+const STATUS_ICONS: Record<string, React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>> = {
   verified: CheckCircle,
   pending: Clock,
   failed: XCircle,
 };
 
-function PayrollRunDetail() {
+export function findPayrollRun(id: string, runs = MOCK_PAYROLL_RUNS): PayrollRun | undefined {
+  return runs.find((run) => run.id === id);
+}
+
+interface PayrollRunDetailProps {
+  run?: PayrollRun;
+}
+
+export default function PayrollRunDetail({ run: propRun }: PayrollRunDetailProps = {}) {
   const router = useRouter();
   const params = useParams();
   const runId = params?.id as string;
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!propRun);
 
   useEffect(() => {
+    if (propRun) {
+      setIsLoading(false);
+      return;
+    }
     const t = setTimeout(() => setIsLoading(false), 500);
     return () => clearTimeout(t);
-  }, []);
+  }, [propRun]);
 
   const run = useMemo(() => {
-    return MOCK_PAYROLL_RUNS.find((r) => r.id === runId) ?? null;
-  }, [runId]);
+    if (propRun) return propRun;
+    return findPayrollRun(runId) ?? null;
+  }, [propRun, runId]);
 
   const employeesInRun = useMemo(() => {
     if (!run) return [];
@@ -101,35 +121,68 @@ function PayrollRunDetail() {
     );
   }
 
+  const kind = classifyRun(run);
+  const kindStyles = RUN_KIND_STYLES[kind];
+  const runDate = getRunDate(run);
   const StatusIcon = STATUS_ICONS[run.status] ?? Clock;
+  const txHash = run.transactionHash ?? run.txHash;
 
   return (
     <section aria-labelledby="payroll-run-detail-heading" className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => router.push("/history")}
-            className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            History
-          </button>
-          <span className="text-gray-300" aria-hidden="true">/</span>
-          <h2
-            id="payroll-run-detail-heading"
-            className="text-lg font-semibold text-gray-900"
-          >
-            Payroll Run {run.id}
-          </h2>
-        </div>
-        <span
-          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${STATUS_STYLES[run.status]}`}
+      <div>
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors"
         >
-          <StatusIcon className="w-3.5 h-3.5" />
-          {run.status.charAt(0).toUpperCase() + run.status.slice(1)}
-        </span>
+          <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+          Back
+        </button>
       </div>
+
+      <header className="bg-white rounded-lg shadow-sm p-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border ${kindStyles.badge}`}
+            >
+              <StatusIcon className="w-5 h-5" aria-hidden="true" />
+            </div>
+            <div>
+              <h1
+                id="payroll-run-detail-heading"
+                className="text-xl font-semibold text-gray-900"
+              >
+                Payroll run · {formatPayrollDate(runDate)}
+              </h1>
+              <p className="text-sm text-gray-500 mt-0.5">Run ID: {run.id}</p>
+              <div className="flex items-center gap-2 mt-2">
+                <span
+                  className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${kindStyles.badge}`}
+                >
+                  {kindStyles.label}
+                </span>
+                <span
+                  className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+                    STATUS_STYLES[run.status]
+                  }`}
+                >
+                  <StatusIcon className="w-3.5 h-3.5" aria-hidden="true" />
+                  {run.status.charAt(0).toUpperCase() + run.status.slice(1)}
+                </span>
+              </div>
+            </div>
+          </div>
+          {kind === "scheduled" && (
+            <Link
+              href="/payroll/execute"
+              className="inline-flex items-center justify-center px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors shrink-0"
+            >
+              Process payroll
+            </Link>
+          )}
+        </div>
+      </header>
 
       {/* Run metadata */}
       <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
@@ -138,10 +191,10 @@ function PayrollRunDetail() {
           <div className="border rounded-lg p-4">
             <div className="flex items-center gap-2 text-gray-500 mb-1">
               <Calendar className="w-4 h-4" />
-              <span className="text-xs font-medium uppercase">Timestamp</span>
+              <span className="text-xs font-medium uppercase">Date</span>
             </div>
             <p className="text-sm font-medium text-gray-900">
-              {new Date(run.timestamp).toLocaleString()}
+              {formatPayrollDate(runDate)}
             </p>
           </div>
           <div className="border rounded-lg p-4">
@@ -170,17 +223,17 @@ function PayrollRunDetail() {
             <p className="text-sm font-mono text-gray-900 truncate" title={run.proof}>
               {run.proof
                 ? `${run.proof.slice(0, 12)}...${run.proof.slice(-8)}`
-                : "—"}
+                : "Pending generation"}
             </p>
           </div>
         </div>
 
-        {run.transactionHash && (
+        {txHash && (
           <div className="flex items-center gap-2 text-sm">
             <LinkIcon className="w-4 h-4 text-gray-400" />
             <span className="text-gray-600">Transaction:</span>
             <span className="font-mono text-xs text-gray-900 truncate">
-              {run.transactionHash}
+              {txHash}
             </span>
           </div>
         )}
@@ -189,7 +242,7 @@ function PayrollRunDetail() {
           <div className="flex items-center gap-2 text-sm">
             <CheckCircle className="w-4 h-4 text-green-500" />
             <span className="text-gray-600">
-              Executed at {new Date(run.executedAt).toLocaleString()}
+              Executed at {formatPayrollDate(new Date(run.executedAt))}
             </span>
           </div>
         )}
@@ -282,7 +335,7 @@ function PayrollRunDetail() {
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-xs font-mono text-gray-500">
-                      {emp.salaryCommitment.slice(0, 10)}...
+                      {emp.salaryCommitment?.slice(0, 10)}...
                     </span>
                   </td>
                 </tr>
@@ -301,8 +354,15 @@ function PayrollRunDetail() {
           {employeesInRun.length} employee{employeesInRun.length !== 1 ? "s" : ""} in this run
         </div>
       </div>
+
+      <div className="flex flex-wrap gap-3">
+        <Link
+          href="/history"
+          className="inline-flex items-center px-4 py-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          View transaction history
+        </Link>
+      </div>
     </section>
   );
 }
-
-export default PayrollRunDetail;

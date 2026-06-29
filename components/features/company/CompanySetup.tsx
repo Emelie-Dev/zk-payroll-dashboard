@@ -5,6 +5,7 @@ import { Wallet, AlertCircle, CheckCircle } from "lucide-react";
 import { useWalletStore } from "@/stores/walletStore";
 import { useCompanyStore } from "@/stores/company";
 import WalletConnect from "@/components/features/wallet/WalletConnect";
+import { trackEvent } from "@/lib/telemetry";
 
 function isStellarAddress(address: string): boolean {
   return /^G[A-Z2-7]{55}$/.test(address);
@@ -48,6 +49,8 @@ function CompanySetup({ onNext }: CompanySetupProps = {}) {
         employeeCount: 0,
         isActive: true,
       });
+
+      trackEvent('onboarding_completed', { success: true });
 
       setSubmitted(true);
       setTimeout(() => {

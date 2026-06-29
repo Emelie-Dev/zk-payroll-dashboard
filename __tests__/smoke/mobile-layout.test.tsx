@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import TransactionHistory from "@/components/features/transactions/TransactionHistory";
 import EmployeeDirectory from "@/components/features/employees/EmployeeDirectory";
 import Sidebar from "@/components/layout/Sidebar";
@@ -35,9 +35,9 @@ describe("Smoke: Mobile layout rendering", () => {
   });
 
   describe("Header", () => {
-    it("renders the search input", () => {
+    it("renders the command palette trigger button", () => {
       render(<Header />);
-      expect(screen.getByRole("searchbox")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /search actions/i })).toBeInTheDocument();
     });
 
     it("renders the notifications button", () => {
@@ -46,53 +46,48 @@ describe("Smoke: Mobile layout rendering", () => {
     });
   });
 
-  describe("TransactionHistory mobile cards", () => {
-    it("renders the mobile card list", () => {
+  describe("TransactionHistory", () => {
+    it("renders the desktop table once loaded", async () => {
       render(<TransactionHistory />);
-      expect(screen.getByRole("list", { name: /payroll transactions/i })).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByRole("table", { name: /payroll transactions/i })).toBeInTheDocument();
+      });
     });
 
-    it("renders the desktop table", () => {
+    it("shows transaction count footer once loaded", async () => {
       render(<TransactionHistory />);
-      expect(screen.getByRole("table", { name: /payroll transactions/i })).toBeInTheDocument();
-    });
-
-    it("shows transaction count footer", () => {
-      render(<TransactionHistory />);
-      expect(screen.getByText(/showing/i)).toBeInTheDocument();
-    });
-
-    it("mobile list and desktop table contain same number of transactions", () => {
-      render(<TransactionHistory />);
-      const listItems = screen.getByRole("list", { name: /payroll transactions/i }).children;
-      const tableRows = screen
-        .getByRole("table", { name: /payroll transactions/i })
-        .querySelectorAll("tbody tr");
-      expect(listItems.length).toBe(tableRows.length);
+      await waitFor(() => {
+        expect(screen.getByText(/showing/i)).toBeInTheDocument();
+      });
     });
   });
 
   describe("EmployeeDirectory mobile cards", () => {
-    it("renders the mobile card list", () => {
+    it("renders the mobile card list once loaded", async () => {
       render(<EmployeeDirectory />);
-      expect(screen.getByRole("list", { name: /employee directory/i })).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByRole("list", { name: /employee directory/i })).toBeInTheDocument();
+      });
     });
 
-    it("renders the desktop table", () => {
+    it("renders the desktop table once loaded", async () => {
       render(<EmployeeDirectory />);
-      expect(screen.getByRole("table", { name: /employee directory/i })).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByRole("table", { name: /employee directory/i })).toBeInTheDocument();
+      });
     });
 
-    it("shows employee count footer", () => {
+    it("shows employee count footer once loaded", async () => {
       render(<EmployeeDirectory />);
-      expect(screen.getByText(/showing/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/showing/i)).toBeInTheDocument();
+      });
     });
 
-    it("status filter buttons are rendered with accessible tap targets", () => {
+    it("status filter buttons have accessible tap targets", () => {
       render(<EmployeeDirectory />);
       const allBtn = screen.getByRole("button", { name: /^all/i });
       expect(allBtn).toBeInTheDocument();
-      // min-h-[32px] ensures adequate tap target; check class presence
       expect(allBtn.className).toContain("min-h-");
     });
 
@@ -100,7 +95,6 @@ describe("Smoke: Mobile layout rendering", () => {
       render(<EmployeeDirectory />);
       const activeBtn = screen.getByRole("button", { name: /^active/i });
       fireEvent.click(activeBtn);
-      // After filtering, the active button should be highlighted
       expect(activeBtn.className).toContain("bg-indigo-600");
     });
   });

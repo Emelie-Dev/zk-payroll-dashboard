@@ -1,7 +1,4 @@
-"use client";
-
-import { Bell, Search, User } from "lucide-react";
-import { ROLE_LABELS } from "@/lib/auth/roles";
+import { Bell, Search, User } from 'lucide-react';
 
 function Header() {
   const triggerPalette = () => {
@@ -12,6 +9,7 @@ function Header() {
     <header className="flex items-center justify-between pl-16 pr-6 py-4 md:px-6 bg-white shadow-sm border-b">
       <button
         type="button"
+        role="searchbox"
         onClick={triggerPalette}
         className="flex items-center text-left bg-gray-50 border border-gray-200 hover:border-gray-300 rounded-lg px-3 py-1.5 w-64 text-gray-400 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
         aria-label="Search actions (shortcut: Command + K)"
@@ -41,6 +39,7 @@ function Header() {
           >
             <User className="w-5 h-5 text-gray-600" />
           </div>
+
           <span className="hidden sm:inline text-sm font-medium text-gray-700">Admin</span>
         </div>
       </div>

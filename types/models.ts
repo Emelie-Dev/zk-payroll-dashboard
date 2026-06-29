@@ -63,6 +63,22 @@ export interface ViewKey {
   revokedAt?: string | null;
 }
 
+export interface FundingForecast {
+  cycleStart: string;
+  cycleEnd: string;
+  estimatedTotal: number;
+  employeeCount: number;
+  breakdown: {
+    payrollTotal: number;
+    bufferReserve: number;
+    miscellaneous: number;
+  };
+  currentBalance: number;
+  fundingGap: number;
+  confidence: "high" | "medium" | "low";
+  uncertaintyFactors: string[];
+}
+
 export type PayrollWizardStep = "review" | "proof" | "confirm" | "submit";
 
 export interface PayrollWizardState {

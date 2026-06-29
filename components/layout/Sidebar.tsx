@@ -1,5 +1,7 @@
+
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -12,16 +14,40 @@ import {
   Play,
   Building2,
   Landmark,
+  CalendarDays,
   Menu,
   X,
-  AlertTriangle,
   FileSearch,
+  AlertTriangle,
   ClipboardList,
+  Upload
 } from "lucide-react";
+import { getNavigationForRole, ROLE_LABELS } from "@/lib/auth/roles";
+import type { NavigationItem } from "@/lib/auth/roles";
+import type { UserRole } from "@/types";
 
+// Icons map for role-based navigation layout strings
+const icons: Record<NavigationItem["icon"], React.ComponentType<{ className?: string }>> = {
+  home: Home,
+  users: Users,
+  settings: Settings,
+  history: History,
+  shield: Shield,
+  play: Play,
+  building: Building2,
+  treasury: Landmark,
+  calendar: CalendarDays,
+  "file-search": FileSearch,
+  alert: AlertTriangle,
+  clipboard: ClipboardList,
+  upload: Upload,
+};
+
+// Global static layout links array including both branches' additions
 const NAV_LINKS = [
   { href: "/", icon: Home, label: "Dashboard" },
   { href: "/employees", icon: Users, label: "Employees" },
+  { href: "/payroll/schedule", icon: CalendarDays, label: "Payroll Schedule" },
   { href: "/payroll/execute", icon: Play, label: "Execute Payroll" },
   { href: "/history", icon: History, label: "History" },
   { href: "/treasury", icon: Landmark, label: "Treasury" },
@@ -31,40 +57,85 @@ const NAV_LINKS = [
   { href: "/settings", icon: Settings, label: "Settings" },
 ];
 
-function NavLinks({
-  pathname,
-  onClick,
-}: {
-  pathname: string;
-  onClick?: () => void;
-}) {
+function NavLinks({ onClick }: { onClick?: () => void }) {
+  const pathname = usePathname() ?? "/";
   return (
-    <nav aria-label="Main navigation">
+    <nav aria-label="Main navigation" className="mt-6">
       {NAV_LINKS.map(({ href, icon: Icon, label }) => {
-        const active =
-          pathname === href || (href !== "/" && pathname.startsWith(href));
+        const active = pathname === href || (href !== "/" && pathname.startsWith(href));
         return (
-          <Link
+          <a
             key={href}
             href={href}
             onClick={onClick}
-            className={`flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500 ${
-              active
-                ? "bg-gray-100 border-r-4 border-blue-500 text-gray-700"
-                : ""
-            }`}
             aria-current={active ? "page" : undefined}
+            className={`flex items-center px-6 py-3 hover:bg-gray-50 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500 ${
+              active ? "bg-gray-100 text-gray-900 border-r-4 border-blue-500" : "text-gray-600"
+            }`}
           >
             <Icon className="w-5 h-5 mr-3" aria-hidden="true" />
             {label}
-          </Link>
+          </a>
         );
       })}
     </nav>
   );
 }
 
-function Sidebar() {
+export function DesktopRoleSidebar({ role }: { role: UserRole }) {
+  const pathname = usePathname();
+  const items = getNavigationForRole(role);
+
+  return (
+    <div className="hidden md:block w-64 bg-white shadow-md flex-shrink-0">
+      <div className="p-6">
+        <h1 className="text-2xl font-bold text-gray-800">ZK Payroll</h1>
+        <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-indigo-600">
+          {ROLE_LABELS[role]} workspace
+        </p>
+      </div>
+      <nav className="mt-6" aria-label={`${ROLE_LABELS[role]} navigation`}>
+        {items.map((item) => {
+          const Icon = icons[item.icon] || Home;
+          const disabled = item.access?.[role] === "disabled";
+          const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+
+          if (disabled) {
+            return (
+              <span
+                key={item.href}
+                className="flex items-center px-6 py-3 text-gray-400 cursor-not-allowed"
+                aria-disabled="true"
+                title={item.disabledReason?.[role]}
+              >
+                <Icon className="w-5 h-5 mr-3" aria-hidden="true" />
+                {item.label}
+              </span>
+            );
+          }
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500 ${
+                active
+                  ? "bg-gray-100 border-r-4 border-blue-500 text-gray-700"
+                  : ""
+              }`}
+              aria-current={active ? "page" : undefined}
+            >
+              <Icon className="w-5 h-5 mr-3" aria-hidden="true" />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
+  );
+}
+
+export default function Sidebar({ role }: { role?: UserRole } = {}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -111,14 +182,17 @@ function Sidebar() {
         </>
       )}
 
-      <div className="hidden md:block w-64 bg-white shadow-md flex-shrink-0">
-        <div className="p-6">
-          <h1 className="text-2xl font-bold text-gray-800">ZK Payroll</h1>
+      {/* Desktop layout workspace logic toggle */}
+      {role ? (
+        <DesktopRoleSidebar role={role} />
+      ) : (
+        <div className="hidden md:block w-64 bg-white shadow-md flex-shrink-0">
+          <div className="p-6">
+            <h1 className="text-2xl font-bold text-gray-800">ZK Payroll</h1>
+          </div>
+          <NavLinks pathname={pathname} />
         </div>
-        <NavLinks pathname={pathname} />
-      </div>
+      )}
     </>
   );
 }
-
-export default Sidebar;

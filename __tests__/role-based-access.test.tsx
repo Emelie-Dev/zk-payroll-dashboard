@@ -35,7 +35,7 @@ const adminSession: SessionPayload = {
 
 const employeeSession: SessionPayload = {
   publicKey: EMPLOYEE_KEY,
-  role: 'employee',
+  role: 'operator',
   expiresAt: Date.now() + 86_400_000,
 };
 
@@ -74,10 +74,10 @@ describe('Session API role assignment', () => {
     expect(body.role).toBe('admin');
   });
 
-  it('assigns employee role when publicKey does not match ADMIN_PUBLIC_KEY', async () => {
+  it('assigns operator role when publicKey does not match ADMIN_PUBLIC_KEY', async () => {
     const response = await callSessionApi(EMPLOYEE_KEY);
     const body = await response.json();
-    expect(body.role).toBe('employee');
+    expect(body.role).toBe('operator');
   });
 
   it('rejects request without publicKey', async () => {

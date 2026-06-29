@@ -1,4 +1,4 @@
-import { Employee, Company, PayrollTransaction, PayrollRun, ViewKey, AuditAccessRequest } from "@/types/models";
+import { Employee, Company, PayrollTransaction, PayrollRun, ViewKey, FundingForecast } from "@/types/models";
 
 export const MOCK_EMPLOYEES: Employee[] = [
   {
@@ -124,10 +124,47 @@ export const MOCK_PAYROLL_RUNS: PayrollRun[] = MOCK_TRANSACTIONS.map(tx => ({
   transactionHash: tx.txHash || null,
 }));
 
+export const MOCK_PAYROLL_RUNS_EMPTY: PayrollRun[] = [];
+
+export const MOCK_PAYROLL_RUNS_FIRST_RUN: PayrollRun[] = [
+  {
+    id: "tx_first",
+    companyId: "company_001",
+    timestamp: "2026-07-15T09:00:00Z",
+    createdAt: "2026-06-01T09:00:00Z",
+    totalAmount: 9500,
+    employeeCount: 2,
+    proof: "",
+    status: "pending",
+    employeeIds: ["emp_001", "emp_002"],
+    executedAt: null,
+    transactionHash: null,
+  },
+];
+
 export const MOCK_TREASURY_BALANCE = {
   balance: 45000,
   projectedPayroll: 19500,
   lastFunded: "2025-02-15T10:00:00Z",
+};
+
+export const MOCK_FUNDING_FORECAST: FundingForecast = {
+  cycleStart: "2025-03-25T00:00:00Z",
+  cycleEnd: "2025-04-25T00:00:00Z",
+  estimatedTotal: 19500,
+  employeeCount: 3,
+  breakdown: {
+    payrollTotal: 14700,
+    bufferReserve: 3800,
+    miscellaneous: 1000,
+  },
+  currentBalance: 45000,
+  fundingGap: 25500,
+  confidence: "medium",
+  uncertaintyFactors: [
+    "New employee (Kofi Boateng) pending approval – adds $5,200/month",
+    "Buffer reserve may fluctuate with variable compensation adjustments",
+  ],
 };
 
 export const MOCK_VIEW_KEYS: ViewKey[] = [
