@@ -103,8 +103,9 @@ function WalletConnect() {
 
   // ── Stellar Expert URL ──────────────────────────────────────────────────────
   const network = useWalletStore((s) => s.network);
+  const networkStr = typeof network === "string" ? network.toLowerCase() : "testnet";
   const stellarExpertUrl = publicKey
-    ? `https://stellar.expert/explorer/${network.toLowerCase()}/account/${publicKey}`
+    ? `https://stellar.expert/explorer/${networkStr}/account/${publicKey}`
     : "#";
 
   return (

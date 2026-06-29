@@ -15,8 +15,12 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useViewKeyStore } from "@/stores/viewKeys";
-import { MOCK_VIEW_KEYS } from "@/lib/api/mockData";
+import { useAuditRequestStore } from "@/stores/auditRequests";
+import { MOCK_VIEW_KEYS, MOCK_AUDIT_REQUESTS } from "@/lib/api/mockData";
+import { HelpButton } from "@/components/ui/HelpDrawer";
+import AuditActivityFeed from "./AuditActivityFeed";
 import type { ViewKey } from "@/types";
+import type { AuditAccessRequest } from "@/types/models";
 
 function generateKeyId(): string {
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -30,6 +34,8 @@ function generateKeyId(): string {
 function ComplianceManager() {
   const { viewKeys, addViewKey, revokeViewKey, setViewKeys } =
     useViewKeyStore();
+  const { requests, setRequests, approveRequest, rejectRequest } =
+    useAuditRequestStore();
   const [initialized, setInitialized] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [revealedKeys, setRevealedKeys] = useState<Set<string>>(new Set());
@@ -40,10 +46,38 @@ function ComplianceManager() {
   });
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  if (!initialized && viewKeys.length === 0) {
-    setViewKeys(MOCK_VIEW_KEYS);
+  if (!initialized && (viewKeys.length === 0 || requests.length === 0)) {
+    if (viewKeys.length === 0) setViewKeys(MOCK_VIEW_KEYS);
+    if (requests.length === 0) setRequests(MOCK_AUDIT_REQUESTS);
     setInitialized(true);
   }
+
+  const handleApproveRequest = (request: AuditAccessRequest) => {
+    const keyId = generateKeyId();
+    const newKey: ViewKey = {
+      id: `vk_${Date.now()}`,
+      keyId,
+      auditorName: request.requesterName,
+      auditorOrg: request.requesterOrg,
+      scope: request.scope,
+      grantedBy: "Current Admin",
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+      isActive: true,
+    };
+    addViewKey(newKey);
+    approveRequest(request.id, newKey.id);
+    toast.success("Request Approved", {
+      description: `View key generated for ${request.requesterName}.`,
+    });
+  };
+
+  const handleRejectRequest = (id: string) => {
+    rejectRequest(id);
+    toast.success("Request Rejected", {
+      description: "The audit access request has been rejected.",
+    });
+  };
 
   const handleGenerate = () => {
     const newKey: ViewKey = {
@@ -95,6 +129,7 @@ function ComplianceManager() {
 
   const activeKeys = viewKeys.filter((k) => k.isActive);
   const inactiveKeys = viewKeys.filter((k) => !k.isActive);
+  const pendingRequests = requests.filter((r) => r.status === "pending");
 
   return (
     <section aria-labelledby="compliance-heading" className="space-y-6">
@@ -111,14 +146,17 @@ function ComplianceManager() {
             ensures auditors see only what they are authorized to review.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => setShowForm(!showForm)}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Generate Key
-        </button>
+        <div className="flex items-center gap-2">
+          <HelpButton page="compliance" label="Help" />
+          <button
+            type="button"
+            onClick={() => setShowForm(!showForm)}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Generate Key
+          </button>
+        </div>
       </div>
 
       <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
@@ -227,6 +265,65 @@ function ComplianceManager() {
           </div>
         </div>
       )}
+
+      {pendingRequests.length > 0 && (
+        <div>
+          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-amber-600" />
+            Pending Requests ({pendingRequests.length})
+          </h3>
+          <div className="bg-white rounded-lg border divide-y">
+            {pendingRequests.map((req) => (
+              <div key={req.id} className="px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-sm text-gray-900">{req.requesterName}</span>
+                    <span className="text-sm text-gray-500">({req.requesterOrg})</span>
+                    <span
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full ${
+                        req.scope === "full-audit"
+                          ? "bg-purple-100 text-purple-800"
+                          : "bg-blue-100 text-blue-800"
+                      }`}
+                    >
+                      {req.scope === "full-audit" ? "Full Audit" : "Read-only"}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">{req.rationale}</p>
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className="text-xs text-gray-500">
+                      Requested {new Date(req.createdAt).toLocaleDateString()}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {req.requesterEmail}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleApproveRequest(req)}
+                    className="px-3 py-1.5 rounded-md text-xs font-medium bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 transition-colors flex items-center gap-1"
+                  >
+                    <CheckCircle className="w-3 h-3" />
+                    Approve
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRejectRequest(req.id)}
+                    className="px-3 py-1.5 rounded-md text-xs font-medium bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 transition-colors flex items-center gap-1"
+                  >
+                    <XCircle className="w-3 h-3" />
+                    Reject
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <AuditActivityFeed />
 
       {activeKeys.length > 0 && (
         <div>

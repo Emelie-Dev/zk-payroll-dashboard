@@ -21,7 +21,7 @@ export interface Company {
   isActive: boolean;
 }
 
-export type UserRole = "admin" | "employee";
+export type UserRole = "admin" | "operator" | "auditor";
 
 export interface SessionPayload {
   publicKey: string;
@@ -60,6 +60,22 @@ export interface ViewKey {
   revokedAt?: string | null;
 }
 
+export interface FundingForecast {
+  cycleStart: string;
+  cycleEnd: string;
+  estimatedTotal: number;
+  employeeCount: number;
+  breakdown: {
+    payrollTotal: number;
+    bufferReserve: number;
+    miscellaneous: number;
+  };
+  currentBalance: number;
+  fundingGap: number;
+  confidence: "high" | "medium" | "low";
+  uncertaintyFactors: string[];
+}
+
 export type PayrollWizardStep = "review" | "proof" | "confirm" | "submit";
 
 export interface PayrollWizardState {
@@ -72,4 +88,17 @@ export interface PayrollWizardState {
   submissionStatus: "idle" | "submitting" | "success" | "error";
   submissionError: string | null;
   transactionHash: string | null;
+}
+
+export interface AuditAccessRequest {
+  id: string;
+  requesterName: string;
+  requesterOrg: string;
+  requesterEmail: string;
+  scope: "read-only" | "full-audit";
+  rationale: string;
+  status: "pending" | "approved" | "rejected";
+  createdAt: string;
+  updatedAt?: string;
+  viewKeyId?: string;
 }
