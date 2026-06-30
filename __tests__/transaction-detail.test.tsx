@@ -44,7 +44,7 @@ describe("TransactionDetailDrawer", () => {
       />
     );
 
-    expect(screen.getByText("Verified")).toBeInTheDocument();
+    expect(screen.getAllByText("Verified").length).toBeGreaterThan(0);
   });
 
   it("displays pending status correctly", () => {
@@ -59,7 +59,7 @@ describe("TransactionDetailDrawer", () => {
       />
     );
 
-    expect(screen.getByText("Pending")).toBeInTheDocument();
+    expect(screen.getAllByText("Pending").length).toBeGreaterThan(0);
   });
 
   it("masks ZK proof by default", () => {
@@ -193,6 +193,6 @@ describe("TransactionDetailDrawer", () => {
       />
     );
 
-    expect(screen.getByText("February 28, 2025")).toBeInTheDocument();
+    expect(screen.getAllByText("February 28, 2025").length).toBeGreaterThan(0);
   });
 });

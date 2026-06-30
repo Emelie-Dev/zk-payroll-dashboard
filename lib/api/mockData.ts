@@ -1,4 +1,4 @@
-import { Employee, Company, PayrollTransaction, PayrollRun, ViewKey, FundingForecast } from "@/types/models";
+import { Employee, Company, PayrollTransaction, PayrollRun, ViewKey, FundingForecast, AuditAccessRequest } from "@/types/models";
 
 export const MOCK_EMPLOYEES: Employee[] = [
   {

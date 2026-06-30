@@ -18,17 +18,18 @@ describe("toSorobanScVals", () => {
       payrollPeriodId: "2026-02",
     });
 
+    const expectedProofBytes = new TextEncoder().encode(
+      JSON.stringify({
+        publicSignals: ["root", "1000", "2026-02"],
+        proof: { scheme: "mock", commitment: "abc" },
+      })
+    );
+
     expect(result).toEqual([
       { type: "string", value: "root" },
       { type: "u128", value: "1000" },
       { type: "string", value: "2026-02" },
-      {
-        type: "string",
-        value: JSON.stringify({
-          publicSignals: ["root", "1000", "2026-02"],
-          proof: { scheme: "mock", commitment: "abc" },
-        }),
-      },
+      { type: "bytes", value: expectedProofBytes },
     ]);
   });
 });

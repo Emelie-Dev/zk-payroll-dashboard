@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { 
   Search, Keyboard, Users, History, FileText, 
   Settings, Landmark, Lock, Play, ShieldAlert, Sparkles,
-  UserPlus, Key, Upload, ClipboardList, FileSearch
+  UserPlus, Key, Upload, ClipboardList, FileSearch, Download
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -62,6 +62,14 @@ export default function CommandPalette({ isOpen, onClose }: { isOpen: boolean; o
       category: "Navigation",
       icon: History,
       route: "/history",
+    },
+    {
+      id: "nav-exports",
+      title: "Go to Export Center",
+      description: "Download CSV, print-friendly, and audit-oriented payroll outputs.",
+      category: "Navigation",
+      icon: Download,
+      route: "/exports",
     },
     {
       id: "nav-compliance",
