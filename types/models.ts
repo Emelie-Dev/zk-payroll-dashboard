@@ -45,6 +45,13 @@ export interface PayrollRun extends PayrollTransaction {
   employeeIds: string[];
   executedAt?: string | null;
   transactionHash?: string | null;
+  reconciliationStatus?: "pending" | "partial" | "complete" | "failed";
+  reconciliationDetails?: {
+    processedCount: number;
+    totalCount: number;
+    discrepancies?: string[];
+    lastReconciliedAt?: string;
+  };
 }
 
 export interface ViewKey {
@@ -58,6 +65,18 @@ export interface ViewKey {
   expiresAt: string;
   isActive: boolean;
   revokedAt?: string | null;
+  revokedBy?: string;
+  revocationReason?: string;
+}
+
+export interface RevocationHistory {
+  id: string;
+  viewKeyId: string;
+  revokedAt: string;
+  revokedBy: string;
+  reason: string;
+  auditorName: string;
+  auditorOrg: string;
 }
 
 export interface FundingForecast {
