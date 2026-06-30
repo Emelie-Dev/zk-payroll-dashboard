@@ -31,7 +31,9 @@ const STATUS_STYLES: Record<string, string> = {
   failed: "bg-red-100 text-red-800",
 };
 
-const STATUS_ICONS: Record<string, React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>> = {
+import type { LucideIcon } from "lucide-react";
+
+const STATUS_ICONS: Record<string, LucideIcon> = {
   verified: CheckCircle,
   pending: Clock,
   failed: XCircle,

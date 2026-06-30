@@ -1,0 +1,2583 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Visual Regression - Payroll Exception States > captures payroll execution screen initial state 1`] = `
+<div>
+  <section
+    aria-labelledby="payroll-wizard-heading"
+    class="space-y-6"
+  >
+    <h2
+      class="text-lg font-semibold text-gray-900"
+      id="payroll-wizard-heading"
+    >
+      Execute Payroll
+    </h2>
+    <nav
+      aria-label="Payroll execution progress"
+      class="flex items-center"
+    >
+      <div
+        class="flex items-center"
+      >
+        <div
+          class="flex items-center gap-2"
+        >
+          <svg
+            class="lucide lucide-loader2 w-5 h-5 text-indigo-600"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M21 12a9 9 0 1 1-6.219-8.56"
+            />
+          </svg>
+          <span
+            class="text-sm font-medium text-gray-900"
+          >
+            Review
+          </span>
+        </div>
+        <div
+          class="w-12 h-px mx-3 bg-gray-200"
+        />
+      </div>
+      <div
+        class="flex items-center"
+      >
+        <div
+          class="flex items-center gap-2"
+        >
+          <svg
+            class="lucide lucide-circle w-5 h-5 text-gray-300"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+          </svg>
+          <span
+            class="text-sm font-medium text-gray-400"
+          >
+            Proof Generation
+          </span>
+        </div>
+        <div
+          class="w-12 h-px mx-3 bg-gray-200"
+        />
+      </div>
+      <div
+        class="flex items-center"
+      >
+        <div
+          class="flex items-center gap-2"
+        >
+          <svg
+            class="lucide lucide-circle w-5 h-5 text-gray-300"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+          </svg>
+          <span
+            class="text-sm font-medium text-gray-400"
+          >
+            Confirmation
+          </span>
+        </div>
+        <div
+          class="w-12 h-px mx-3 bg-gray-200"
+        />
+      </div>
+      <div
+        class="flex items-center"
+      >
+        <div
+          class="flex items-center gap-2"
+        >
+          <svg
+            class="lucide lucide-circle w-5 h-5 text-gray-300"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+          </svg>
+          <span
+            class="text-sm font-medium text-gray-400"
+          >
+            Submission
+          </span>
+        </div>
+      </div>
+    </nav>
+    <div
+      class="bg-white rounded-lg shadow-sm p-6"
+    >
+      <div
+        class="text-center py-8"
+      >
+        <p
+          class="text-gray-600 mb-4"
+        >
+          No payroll run configured. Start a new payroll run to proceed.
+        </p>
+        <button
+          class="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          type="button"
+        >
+          Start Payroll Run
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+`;
+
+exports[`Visual Regression - Payroll Flow States > Payroll Comparison - Empty State > renders empty comparison state 1`] = `
+<div>
+  <div
+    class="space-y-6"
+  >
+    <div
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+    >
+      <h2
+        class="text-lg font-semibold text-gray-900 mb-4"
+      >
+        Compare Payroll Runs
+      </h2>
+      <p
+        class="text-sm text-gray-600 mb-6"
+      >
+        Select two payroll runs to compare metrics and identify changes over time
+      </p>
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"
+      >
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-2"
+            for="run-select-0"
+          >
+            Current Period
+          </label>
+          <select
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            id="run-select-0"
+          >
+            <option
+              value=""
+            >
+              Select a run...
+            </option>
+          </select>
+        </div>
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-2"
+            for="run-select-1"
+          >
+            Compare To
+          </label>
+          <select
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            id="run-select-1"
+          >
+            <option
+              value=""
+            >
+              Select a run...
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Visual Regression - Payroll Flow States > Payroll Comparison - Single Run Selected > renders partial selection state 1`] = `
+<div>
+  <div
+    class="space-y-6"
+  >
+    <div
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+    >
+      <h2
+        class="text-lg font-semibold text-gray-900 mb-4"
+      >
+        Compare Payroll Runs
+      </h2>
+      <p
+        class="text-sm text-gray-600 mb-6"
+      >
+        Select two payroll runs to compare metrics and identify changes over time
+      </p>
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"
+      >
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-2"
+            for="run-select-0"
+          >
+            Current Period
+          </label>
+          <select
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            id="run-select-0"
+          >
+            <option
+              value=""
+            >
+              Select a run...
+            </option>
+            <option
+              value="run-1"
+            >
+              Jan 15, 2024
+               - 
+              10
+               employees
+            </option>
+            <option
+              value="run-2"
+            >
+              Jan 1, 2024
+               - 
+              9
+               employees
+            </option>
+          </select>
+        </div>
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-2"
+            for="run-select-1"
+          >
+            Compare To
+          </label>
+          <select
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            id="run-select-1"
+          >
+            <option
+              value=""
+            >
+              Select a run...
+            </option>
+            <option
+              disabled=""
+              value="run-1"
+            >
+              Jan 15, 2024
+               - 
+              10
+               employees
+            </option>
+            <option
+              value="run-2"
+            >
+              Jan 1, 2024
+               - 
+              9
+               employees
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Visual Regression - Payroll Flow States > Payroll Comparison - Two Runs Selected > renders comparison view with metrics 1`] = `
+<div>
+  <div
+    class="space-y-6"
+  >
+    <div
+      class="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+    >
+      <h2
+        class="text-lg font-semibold text-gray-900 mb-4"
+      >
+        Compare Payroll Runs
+      </h2>
+      <p
+        class="text-sm text-gray-600 mb-6"
+      >
+        Select two payroll runs to compare metrics and identify changes over time
+      </p>
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"
+      >
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-2"
+            for="run-select-0"
+          >
+            Current Period
+          </label>
+          <select
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            id="run-select-0"
+          >
+            <option
+              value=""
+            >
+              Select a run...
+            </option>
+            <option
+              value="run-1"
+            >
+              Jan 15, 2024
+               - 
+              10
+               employees
+            </option>
+            <option
+              disabled=""
+              value="run-2"
+            >
+              Jan 1, 2024
+               - 
+              9
+               employees
+            </option>
+          </select>
+        </div>
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-2"
+            for="run-select-1"
+          >
+            Compare To
+          </label>
+          <select
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            id="run-select-1"
+          >
+            <option
+              value=""
+            >
+              Select a run...
+            </option>
+            <option
+              disabled=""
+              value="run-1"
+            >
+              Jan 15, 2024
+               - 
+              10
+               employees
+            </option>
+            <option
+              value="run-2"
+            >
+              Jan 1, 2024
+               - 
+              9
+               employees
+            </option>
+          </select>
+        </div>
+      </div>
+      <div
+        class="space-y-6"
+      >
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          <div
+            class="bg-gray-50 rounded-lg p-4 border border-gray-200"
+          >
+            <div
+              class="flex items-center justify-between mb-3"
+            >
+              <span
+                class="text-xs font-medium text-gray-500 uppercase"
+              >
+                Current
+              </span>
+              <div
+                class="flex items-center gap-2"
+              >
+                <svg
+                  class="lucide lucide-check-circle w-4 h-4 text-green-600"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                  />
+                  <path
+                    d="m9 11 3 3L22 4"
+                  />
+                </svg>
+                <span
+                  class="text-xs text-gray-600 capitalize"
+                >
+                  verified
+                </span>
+              </div>
+            </div>
+            <div
+              class="space-y-2"
+            >
+              <div
+                class="flex items-center gap-2 text-sm"
+              >
+                <svg
+                  class="lucide lucide-calendar w-4 h-4 text-gray-400"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8 2v4"
+                  />
+                  <path
+                    d="M16 2v4"
+                  />
+                  <rect
+                    height="18"
+                    rx="2"
+                    width="18"
+                    x="3"
+                    y="4"
+                  />
+                  <path
+                    d="M3 10h18"
+                  />
+                </svg>
+                <span
+                  class="font-medium text-gray-900"
+                >
+                  Jan 15, 2024
+                </span>
+              </div>
+              <div
+                class="flex items-center gap-2 text-sm"
+              >
+                <svg
+                  class="lucide lucide-users w-4 h-4 text-gray-400"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+                  />
+                  <circle
+                    cx="9"
+                    cy="7"
+                    r="4"
+                  />
+                  <path
+                    d="M22 21v-2a4 4 0 0 0-3-3.87"
+                  />
+                  <path
+                    d="M16 3.13a4 4 0 0 1 0 7.75"
+                  />
+                </svg>
+                <span
+                  class="text-gray-600"
+                >
+                  10
+                   employees
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="bg-gray-50 rounded-lg p-4 border border-gray-200"
+          >
+            <div
+              class="flex items-center justify-between mb-3"
+            >
+              <span
+                class="text-xs font-medium text-gray-500 uppercase"
+              >
+                Previous
+              </span>
+              <div
+                class="flex items-center gap-2"
+              >
+                <svg
+                  class="lucide lucide-check-circle w-4 h-4 text-green-600"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                  />
+                  <path
+                    d="m9 11 3 3L22 4"
+                  />
+                </svg>
+                <span
+                  class="text-xs text-gray-600 capitalize"
+                >
+                  verified
+                </span>
+              </div>
+            </div>
+            <div
+              class="space-y-2"
+            >
+              <div
+                class="flex items-center gap-2 text-sm"
+              >
+                <svg
+                  class="lucide lucide-calendar w-4 h-4 text-gray-400"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8 2v4"
+                  />
+                  <path
+                    d="M16 2v4"
+                  />
+                  <rect
+                    height="18"
+                    rx="2"
+                    width="18"
+                    x="3"
+                    y="4"
+                  />
+                  <path
+                    d="M3 10h18"
+                  />
+                </svg>
+                <span
+                  class="font-medium text-gray-900"
+                >
+                  Jan 1, 2024
+                </span>
+              </div>
+              <div
+                class="flex items-center gap-2 text-sm"
+              >
+                <svg
+                  class="lucide lucide-users w-4 h-4 text-gray-400"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+                  />
+                  <circle
+                    cx="9"
+                    cy="7"
+                    r="4"
+                  />
+                  <path
+                    d="M22 21v-2a4 4 0 0 0-3-3.87"
+                  />
+                  <path
+                    d="M16 3.13a4 4 0 0 1 0 7.75"
+                  />
+                </svg>
+                <span
+                  class="text-gray-600"
+                >
+                  9
+                   employees
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3
+            class="text-sm font-medium text-gray-900 mb-4"
+          >
+            Comparison Metrics
+          </h3>
+          <div
+            class="space-y-3"
+          >
+            <div
+              class="bg-white border border-gray-200 rounded-lg p-4"
+            >
+              <div
+                class="flex items-center justify-between"
+              >
+                <span
+                  class="text-sm font-medium text-gray-700"
+                >
+                  Total Amount
+                </span>
+                <div
+                  class="flex items-center gap-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide lucide-trending-up w-4 h-4 text-green-600"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <polyline
+                      points="22 7 13.5 15.5 8.5 10.5 2 17"
+                    />
+                    <polyline
+                      points="16 7 22 7 22 13"
+                    />
+                  </svg>
+                  <span
+                    class="text-sm font-medium text-green-600"
+                  >
+                    +
+                    4.2
+                    %
+                  </span>
+                </div>
+              </div>
+              <div
+                class="mt-3 grid grid-cols-2 gap-4"
+              >
+                <div>
+                  <span
+                    class="text-xs text-gray-500"
+                  >
+                    Current
+                  </span>
+                  <p
+                    class="text-base font-semibold text-gray-900 mt-1"
+                  >
+                    $50,000.00
+                  </p>
+                </div>
+                <div>
+                  <span
+                    class="text-xs text-gray-500"
+                  >
+                    Previous
+                  </span>
+                  <p
+                    class="text-base font-medium text-gray-600 mt-1"
+                  >
+                    $48,000.00
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white border border-gray-200 rounded-lg p-4"
+            >
+              <div
+                class="flex items-center justify-between"
+              >
+                <span
+                  class="text-sm font-medium text-gray-700"
+                >
+                  Employee Count
+                </span>
+                <div
+                  class="flex items-center gap-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide lucide-trending-up w-4 h-4 text-green-600"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <polyline
+                      points="22 7 13.5 15.5 8.5 10.5 2 17"
+                    />
+                    <polyline
+                      points="16 7 22 7 22 13"
+                    />
+                  </svg>
+                  <span
+                    class="text-sm font-medium text-green-600"
+                  >
+                    +
+                    1.0
+                    %
+                  </span>
+                </div>
+              </div>
+              <div
+                class="mt-3 grid grid-cols-2 gap-4"
+              >
+                <div>
+                  <span
+                    class="text-xs text-gray-500"
+                  >
+                    Current
+                  </span>
+                  <p
+                    class="text-base font-semibold text-gray-900 mt-1"
+                  >
+                    10
+                  </p>
+                </div>
+                <div>
+                  <span
+                    class="text-xs text-gray-500"
+                  >
+                    Previous
+                  </span>
+                  <p
+                    class="text-base font-medium text-gray-600 mt-1"
+                  >
+                    9
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white border border-gray-200 rounded-lg p-4"
+            >
+              <div
+                class="flex items-center justify-between"
+              >
+                <span
+                  class="text-sm font-medium text-gray-700"
+                >
+                  Status
+                </span>
+              </div>
+              <div
+                class="mt-3 grid grid-cols-2 gap-4"
+              >
+                <div>
+                  <span
+                    class="text-xs text-gray-500"
+                  >
+                    Current
+                  </span>
+                  <p
+                    class="text-base font-semibold text-gray-900 mt-1"
+                  >
+                    Verified
+                  </p>
+                </div>
+                <div>
+                  <span
+                    class="text-xs text-gray-500"
+                  >
+                    Previous
+                  </span>
+                  <p
+                    class="text-base font-medium text-gray-600 mt-1"
+                  >
+                    Verified
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white border border-gray-200 rounded-lg p-4"
+            >
+              <div
+                class="flex items-center justify-between"
+              >
+                <span
+                  class="text-sm font-medium text-gray-700"
+                >
+                  Avg per Employee
+                </span>
+                <div
+                  class="flex items-center gap-2"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide lucide-trending-down w-4 h-4 text-red-600"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <polyline
+                      points="22 17 13.5 8.5 8.5 13.5 2 7"
+                    />
+                    <polyline
+                      points="16 17 22 17 22 11"
+                    />
+                  </svg>
+                  <span
+                    class="text-sm font-medium text-red-600"
+                  >
+                    -6.2
+                    %
+                  </span>
+                </div>
+              </div>
+              <div
+                class="mt-3 grid grid-cols-2 gap-4"
+              >
+                <div>
+                  <span
+                    class="text-xs text-gray-500"
+                  >
+                    Current
+                  </span>
+                  <p
+                    class="text-base font-semibold text-gray-900 mt-1"
+                  >
+                    $5,000.00
+                  </p>
+                </div>
+                <div>
+                  <span
+                    class="text-xs text-gray-500"
+                  >
+                    Previous
+                  </span>
+                  <p
+                    class="text-base font-medium text-gray-600 mt-1"
+                  >
+                    $5,333.33
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-blue-50 border border-blue-200 rounded-lg p-4"
+        >
+          <p
+            class="text-sm text-blue-800"
+          >
+            <strong>
+              Privacy Note:
+            </strong>
+             This comparison shows aggregated metrics only. Individual salary information is not exposed.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Visual Regression - Payroll Flow States > Payroll Run Detail - Failed State > renders failed payroll run with error state 1`] = `
+<div>
+  <section
+    aria-labelledby="payroll-run-detail-heading"
+    class="space-y-6"
+  >
+    <div>
+      <button
+        class="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-arrow-left w-4 h-4"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m12 19-7-7 7-7"
+          />
+          <path
+            d="M19 12H5"
+          />
+        </svg>
+        Back
+      </button>
+    </div>
+    <header
+      class="bg-white rounded-lg shadow-sm p-6"
+    >
+      <div
+        class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
+      >
+        <div
+          class="flex items-start gap-3"
+        >
+          <div
+            class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 border bg-red-100 text-red-800 border-red-200"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-xcircle w-5 h-5"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <path
+                d="m15 9-6 6"
+              />
+              <path
+                d="m9 9 6 6"
+              />
+            </svg>
+          </div>
+          <div>
+            <h1
+              class="text-xl font-semibold text-gray-900"
+              id="payroll-run-detail-heading"
+            >
+              Payroll run · 
+              Mon, Jan 15, 2024
+            </h1>
+            <p
+              class="text-sm text-gray-500 mt-0.5"
+            >
+              Run ID: 
+              run-1
+            </p>
+            <div
+              class="flex items-center gap-2 mt-2"
+            >
+              <span
+                class="inline-flex px-2 py-1 text-xs font-medium rounded-full border bg-red-100 text-red-800 border-red-200"
+              >
+                Failed
+              </span>
+              <span
+                class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-xcircle w-3.5 h-3.5"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                  />
+                  <path
+                    d="m15 9-6 6"
+                  />
+                  <path
+                    d="m9 9 6 6"
+                  />
+                </svg>
+                Failed
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div
+      class="bg-white rounded-lg shadow-sm p-6 space-y-6"
+    >
+      <h3
+        class="text-sm font-semibold text-gray-900"
+      >
+        Run Metadata
+      </h3>
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        <div
+          class="border rounded-lg p-4"
+        >
+          <div
+            class="flex items-center gap-2 text-gray-500 mb-1"
+          >
+            <svg
+              class="lucide lucide-calendar w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8 2v4"
+              />
+              <path
+                d="M16 2v4"
+              />
+              <rect
+                height="18"
+                rx="2"
+                width="18"
+                x="3"
+                y="4"
+              />
+              <path
+                d="M3 10h18"
+              />
+            </svg>
+            <span
+              class="text-xs font-medium uppercase"
+            >
+              Date
+            </span>
+          </div>
+          <p
+            class="text-sm font-medium text-gray-900"
+          >
+            Mon, Jan 15, 2024
+          </p>
+        </div>
+        <div
+          class="border rounded-lg p-4"
+        >
+          <div
+            class="flex items-center gap-2 text-gray-500 mb-1"
+          >
+            <svg
+              class="lucide lucide-users w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+              />
+              <circle
+                cx="9"
+                cy="7"
+                r="4"
+              />
+              <path
+                d="M22 21v-2a4 4 0 0 0-3-3.87"
+              />
+              <path
+                d="M16 3.13a4 4 0 0 1 0 7.75"
+              />
+            </svg>
+            <span
+              class="text-xs font-medium uppercase"
+            >
+              Employees
+            </span>
+          </div>
+          <p
+            class="text-sm font-medium text-gray-900"
+          >
+            10
+             employees
+          </p>
+        </div>
+        <div
+          class="border rounded-lg p-4"
+        >
+          <div
+            class="flex items-center gap-2 text-gray-500 mb-1"
+          >
+            <svg
+              class="lucide lucide-shield w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"
+              />
+            </svg>
+            <span
+              class="text-xs font-medium uppercase"
+            >
+              Total Amount
+            </span>
+          </div>
+          <p
+            class="text-sm font-medium text-gray-900"
+          >
+            $
+            50,000
+          </p>
+        </div>
+        <div
+          class="border rounded-lg p-4"
+        >
+          <div
+            class="flex items-center gap-2 text-gray-500 mb-1"
+          >
+            <svg
+              class="lucide lucide-file-code w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+              />
+              <path
+                d="M14 2v4a2 2 0 0 0 2 2h4"
+              />
+              <path
+                d="m10 13-2 2 2 2"
+              />
+              <path
+                d="m14 17 2-2-2-2"
+              />
+            </svg>
+            <span
+              class="text-xs font-medium uppercase"
+            >
+              ZK Proof
+            </span>
+          </div>
+          <p
+            class="text-sm font-mono text-gray-900 truncate"
+            title="proof-hash-1"
+          >
+            proof-hash-1...f-hash-1
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex items-center gap-2 text-sm"
+      >
+        <svg
+          class="lucide lucide-link w-4 h-4 text-gray-400"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+          />
+          <path
+            d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+          />
+        </svg>
+        <span
+          class="text-gray-600"
+        >
+          Transaction:
+        </span>
+        <span
+          class="font-mono text-xs text-gray-900 truncate"
+        >
+          tx-hash-1
+        </span>
+      </div>
+    </div>
+    <div
+      class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 flex items-start gap-3"
+    >
+      <svg
+        class="lucide lucide-eye-off w-5 h-5 text-indigo-500 mt-0.5 shrink-0"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M9.88 9.88a3 3 0 1 0 4.24 4.24"
+        />
+        <path
+          d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+        />
+        <path
+          d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
+        />
+        <line
+          x1="2"
+          x2="22"
+          y1="2"
+          y2="22"
+        />
+      </svg>
+      <div>
+        <h3
+          class="text-sm font-medium text-indigo-800"
+        >
+          Privacy Preserved
+        </h3>
+        <p
+          class="text-sm text-indigo-700 mt-1"
+        >
+          Individual salary amounts are never displayed. This view shows only participation status per employee. Zero-knowledge proofs verify correctness without revealing sensitive data.
+        </p>
+      </div>
+    </div>
+    <div
+      class="bg-white rounded-lg shadow-sm overflow-hidden"
+    >
+      <div
+        class="px-4 sm:px-6 py-4 border-b"
+      >
+        <h3
+          class="text-sm font-semibold text-gray-900"
+        >
+          Employee Results
+        </h3>
+        <p
+          class="text-xs text-gray-500 mt-0.5"
+        >
+          Participation status for each employee in this payroll run. Individual salary amounts are protected by ZK proofs.
+        </p>
+      </div>
+      <div
+        class="overflow-x-auto"
+      >
+        <table
+          class="w-full text-left"
+        >
+          <caption
+            class="sr-only"
+          >
+            Employee participation results for payroll run 
+            run-1
+          </caption>
+          <thead
+            class="bg-gray-50"
+          >
+            <tr>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Employee
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Department
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Status
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Salary
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Commitment
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="divide-y divide-gray-100"
+          />
+        </table>
+      </div>
+      <div
+        class="px-6 py-8 text-center text-sm text-gray-500"
+      >
+        No employee records found for this payroll run.
+      </div>
+      <div
+        class="px-4 sm:px-6 py-3 border-t text-xs text-gray-500"
+      >
+        0
+         employee
+        s
+         in this run
+      </div>
+    </div>
+    <div
+      class="flex flex-wrap gap-3"
+    >
+      <a
+        class="inline-flex items-center px-4 py-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        href="/history"
+      >
+        View transaction history
+      </a>
+    </div>
+  </section>
+</div>
+`;
+
+exports[`Visual Regression - Payroll Flow States > Payroll Run Detail - Pending State > renders pending payroll run 1`] = `
+<div>
+  <section
+    aria-labelledby="payroll-run-detail-heading"
+    class="space-y-6"
+  >
+    <div>
+      <button
+        class="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-arrow-left w-4 h-4"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m12 19-7-7 7-7"
+          />
+          <path
+            d="M19 12H5"
+          />
+        </svg>
+        Back
+      </button>
+    </div>
+    <header
+      class="bg-white rounded-lg shadow-sm p-6"
+    >
+      <div
+        class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
+      >
+        <div
+          class="flex items-start gap-3"
+        >
+          <div
+            class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 border bg-yellow-100 text-yellow-800 border-yellow-200"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-clock w-5 h-5"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <polyline
+                points="12 6 12 12 16 14"
+              />
+            </svg>
+          </div>
+          <div>
+            <h1
+              class="text-xl font-semibold text-gray-900"
+              id="payroll-run-detail-heading"
+            >
+              Payroll run · 
+              Mon, Jan 15, 2024
+            </h1>
+            <p
+              class="text-sm text-gray-500 mt-0.5"
+            >
+              Run ID: 
+              run-1
+            </p>
+            <div
+              class="flex items-center gap-2 mt-2"
+            >
+              <span
+                class="inline-flex px-2 py-1 text-xs font-medium rounded-full border bg-yellow-100 text-yellow-800 border-yellow-200"
+              >
+                Scheduled
+              </span>
+              <span
+                class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-clock w-3.5 h-3.5"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                  />
+                  <polyline
+                    points="12 6 12 12 16 14"
+                  />
+                </svg>
+                Pending
+              </span>
+            </div>
+          </div>
+        </div>
+        <a
+          class="inline-flex items-center justify-center px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors shrink-0"
+          href="/payroll/execute"
+        >
+          Process payroll
+        </a>
+      </div>
+    </header>
+    <div
+      class="bg-white rounded-lg shadow-sm p-6 space-y-6"
+    >
+      <h3
+        class="text-sm font-semibold text-gray-900"
+      >
+        Run Metadata
+      </h3>
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        <div
+          class="border rounded-lg p-4"
+        >
+          <div
+            class="flex items-center gap-2 text-gray-500 mb-1"
+          >
+            <svg
+              class="lucide lucide-calendar w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8 2v4"
+              />
+              <path
+                d="M16 2v4"
+              />
+              <rect
+                height="18"
+                rx="2"
+                width="18"
+                x="3"
+                y="4"
+              />
+              <path
+                d="M3 10h18"
+              />
+            </svg>
+            <span
+              class="text-xs font-medium uppercase"
+            >
+              Date
+            </span>
+          </div>
+          <p
+            class="text-sm font-medium text-gray-900"
+          >
+            Mon, Jan 15, 2024
+          </p>
+        </div>
+        <div
+          class="border rounded-lg p-4"
+        >
+          <div
+            class="flex items-center gap-2 text-gray-500 mb-1"
+          >
+            <svg
+              class="lucide lucide-users w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+              />
+              <circle
+                cx="9"
+                cy="7"
+                r="4"
+              />
+              <path
+                d="M22 21v-2a4 4 0 0 0-3-3.87"
+              />
+              <path
+                d="M16 3.13a4 4 0 0 1 0 7.75"
+              />
+            </svg>
+            <span
+              class="text-xs font-medium uppercase"
+            >
+              Employees
+            </span>
+          </div>
+          <p
+            class="text-sm font-medium text-gray-900"
+          >
+            10
+             employees
+          </p>
+        </div>
+        <div
+          class="border rounded-lg p-4"
+        >
+          <div
+            class="flex items-center gap-2 text-gray-500 mb-1"
+          >
+            <svg
+              class="lucide lucide-shield w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"
+              />
+            </svg>
+            <span
+              class="text-xs font-medium uppercase"
+            >
+              Total Amount
+            </span>
+          </div>
+          <p
+            class="text-sm font-medium text-gray-900"
+          >
+            $
+            50,000
+          </p>
+        </div>
+        <div
+          class="border rounded-lg p-4"
+        >
+          <div
+            class="flex items-center gap-2 text-gray-500 mb-1"
+          >
+            <svg
+              class="lucide lucide-file-code w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+              />
+              <path
+                d="M14 2v4a2 2 0 0 0 2 2h4"
+              />
+              <path
+                d="m10 13-2 2 2 2"
+              />
+              <path
+                d="m14 17 2-2-2-2"
+              />
+            </svg>
+            <span
+              class="text-xs font-medium uppercase"
+            >
+              ZK Proof
+            </span>
+          </div>
+          <p
+            class="text-sm font-mono text-gray-900 truncate"
+            title="proof-hash-1"
+          >
+            proof-hash-1...f-hash-1
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex items-center gap-2 text-sm"
+      >
+        <svg
+          class="lucide lucide-link w-4 h-4 text-gray-400"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+          />
+          <path
+            d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+          />
+        </svg>
+        <span
+          class="text-gray-600"
+        >
+          Transaction:
+        </span>
+        <span
+          class="font-mono text-xs text-gray-900 truncate"
+        >
+          tx-hash-1
+        </span>
+      </div>
+    </div>
+    <div
+      class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 flex items-start gap-3"
+    >
+      <svg
+        class="lucide lucide-eye-off w-5 h-5 text-indigo-500 mt-0.5 shrink-0"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M9.88 9.88a3 3 0 1 0 4.24 4.24"
+        />
+        <path
+          d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+        />
+        <path
+          d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
+        />
+        <line
+          x1="2"
+          x2="22"
+          y1="2"
+          y2="22"
+        />
+      </svg>
+      <div>
+        <h3
+          class="text-sm font-medium text-indigo-800"
+        >
+          Privacy Preserved
+        </h3>
+        <p
+          class="text-sm text-indigo-700 mt-1"
+        >
+          Individual salary amounts are never displayed. This view shows only participation status per employee. Zero-knowledge proofs verify correctness without revealing sensitive data.
+        </p>
+      </div>
+    </div>
+    <div
+      class="bg-white rounded-lg shadow-sm overflow-hidden"
+    >
+      <div
+        class="px-4 sm:px-6 py-4 border-b"
+      >
+        <h3
+          class="text-sm font-semibold text-gray-900"
+        >
+          Employee Results
+        </h3>
+        <p
+          class="text-xs text-gray-500 mt-0.5"
+        >
+          Participation status for each employee in this payroll run. Individual salary amounts are protected by ZK proofs.
+        </p>
+      </div>
+      <div
+        class="overflow-x-auto"
+      >
+        <table
+          class="w-full text-left"
+        >
+          <caption
+            class="sr-only"
+          >
+            Employee participation results for payroll run 
+            run-1
+          </caption>
+          <thead
+            class="bg-gray-50"
+          >
+            <tr>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Employee
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Department
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Status
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Salary
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Commitment
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="divide-y divide-gray-100"
+          />
+        </table>
+      </div>
+      <div
+        class="px-6 py-8 text-center text-sm text-gray-500"
+      >
+        No employee records found for this payroll run.
+      </div>
+      <div
+        class="px-4 sm:px-6 py-3 border-t text-xs text-gray-500"
+      >
+        0
+         employee
+        s
+         in this run
+      </div>
+    </div>
+    <div
+      class="flex flex-wrap gap-3"
+    >
+      <a
+        class="inline-flex items-center px-4 py-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        href="/history"
+      >
+        View transaction history
+      </a>
+    </div>
+  </section>
+</div>
+`;
+
+exports[`Visual Regression - Payroll Flow States > Payroll Run Detail - Verified State > renders completed payroll run with verification 1`] = `
+<div>
+  <section
+    aria-labelledby="payroll-run-detail-heading"
+    class="space-y-6"
+  >
+    <div>
+      <button
+        class="inline-flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-arrow-left w-4 h-4"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m12 19-7-7 7-7"
+          />
+          <path
+            d="M19 12H5"
+          />
+        </svg>
+        Back
+      </button>
+    </div>
+    <header
+      class="bg-white rounded-lg shadow-sm p-6"
+    >
+      <div
+        class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4"
+      >
+        <div
+          class="flex items-start gap-3"
+        >
+          <div
+            class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 border bg-green-100 text-green-800 border-green-200"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-check-circle w-5 h-5"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+              />
+              <path
+                d="m9 11 3 3L22 4"
+              />
+            </svg>
+          </div>
+          <div>
+            <h1
+              class="text-xl font-semibold text-gray-900"
+              id="payroll-run-detail-heading"
+            >
+              Payroll run · 
+              Mon, Jan 15, 2024
+            </h1>
+            <p
+              class="text-sm text-gray-500 mt-0.5"
+            >
+              Run ID: 
+              run-1
+            </p>
+            <div
+              class="flex items-center gap-2 mt-2"
+            >
+              <span
+                class="inline-flex px-2 py-1 text-xs font-medium rounded-full border bg-green-100 text-green-800 border-green-200"
+              >
+                Completed
+              </span>
+              <span
+                class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-check-circle w-3.5 h-3.5"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                  />
+                  <path
+                    d="m9 11 3 3L22 4"
+                  />
+                </svg>
+                Verified
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div
+      class="bg-white rounded-lg shadow-sm p-6 space-y-6"
+    >
+      <h3
+        class="text-sm font-semibold text-gray-900"
+      >
+        Run Metadata
+      </h3>
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        <div
+          class="border rounded-lg p-4"
+        >
+          <div
+            class="flex items-center gap-2 text-gray-500 mb-1"
+          >
+            <svg
+              class="lucide lucide-calendar w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8 2v4"
+              />
+              <path
+                d="M16 2v4"
+              />
+              <rect
+                height="18"
+                rx="2"
+                width="18"
+                x="3"
+                y="4"
+              />
+              <path
+                d="M3 10h18"
+              />
+            </svg>
+            <span
+              class="text-xs font-medium uppercase"
+            >
+              Date
+            </span>
+          </div>
+          <p
+            class="text-sm font-medium text-gray-900"
+          >
+            Mon, Jan 15, 2024
+          </p>
+        </div>
+        <div
+          class="border rounded-lg p-4"
+        >
+          <div
+            class="flex items-center gap-2 text-gray-500 mb-1"
+          >
+            <svg
+              class="lucide lucide-users w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+              />
+              <circle
+                cx="9"
+                cy="7"
+                r="4"
+              />
+              <path
+                d="M22 21v-2a4 4 0 0 0-3-3.87"
+              />
+              <path
+                d="M16 3.13a4 4 0 0 1 0 7.75"
+              />
+            </svg>
+            <span
+              class="text-xs font-medium uppercase"
+            >
+              Employees
+            </span>
+          </div>
+          <p
+            class="text-sm font-medium text-gray-900"
+          >
+            10
+             employees
+          </p>
+        </div>
+        <div
+          class="border rounded-lg p-4"
+        >
+          <div
+            class="flex items-center gap-2 text-gray-500 mb-1"
+          >
+            <svg
+              class="lucide lucide-shield w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"
+              />
+            </svg>
+            <span
+              class="text-xs font-medium uppercase"
+            >
+              Total Amount
+            </span>
+          </div>
+          <p
+            class="text-sm font-medium text-gray-900"
+          >
+            $
+            50,000
+          </p>
+        </div>
+        <div
+          class="border rounded-lg p-4"
+        >
+          <div
+            class="flex items-center gap-2 text-gray-500 mb-1"
+          >
+            <svg
+              class="lucide lucide-file-code w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+              />
+              <path
+                d="M14 2v4a2 2 0 0 0 2 2h4"
+              />
+              <path
+                d="m10 13-2 2 2 2"
+              />
+              <path
+                d="m14 17 2-2-2-2"
+              />
+            </svg>
+            <span
+              class="text-xs font-medium uppercase"
+            >
+              ZK Proof
+            </span>
+          </div>
+          <p
+            class="text-sm font-mono text-gray-900 truncate"
+            title="proof-hash-1"
+          >
+            proof-hash-1...f-hash-1
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex items-center gap-2 text-sm"
+      >
+        <svg
+          class="lucide lucide-link w-4 h-4 text-gray-400"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+          />
+          <path
+            d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+          />
+        </svg>
+        <span
+          class="text-gray-600"
+        >
+          Transaction:
+        </span>
+        <span
+          class="font-mono text-xs text-gray-900 truncate"
+        >
+          tx-hash-1
+        </span>
+      </div>
+    </div>
+    <div
+      class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 flex items-start gap-3"
+    >
+      <svg
+        class="lucide lucide-eye-off w-5 h-5 text-indigo-500 mt-0.5 shrink-0"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M9.88 9.88a3 3 0 1 0 4.24 4.24"
+        />
+        <path
+          d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
+        />
+        <path
+          d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
+        />
+        <line
+          x1="2"
+          x2="22"
+          y1="2"
+          y2="22"
+        />
+      </svg>
+      <div>
+        <h3
+          class="text-sm font-medium text-indigo-800"
+        >
+          Privacy Preserved
+        </h3>
+        <p
+          class="text-sm text-indigo-700 mt-1"
+        >
+          Individual salary amounts are never displayed. This view shows only participation status per employee. Zero-knowledge proofs verify correctness without revealing sensitive data.
+        </p>
+      </div>
+    </div>
+    <div
+      class="bg-white rounded-lg shadow-sm overflow-hidden"
+    >
+      <div
+        class="px-4 sm:px-6 py-4 border-b"
+      >
+        <h3
+          class="text-sm font-semibold text-gray-900"
+        >
+          Employee Results
+        </h3>
+        <p
+          class="text-xs text-gray-500 mt-0.5"
+        >
+          Participation status for each employee in this payroll run. Individual salary amounts are protected by ZK proofs.
+        </p>
+      </div>
+      <div
+        class="overflow-x-auto"
+      >
+        <table
+          class="w-full text-left"
+        >
+          <caption
+            class="sr-only"
+          >
+            Employee participation results for payroll run 
+            run-1
+          </caption>
+          <thead
+            class="bg-gray-50"
+          >
+            <tr>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Employee
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Department
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Status
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Salary
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-600 uppercase"
+                scope="col"
+              >
+                Commitment
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            class="divide-y divide-gray-100"
+          />
+        </table>
+      </div>
+      <div
+        class="px-6 py-8 text-center text-sm text-gray-500"
+      >
+        No employee records found for this payroll run.
+      </div>
+      <div
+        class="px-4 sm:px-6 py-3 border-t text-xs text-gray-500"
+      >
+        0
+         employee
+        s
+         in this run
+      </div>
+    </div>
+    <div
+      class="flex flex-wrap gap-3"
+    >
+      <a
+        class="inline-flex items-center px-4 py-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        href="/history"
+      >
+        View transaction history
+      </a>
+    </div>
+  </section>
+</div>
+`;
+
+exports[`Visual Regression - Payroll Flow States > Payroll Wizard - Initial State > renders wizard at employee selection step 1`] = `
+<div>
+  <section
+    aria-labelledby="payroll-wizard-heading"
+    class="space-y-6"
+  >
+    <h2
+      class="text-lg font-semibold text-gray-900"
+      id="payroll-wizard-heading"
+    >
+      Execute Payroll
+    </h2>
+    <nav
+      aria-label="Payroll execution progress"
+      class="flex items-center"
+    >
+      <div
+        class="flex items-center"
+      >
+        <div
+          class="flex items-center gap-2"
+        >
+          <svg
+            class="lucide lucide-loader2 w-5 h-5 text-indigo-600"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M21 12a9 9 0 1 1-6.219-8.56"
+            />
+          </svg>
+          <span
+            class="text-sm font-medium text-gray-900"
+          >
+            Review
+          </span>
+        </div>
+        <div
+          class="w-12 h-px mx-3 bg-gray-200"
+        />
+      </div>
+      <div
+        class="flex items-center"
+      >
+        <div
+          class="flex items-center gap-2"
+        >
+          <svg
+            class="lucide lucide-circle w-5 h-5 text-gray-300"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+          </svg>
+          <span
+            class="text-sm font-medium text-gray-400"
+          >
+            Proof Generation
+          </span>
+        </div>
+        <div
+          class="w-12 h-px mx-3 bg-gray-200"
+        />
+      </div>
+      <div
+        class="flex items-center"
+      >
+        <div
+          class="flex items-center gap-2"
+        >
+          <svg
+            class="lucide lucide-circle w-5 h-5 text-gray-300"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+          </svg>
+          <span
+            class="text-sm font-medium text-gray-400"
+          >
+            Confirmation
+          </span>
+        </div>
+        <div
+          class="w-12 h-px mx-3 bg-gray-200"
+        />
+      </div>
+      <div
+        class="flex items-center"
+      >
+        <div
+          class="flex items-center gap-2"
+        >
+          <svg
+            class="lucide lucide-circle w-5 h-5 text-gray-300"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+          </svg>
+          <span
+            class="text-sm font-medium text-gray-400"
+          >
+            Submission
+          </span>
+        </div>
+      </div>
+    </nav>
+    <div
+      class="bg-white rounded-lg shadow-sm p-6"
+    >
+      <div
+        class="text-center py-8"
+      >
+        <p
+          class="text-gray-600 mb-4"
+        >
+          No payroll run configured. Start a new payroll run to proceed.
+        </p>
+        <button
+          class="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          type="button"
+        >
+          Start Payroll Run
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+`;

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import PayrollSummary from "@/components/features/payroll/PayrollSummary";
 
 vi.mock("@/lib/zk", () => ({
@@ -34,8 +34,14 @@ describe("Smoke: Payroll Initiation Flow", () => {
     const button = screen.getByRole("button", {
       name: /generate mock payroll proof/i,
     });
-    fireEvent.click(button);
-    expect(button).toBeDisabled();
+    
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    
+    await waitFor(() => {
+      expect(button).toBeDisabled();
+    });
     expect(screen.getByText("Generating...")).toBeInTheDocument();
   });
 
@@ -44,7 +50,11 @@ describe("Smoke: Payroll Initiation Flow", () => {
     const button = screen.getByRole("button", {
       name: /generate mock payroll proof/i,
     });
-    fireEvent.click(button);
+    
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    
     await waitFor(() => {
       expect(screen.getByText(/verified/i)).toBeInTheDocument();
     });
