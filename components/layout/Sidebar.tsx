@@ -19,7 +19,8 @@ import {
   FileSearch,
   AlertTriangle,
   ClipboardList,
-  Upload
+  Upload,
+  FileDown
 } from "lucide-react";
 import { getNavigationForRole, ROLE_LABELS } from "@/lib/auth/roles";
 import type { NavigationItem } from "@/lib/auth/roles";
@@ -40,6 +41,7 @@ const icons: Record<NavigationItem["icon"], React.ComponentType<{ className?: st
   alert: AlertTriangle,
   clipboard: ClipboardList,
   upload: Upload,
+  download: FileDown,
 };
 
 // Global static layout links array including both branches' additions
@@ -49,6 +51,7 @@ const NAV_LINKS = [
   { href: "/payroll/schedule", icon: CalendarDays, label: "Payroll Schedule" },
   { href: "/payroll/execute", icon: Play, label: "Execute Payroll" },
   { href: "/history", icon: History, label: "History" },
+  { href: "/exports", icon: FileDown, label: "Exports" },
   { href: "/treasury", icon: Landmark, label: "Treasury" },
   { href: "/compliance", icon: Shield, label: "Compliance" },
   { href: "/setup", icon: Building2, label: "Company Setup" },
