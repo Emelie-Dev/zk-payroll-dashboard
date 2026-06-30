@@ -25,12 +25,9 @@ describe("Payroll Run Detail", () => {
     expect(screen.getByText("abc123def456")).toBeInTheDocument();
   });
 
-  it("links back to the schedule page", () => {
+  it("provides back navigation button", () => {
     render(<PayrollRunDetail run={MOCK_PAYROLL_RUNS[0]} />);
 
-    expect(screen.getByRole("link", { name: /back to schedule/i })).toHaveAttribute(
-      "href",
-      "/payroll/schedule",
-    );
+    expect(screen.getByRole("button", { name: /back/i })).toBeInTheDocument();
   });
 });

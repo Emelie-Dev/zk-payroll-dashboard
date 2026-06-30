@@ -78,6 +78,7 @@ function PayrollWizard() {
     const selected = MOCK_EMPLOYEES.map((e) => e.id);
     setEmployeeIds(selected);
     setTotalAmount(MOCK_EMPLOYEES.reduce((sum, e) => sum + e.salary, 0));
+    draftResolvedRef.current = true;
 
     trackEvent('payroll_wizard_started', {
       employeeCountBucket: bucketEmployeeCount(selected.length)
@@ -113,6 +114,7 @@ function PayrollWizard() {
   const handleSubmit = useCallback(async () => {
     setSubmissionStatus("submitting");
     setSubmissionError(null);
+    nextStep();
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -124,7 +126,6 @@ function PayrollWizard() {
       toast.success("Payroll submitted successfully", {
         description: "Transaction submitted to the Stellar network.",
       });
-      nextStep();
     } else {
       setSubmissionStatus("error");
       const errMsg = "Submission failed: network timeout. The transaction may still be processing.";

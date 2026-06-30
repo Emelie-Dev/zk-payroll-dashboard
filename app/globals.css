@@ -101,3 +101,82 @@
   white-space: nowrap;
   border-width: 0;
 }
+
+/* ============================================================
+   Accessibility: Keyboard Navigation & Focus States (#59)
+   ============================================================ */
+
+/* Remove default outline only when using mouse (not keyboard) */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Visible focus ring for keyboard users */
+:focus-visible {
+  outline: 2px solid #6366f1;        /* indigo-500 — adjust to brand color */
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Buttons */
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 6px;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+}
+
+/* Links */
+a:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Inputs, selects, textareas */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 0;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* Skip-to-content link (screen readers + keyboard) */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: #6366f1;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0 0 6px 6px;
+  text-decoration: none;
+  transition: top 0.1s;
+}
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* Modal / Dialog trap indicator */
+[role="dialog"]:focus {
+  outline: none;
+}
+
+/* Interactive cards */
+[role="button"]:focus-visible,
+[tabindex="0"]:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* Checkbox & radio */
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}

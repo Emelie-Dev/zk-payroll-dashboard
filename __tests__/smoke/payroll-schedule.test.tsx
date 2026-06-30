@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, within, fireEvent } from "@testing-library/react";
 import PayrollCalendar from "@/components/features/payroll/PayrollCalendar";
 import {
   MOCK_PAYROLL_RUNS,
@@ -73,4 +73,28 @@ describe("Payroll Schedule", () => {
 
     expect(screen.getByRole("grid", { name: /payroll calendar/i })).toBeInTheDocument();
   });
+
+  it("allows switching months via prev and next buttons", () => {
+    render(<PayrollCalendar runs={MOCK_PAYROLL_RUNS} />);
+
+    // Get the next upcoming run to determine the initial month
+    // From mock data, next upcoming is around Mar 31, 2025
+    const initialMonthHeader = screen.getByRole("heading", { level: 3, name: /March/i });
+    const initialText = initialMonthHeader.textContent;
+    expect(initialText).toMatch(/March/i);
+
+    const prevButton = screen.getByRole("button", { name: /previous month/i });
+    const nextButton = screen.getByRole("button", { name: /next month/i });
+
+    // Switch to previous month (February)
+    fireEvent.click(prevButton);
+    expect(initialMonthHeader.textContent).toMatch(/February/i);
+
+    // Switch to next month twice (March then April)
+    fireEvent.click(nextButton);
+    expect(initialMonthHeader.textContent).toMatch(/March/i);
+    fireEvent.click(nextButton);
+    expect(initialMonthHeader.textContent).toMatch(/April/i);
+  });
 });
+

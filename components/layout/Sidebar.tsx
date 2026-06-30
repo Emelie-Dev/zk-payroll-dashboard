@@ -2,9 +2,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   Home,
   Users,
@@ -20,7 +19,8 @@ import {
   FileSearch,
   AlertTriangle,
   ClipboardList,
-  Upload
+  Upload,
+  FileDown
 } from "lucide-react";
 import { getNavigationForRole, ROLE_LABELS } from "@/lib/auth/roles";
 import type { NavigationItem } from "@/lib/auth/roles";
@@ -41,6 +41,7 @@ const icons: Record<NavigationItem["icon"], React.ComponentType<{ className?: st
   alert: AlertTriangle,
   clipboard: ClipboardList,
   upload: Upload,
+  download: FileDown,
 };
 
 // Global static layout links array including both branches' additions
@@ -50,6 +51,7 @@ const NAV_LINKS = [
   { href: "/payroll/schedule", icon: CalendarDays, label: "Payroll Schedule" },
   { href: "/payroll/execute", icon: Play, label: "Execute Payroll" },
   { href: "/history", icon: History, label: "History" },
+  { href: "/exports", icon: FileDown, label: "Exports" },
   { href: "/treasury", icon: Landmark, label: "Treasury" },
   { href: "/compliance", icon: Shield, label: "Compliance" },
   { href: "/setup", icon: Building2, label: "Company Setup" },
@@ -138,6 +140,13 @@ export function DesktopRoleSidebar({ role }: { role: UserRole }) {
 export default function Sidebar({ role }: { role?: UserRole } = {}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      closeBtnRef.current?.focus();
+    }
+  }, [open]);
 
   return (
     <>
@@ -169,7 +178,9 @@ export default function Sidebar({ role }: { role?: UserRole } = {}) {
             <div className="flex items-center justify-between p-6 border-b">
               <h1 className="text-xl font-bold text-gray-800">ZK Payroll</h1>
               <button
+                ref={closeBtnRef}
                 type="button"
+                autoFocus
                 onClick={() => setOpen(false)}
                 className="p-1 rounded-md text-gray-500 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                 aria-label="Close navigation menu"
@@ -177,7 +188,7 @@ export default function Sidebar({ role }: { role?: UserRole } = {}) {
                 <X className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
-            <NavLinks pathname={pathname} onClick={() => setOpen(false)} />
+            <NavLinks onClick={() => setOpen(false)} />
           </div>
         </>
       )}
@@ -190,7 +201,7 @@ export default function Sidebar({ role }: { role?: UserRole } = {}) {
           <div className="p-6">
             <h1 className="text-2xl font-bold text-gray-800">ZK Payroll</h1>
           </div>
-          <NavLinks pathname={pathname} />
+          <NavLinks />
         </div>
       )}
     </>

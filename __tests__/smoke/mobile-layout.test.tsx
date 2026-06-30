@@ -37,7 +37,7 @@ describe("Smoke: Mobile layout rendering", () => {
   describe("Header", () => {
     it("renders the command palette trigger button", () => {
       render(<Header />);
-      expect(screen.getByRole("button", { name: /search actions/i })).toBeInTheDocument();
+      expect(screen.getByRole("searchbox", { name: /search actions/i })).toBeInTheDocument();
     });
 
     it("renders the notifications button", () => {
