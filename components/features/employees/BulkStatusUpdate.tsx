@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useEmployeeStore } from "@/stores/employees";
 import { MOCK_EMPLOYEES } from "@/lib/api/mockData";
 import type { Employee } from "@/types";
+import OnboardingBadge from "./OnboardingBadge";
 
 type TargetStatus = "active" | "inactive" | "pending";
 
@@ -168,6 +169,7 @@ export default function BulkStatusUpdate() {
               <th className="px-4 py-2.5">Name</th>
               <th className="px-4 py-2.5">Department</th>
               <th className="px-4 py-2.5">Current status</th>
+              <th className="px-4 py-2.5">Onboarding</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -184,6 +186,9 @@ export default function BulkStatusUpdate() {
                 <td className="px-4 py-2.5 font-medium text-gray-900">{e.name}</td>
                 <td className="px-4 py-2.5 text-gray-500">{e.department ?? "—"}</td>
                 <td className="px-4 py-2.5 capitalize text-gray-700">{deriveStatus(e)}</td>
+                <td className="px-4 py-2.5">
+                  <OnboardingBadge status={e.onboardingStatus} />
+                </td>
               </tr>
             ))}
           </tbody>
