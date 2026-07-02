@@ -1,148 +1,231 @@
 # SDK Package Publication Checklist
 
 Final verification checklist for publishing `@zk-payroll/sdk` to npm.
-Run through every item before `npm publish`. For the full release process, see [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md).
+Run through **every** item before `npm publish`. For the full release process,
+see [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md).
+
+> [!IMPORTANT]
+> This checklist is the **last gate** before a package reaches users.
+> Do not skip sections — even when a release "looks small."
 
 ---
 
-## 1. Version
+## 1 — Version
 
-- [ ] `package.json` version bumped per [semver](https://semver.org/)
+- [ ] `package.json` `"version"` bumped per [semver](https://semver.org/)
 - [ ] Version matches the annotated git tag (`v{major}.{minor}.{patch}`)
-- [ ] No uncommitted changes since version bump (`git status` is clean)
-- [ ] Tag pushed: `git push origin v{version}`
+- [ ] Tag created on the **version-bump commit** (not before, not after)
+- [ ] Tag pushed to origin:
+  ```bash
+  git tag -a v1.2.3 -m "v1.2.3"
+  git push origin v1.2.3
+  ```
+- [ ] `git status` is clean — no uncommitted changes after the bump
 
 **Common mistakes**
-- Bumping version after tagging (tag and commit must match)
-- Tag format differs from convention (use `v1.2.3`)
-- Forgot to push the tag
+| Mistake | Fix |
+|---------|-----|
+| Bumping version *after* tagging | Delete the tag, bump, re-tag |
+| Non-standard tag format (`1.2.3` instead of `v1.2.3`) | Use the `v` prefix consistently |
+| Tag not pushed | `git push origin v{version}` |
 
 ---
 
-## 2. Tests
+## 2 — Tests
 
-- [ ] `npm run typecheck` — zero type errors
-- [ ] `npm run lint` — no lint violations
-- [ ] `npm test` — all unit tests pass
-- [ ] `npm run test:smoke` — smoke tests pass
-- [ ] `npm run test:coverage` — coverage threshold met (if configured)
+All checks below are enforced by the [CI workflow](.github/workflows/ci.yml)
+(Node 20, `npm ci`, lint → typecheck → test → smoke → build).
 
-All checks above are enforced by [CI workflow](.github/workflows/ci.yml).
-Confirm the release branch/PR is green on GitHub Actions before proceeding.
+- [ ] `npm run typecheck` — zero TypeScript errors
+- [ ] `npm run lint` — no ESLint violations
+- [ ] `npm test` — all Vitest unit tests pass
+- [ ] `npm run test:smoke` — smoke tests pass (`__tests__/smoke/`)
+- [ ] `npm run test:coverage` — coverage threshold met *(if configured)*
+- [ ] **CI is green** on the release branch / PR — check the GitHub Actions dashboard
 
 **Common mistakes**
-- Pushing with known failing tests
-- `test.only` or `test.skip` left in from debugging
-- Coverage dropped but unreviewed
+| Mistake | Fix |
+|---------|-----|
+| `test.only` / `test.skip` left in from debugging | Search: `grep -r "\.only\|\.skip" __tests__/` |
+| Coverage dropped but went unreviewed | Compare against the previous release |
+| CI green locally but red in Actions | Run `npm ci && npm run build` in a clean checkout |
 
 ---
 
-## 3. Documentation
+## 3 — Changelog & Documentation
 
-- [ ] **CHANGELOG** — a versioned entry exists following [Keep a Changelog](https://keepachangelog.com/en/1.0.0/):
-  - `Added`, `Changed`, `Fixed`, `Removed`, `Security` sections as needed
-  - All links reference real issues or PRs
-  - `## [Unreleased]` section is present above the new version entry
-- [ ] **README** — public API, installation, and usage instructions are up to date
-- [ ] **JSDoc / TSDoc** — every public export in `lib/zk/` has a current doc comment
+### CHANGELOG.md
+
+- [ ] A versioned entry exists under `## [x.y.z]` following [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+- [ ] Sections used as applicable: `Added`, `Changed`, `Fixed`, `Removed`, `Security`
+- [ ] All links reference **real** issues or PRs
+- [ ] `## [Unreleased]` section is present **above** the new version entry
+
+### Other docs
+
+- [ ] **README** — installation, public API, and usage instructions are current
+- [ ] **JSDoc / TSDoc** — every public export in `lib/zk/` has an up-to-date doc comment
 - [ ] **`docs/` files** — updated for any behaviour changes in this release
+- [ ] **`.env.example`** — lists any new required environment variables
 
 **Common mistakes**
-- New exports are undocumented
-- README references removed features or old parameter names
-- CHANGELOG describes changes in the wrong version section
+| Mistake | Fix |
+|---------|-----|
+| New exports are undocumented | Audit `lib/zk/` for missing doc comments |
+| README references removed features | Search README for old parameter names |
+| CHANGELOG entry under the wrong version heading | Move the entry before tagging |
 
 ---
 
-## 4. Artifacts
+## 4 — Build Artifacts
 
 - [ ] `npm run build` — production build completes without warnings
-- [ ] **Package content verified** — reduce surprises by inspecting what ships:
-
+- [ ] Inspect what will ship:
   ```bash
   npm pack --dry-run
   ```
+  The output **must include**:
+  - Compiled JS / TypeScript declaration (`.d.ts`) files
+  - `package.json`, `README.md`, `LICENSE`, `CHANGELOG.md`
 
-  Confirm the output includes only:
-  - Compiled JavaScript/TypeScript declaration files
-  - `package.json`
-  - README, LICENSE, CHANGELOG
-  - **Excludes**: `__tests__/`, `node_modules/`, `.next/`, `.env*`, source maps (unless intended)
-- [ ] `.npmignore` or `"files"` field in `package.json` is correctly configured
-- [ ] `"private": true` is removed (or set to `false`) in `package.json`
+  The output **must exclude**:
+  - `__tests__/`, `node_modules/`, `.next/`, `.env*`, `.git/`
+  - Source maps (unless intentionally shipped)
+  - Docker / CI config files
+
+- [ ] `"files"` field **or** `.npmignore` is correctly configured in `package.json`
+
+> [!WARNING]
+> The project currently has **no `"files"` field and no `.npmignore`**.
+> Add one before the first publish to avoid shipping the entire repo.
 
 **Common mistakes**
-- `.env` or secrets baked into the build output
-- Large unnecessary files included (`node_modules`, `.next`, `coverage`)
-- Build succeeds locally but fails in CI (run CI checks as final confirmation)
+| Mistake | Fix |
+|---------|-----|
+| `.env` / secrets in the build output | Add to `.npmignore` and re-pack |
+| Package is unexpectedly large | Compare `npm pack --dry-run` size to previous release |
+| Build passes locally but fails in CI | Always confirm CI green before publishing |
 
 ---
 
-## 5. Integrities
+## 5 — Package Metadata
 
-- [ ] **Dependencies** — `npm ci` produces a clean install; no unexpected dependency changes
-- [ ] **`package.json`** — `"name"`, `"version"`, `"description"`, `"main"` / `"exports"`, `"types"` are correct
-- [ ] **Engines** — `"engines"` field (if set) matches supported Node.js versions
-- [ ] **License** — SPDX identifier in `package.json` matches `LICENSE` file
+Verify these `package.json` fields before publish:
+
+| Field | Expected |
+|-------|----------|
+| `"name"` | `@zk-payroll/sdk` (scoped) |
+| `"version"` | Matches the git tag |
+| `"private"` | `false` **or removed** |
+| `"main"` / `"exports"` | Points to the compiled entry point |
+| `"types"` | Points to the root `.d.ts` file |
+| `"description"` | Accurate one-liner |
+| `"license"` | SPDX identifier matching `LICENSE` file |
+| `"engines"` | `"node": ">=20"` *(matches CI)* |
+
+> [!WARNING]
+> The project currently has `"private": true` and is missing `"main"`,
+> `"exports"`, and `"types"`. These **must** be set before the first npm
+> publish.
+
+- [ ] `npm ci` produces a clean install — no unexpected dependency changes
+- [ ] `tsconfig.json` has no dev-only path aliases leaking into declarations
 
 ---
 
-## 6. Publishing
+## 6 — Publish
 
-- [ ] Logged into the correct npm account:
+### Pre-publish
 
+- [ ] Logged into the correct npm account and scope:
   ```bash
   npm whoami
+  npm whoami --registry=https://registry.npmjs.org/
   ```
-
-- [ ] Pre-publish dry run — no errors:
-
+- [ ] 2FA is enabled on the npm account (required for scoped packages)
+- [ ] Dry run — no errors:
   ```bash
   npm publish --dry-run
   ```
 
-- [ ] Actual publish:
+### Publish
 
+- [ ] Publish with provenance (recommended for supply-chain security):
   ```bash
-  npm publish
+  npm publish --provenance --access public
+  ```
+  Or without provenance:
+  ```bash
+  npm publish --access public
   ```
 
-- [ ] **Post-publish smoke test** — install the published package in a clean directory:
+### Post-publish
 
+- [ ] Verify the package is live:
   ```bash
-  cd /tmp && mkdir smoke-test && cd smoke-test
+  npm view @zk-payroll/sdk@latest
+  ```
+- [ ] **Smoke-test the published package** in a clean directory:
+  ```bash
+  cd /tmp && mkdir sdk-smoke && cd sdk-smoke
   npm init -y
   npm install @zk-payroll/sdk@latest
   node -e "require('@zk-payroll/sdk')"
   ```
-
-- [ ] **GitHub Release created**:
-
+- [ ] **Create a GitHub Release**:
   ```bash
   gh release create v{version} --generate-notes
   ```
-
-- [ ] **Vercel deployment** (if applicable): merge to `main` — [deploy workflow](.github/workflows/deploy.yml) handles it automatically
+- [ ] **Vercel deployment** *(if applicable)*: merge to `main` —
+  the [deploy workflow](.github/workflows/deploy.yml) handles build & deploy
+  automatically
 
 **Common mistakes**
-- Publishing from the wrong npm account (check `npm whoami`)
-- Skipping the dry run and discovering file issues after publish
-- Forgetting to create the GitHub Release
+| Mistake | Fix |
+|---------|-----|
+| Published from the wrong npm account | `npm unpublish` within 72 h, republish from correct account |
+| Skipped the dry run → bad file list | `npm deprecate` the broken version, publish a patch |
+| Forgot the GitHub Release | `gh release create v{version} --generate-notes` |
 
 ---
 
-## Quick Reference: npm Workflow
+## 7 — Rollback Plan
+
+If a broken version is published:
+
+1. **Deprecate** (preferred — keeps dependents' installs working but warns them):
+   ```bash
+   npm deprecate @zk-payroll/sdk@"x.y.z" "Known issue — use x.y.z+1 instead"
+   ```
+2. **Unpublish** (within 72 hours, only if absolutely necessary):
+   ```bash
+   npm unpublish @zk-payroll/sdk@x.y.z
+   ```
+3. **Publish a patch** with the fix as soon as possible.
+
+---
+
+## Quick Reference: Publish Flow
 
 ```
-Bump version  →  Update CHANGELOG  →  Tag & push  →
-Run CI checks →  Build & pack verify →  npm publish →
-Create GitHub Release →  Merge to main (Vercel deploy)
+Bump version  →  Update CHANGELOG  →  Commit & tag  →  Push tag  →
+CI passes     →  Build & pack verify  →  npm publish --provenance  →
+Post-publish smoke test  →  Create GitHub Release  →  Merge to main (Vercel)
 ```
 
 ---
 
-*See [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md) for the complete release process,
-[CI workflow](.github/workflows/ci.yml) for automated checks, and
-[deploy workflow](.github/workflows/deploy.yml) for Vercel deployment.*
+## Related Files
+
+| Resource | Path |
+|----------|------|
+| Release process | [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md) |
+| CI (lint, typecheck, test, build) | [ci.yml](.github/workflows/ci.yml) |
+| Deploy (Vercel) | [deploy.yml](.github/workflows/deploy.yml) |
+| Contributing guide | [CONTRIBUTING.md](./CONTRIBUTING.md) |
+| Changelog | [CHANGELOG.md](./CHANGELOG.md) |
+| Security policy | [SECURITY.md](./SECURITY.md) |
+
+---
 
 *Report issues with this checklist at https://github.com/zkpayroll/zk-payroll-dashboard/issues*
