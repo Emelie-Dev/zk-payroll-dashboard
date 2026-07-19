@@ -93,6 +93,7 @@ export const MOCK_TRANSACTIONS: PayrollTransaction[] = [
     proof: "0xzkproof_abc123", // ZK proof string
     status: "verified",
     txHash: "abc123def456",
+    isArchived: false,
   },
   {
     id: "tx_002",
@@ -104,6 +105,7 @@ export const MOCK_TRANSACTIONS: PayrollTransaction[] = [
     proof: "0xzkproof_def789",
     status: "verified",
     txHash: "def789ghi012",
+    isArchived: true,
   },
   {
     id: "tx_003",
@@ -114,6 +116,7 @@ export const MOCK_TRANSACTIONS: PayrollTransaction[] = [
     employeeCount: 2,
     proof: "",
     status: "pending",
+    isArchived: false,
   },
 ];
 

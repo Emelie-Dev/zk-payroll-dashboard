@@ -19,6 +19,8 @@ describe('role-aware navigation and route rules', () => {
     expect(getNavigationForRole('auditor').map((item) => item.label)).toEqual([
       'Dashboard',
       'History',
+      'Archived Payrolls',
+      'Exports',
       'Compliance',
       'Settings',
     ]);
@@ -30,5 +32,9 @@ describe('role-aware navigation and route rules', () => {
     expect(canAccessPath('auditor', '/compliance')).toBe(true);
     expect(canAccessPath('auditor', '/payroll/execute')).toBe(false);
     expect(canAccessPath('admin', '/setup')).toBe(true);
+    // archived payrolls are accessible to all roles
+    expect(canAccessPath('admin', '/history/archived')).toBe(true);
+    expect(canAccessPath('operator', '/history/archived')).toBe(true);
+    expect(canAccessPath('auditor', '/history/archived')).toBe(true);
   });
 });

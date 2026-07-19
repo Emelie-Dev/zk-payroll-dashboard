@@ -16,8 +16,8 @@ describe("TransactionHistory & Reconciliation Flow", () => {
     render(<TransactionHistory />);
 
     expect(screen.getByText("Transaction History")).toBeInTheDocument();
-    // Default mock data should show 3 transactions
-    expect(screen.getByText(/Showing 3 of 3 transactions/i)).toBeInTheDocument();
+    // tx_002 is archived; default mode shows only non-archived → 2 transactions
+    expect(screen.getByText(/Showing 2 of 2 transactions/i)).toBeInTheDocument();
     expect(screen.getAllByText("Payout").length).toBeGreaterThan(0);
   });
 
@@ -34,21 +34,21 @@ describe("TransactionHistory & Reconciliation Flow", () => {
     // Change status filter to 'pending'
     fireEvent.change(statusSelect, { target: { value: "pending" } });
 
-    // Should only show 1 pending transaction
-    expect(screen.getByText(/Showing 1 of 3 transactions/i)).toBeInTheDocument();
+    // Should only show 1 pending transaction (tx_003, which is not archived)
+    expect(screen.getByText(/Showing 1 of 2 transactions/i)).toBeInTheDocument();
 
     // Change status filter to 'verified'
     fireEvent.change(statusSelect, { target: { value: "verified" } });
 
-    // Should show 2 verified transactions
-    expect(screen.getByText(/Showing 2 of 3 transactions/i)).toBeInTheDocument();
+    // Should show 1 verified non-archived transaction (tx_001)
+    expect(screen.getByText(/Showing 1 of 2 transactions/i)).toBeInTheDocument();
 
     // Click clear filters
     const clearButton = screen.getByRole("button", { name: "Clear all" });
     fireEvent.click(clearButton);
 
-    // Should reset back to 3 transactions
-    expect(screen.getByText(/Showing 3 of 3 transactions/i)).toBeInTheDocument();
+    // Should reset back to 2 non-archived transactions
+    expect(screen.getByText(/Showing 2 of 2 transactions/i)).toBeInTheDocument();
   });
 
   it("filters transactions by search query (run ID)", async () => {
@@ -60,11 +60,11 @@ describe("TransactionHistory & Reconciliation Flow", () => {
     const runIdInput = screen.getByPlaceholderText(/Run ID\.\.\./i);
     fireEvent.change(runIdInput, { target: { value: "tx_001" } });
 
-    expect(screen.getByText(/Showing 1 of 3 transactions/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 1 of 2 transactions/i)).toBeInTheDocument();
 
     // Reset filter
     fireEvent.change(runIdInput, { target: { value: "" } });
-    expect(screen.getByText(/Showing 3 of 3 transactions/i)).toBeInTheDocument();
+    expect(screen.getByText(/Showing 2 of 2 transactions/i)).toBeInTheDocument();
   });
 
   it("allows saving, applying, renaming, and deleting custom views", async () => {
@@ -163,3 +163,36 @@ describe("TransactionHistory & Reconciliation Flow", () => {
     expect(screen.getByText("tx_001")).toBeInTheDocument();
   });
 });
+
+describe("TransactionHistory – archived mode", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
+    window.localStorage.clear();
+  });
+
+  it("renders only archived payrolls under the archived heading", () => {
+    render(<TransactionHistory mode="archived" />);
+
+    expect(screen.getByText("Archived Payrolls")).toBeInTheDocument();
+    // tx_002 is the only archived record
+    expect(screen.getByText(/Showing 1 of 1 archived payrolls/i)).toBeInTheDocument();
+  });
+
+  it("shows the archived-specific empty state when filters yield no results", async () => {
+    render(<TransactionHistory mode="archived" />);
+
+    const filterToggle = screen.getByRole("button", { name: /filter/i });
+    fireEvent.click(filterToggle);
+
+    const runIdInput = screen.getByPlaceholderText(/Run ID\.\.\./i);
+    fireEvent.change(runIdInput, { target: { value: "tx_999" } });
+
+    expect(
+      screen.getByText(
+        /No transactions match the current filters/i
+      )
+    ).toBeInTheDocument();
+  });
+});
+
