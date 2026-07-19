@@ -21,7 +21,7 @@ import type { PayrollTransaction } from "@/types";
 import TransactionDetailDrawer from "./TransactionDetailDrawer";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 
-type StatusFilter = "all" | "verified" | "pending" | "failed";
+type StatusFilter = "all" | "verified" | "pending" | "failed" | "cancelled";
 
 interface Filters {
   status: StatusFilter;
@@ -98,6 +98,7 @@ const STATUS_STYLES: Record<string, string> = {
   verified: "bg-green-100 text-green-800",
   pending: "bg-yellow-100 text-yellow-800",
   failed: "bg-red-100 text-red-800",
+  cancelled: "bg-gray-100 text-gray-800",
 };
 
 interface TransactionHistoryProps {
@@ -412,6 +413,7 @@ function TransactionHistory({ mode = "history" }: TransactionHistoryProps) {
                 <option value="verified">Verified</option>
                 <option value="pending">Pending</option>
                 <option value="failed">Failed</option>
+                <option value="cancelled">Cancelled</option>
               </select>
             </div>
             <div>
