@@ -42,6 +42,7 @@ export interface PayrollTransaction {
   proof: string;
   status: "pending" | "verified" | "failed";
   txHash?: string;
+  isArchived?: boolean;
 }
 
 export interface PayrollRun extends PayrollTransaction {

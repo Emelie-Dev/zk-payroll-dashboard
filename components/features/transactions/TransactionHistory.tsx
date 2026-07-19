@@ -100,7 +100,11 @@ const STATUS_STYLES: Record<string, string> = {
   failed: "bg-red-100 text-red-800",
 };
 
-function TransactionHistory() {
+interface TransactionHistoryProps {
+  mode?: "history" | "archived";
+}
+
+function TransactionHistory({ mode = "history" }: TransactionHistoryProps) {
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
@@ -131,7 +135,9 @@ function TransactionHistory() {
   const [renameValue, setRenameValue] = useState("");
 
   const filtered = useMemo(() => {
-    let results = [...MOCK_TRANSACTIONS];
+    let results = MOCK_TRANSACTIONS.filter((t) => 
+      mode === "archived" ? t.isArchived : !t.isArchived
+    );
 
     if (filters.status !== "all") {
       results = results.filter((t) => t.status === filters.status);
@@ -247,7 +253,7 @@ function TransactionHistory() {
             id="transaction-history-heading"
             className="text-lg font-medium text-gray-900"
           >
-            Transaction History
+            {mode === "archived" ? "Archived Payrolls" : "Transaction History"}
           </h3>
           <div className="flex items-center gap-2">
             {/* Saved Views dropdown */}
@@ -594,6 +600,8 @@ function TransactionHistory() {
                 <li className="px-4 py-8 text-center text-sm text-gray-500">
                   {hasFiltersApplied
                     ? "No transactions match the current filters. Try broadening your filter criteria."
+                    : mode === "archived"
+                    ? "No archived payroll runs found. Payroll runs are archived after they are completed and superseded."
                     : "No transactions yet. Process a payroll run to populate the transaction history."}
                 </li>
               ) : (
@@ -706,6 +714,8 @@ function TransactionHistory() {
                     >
                       {hasFiltersApplied
                         ? "No transactions match the current filters. Try broadening your filter criteria."
+                        : mode === "archived"
+                        ? "No archived payroll runs found. Payroll runs are archived after they are completed and superseded."
                         : "No transactions yet. Process a payroll run to populate the transaction history."}
                     </td>
                   </tr>
@@ -775,7 +785,14 @@ function TransactionHistory() {
             </table>
 
             <div className="px-4 sm:px-6 py-3 border-t text-xs text-gray-500">
-              Showing {filtered.length} of {MOCK_TRANSACTIONS.length} transactions
+              {(() => {
+                const poolSize = MOCK_TRANSACTIONS.filter((t) =>
+                  mode === "archived" ? t.isArchived : !t.isArchived
+                ).length;
+                return `Showing ${filtered.length} of ${poolSize} ${
+                  mode === "archived" ? "archived payrolls" : "transactions"
+                }`;
+              })()}
             </div>
           </>
         )}

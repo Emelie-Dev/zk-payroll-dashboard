@@ -11,7 +11,7 @@ export type NavigationAccess = 'enabled' | 'disabled';
 export interface NavigationItem {
   label: string;
   href: string;
-  icon: 'home' | 'users' | 'play' | 'history' | 'shield' | 'building' | 'treasury' | 'settings' | 'file-search' | 'alert' | 'clipboard' | 'upload' | 'calendar' | 'download';
+  icon: 'home' | 'users' | 'play' | 'history' | 'archive' | 'shield' | 'building' | 'treasury' | 'settings' | 'file-search' | 'alert' | 'clipboard' | 'upload' | 'calendar' | 'download';
   roles: UserRole[];
   access?: Partial<Record<UserRole, NavigationAccess>>;
   disabledReason?: Partial<Record<UserRole, string>>;
@@ -42,6 +42,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: 'History',
     href: '/history',
     icon: 'history',
+    roles: ['admin', 'operator', 'auditor'],
+  },
+  {
+    label: 'Archived Payrolls',
+    href: '/history/archived',
+    icon: 'archive',
     roles: ['admin', 'operator', 'auditor'],
   },
   {
@@ -89,6 +95,7 @@ export const ROUTE_ROLE_RULES: Array<{ prefix: string; roles: UserRole[] }> = [
   { prefix: '/treasury', roles: ['admin'] },
   { prefix: '/compliance', roles: ['admin', 'auditor'] },
   { prefix: '/setup', roles: ['admin'] },
+  { prefix: '/history/archived', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/history', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/exports', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/settings', roles: ['admin', 'operator', 'auditor'] },
