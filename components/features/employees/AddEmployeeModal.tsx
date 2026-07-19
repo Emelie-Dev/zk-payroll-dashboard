@@ -192,6 +192,7 @@ export function AddEmployeeModal({ isOpen, onClose }: AddEmployeeModalProps) {
         salaryCommitment,
         isActive: true,
         status: "pending",
+        onboardingStatus: "not_started",
         startDate: payload.startDate,
       };
 

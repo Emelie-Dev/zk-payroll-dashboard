@@ -215,6 +215,7 @@ function ComplianceManager() {
                 </p>
               </div>
             </div>
+          </div>
       {pendingRequests.length > 0 && (
         <div>
           <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -274,27 +275,7 @@ function ComplianceManager() {
 
       <AuditActivityFeed />
 
-      {activeKeys.length > 0 && (
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-green-600" />
-            Active Keys ({activeKeys.length})
-          </h3>
-          <div className="bg-white rounded-lg border divide-y">
-            {activeKeys.map((key) => (
-              <ViewKeyRow
-                key={key.id}
-                viewKey={key}
-                isRevealed={revealedKeys.has(key.id)}
-                isCopied={copiedId === key.id}
-                onToggleReveal={() => toggleReveal(key.id)}
-                onCopy={() => copyKeyId(key.keyId, key.id)}
-                onRevoke={() => handleRevoke(key.id)}
-              />
-            ))}
-          </div>
-
-          {showForm && (
+      {showForm && (
             <div
               role="form"
               aria-label="Generate new view key"
@@ -430,9 +411,6 @@ function ComplianceManager() {
       ) : (
         <AuditExportRequest />
       )}
-    </section>
-  );
-}
     </section>
   );
 }

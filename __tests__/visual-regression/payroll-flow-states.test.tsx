@@ -5,7 +5,6 @@ vi.mock("@/components/providers/StellarProvider", () => ({
   useStellar: () => ({
     publicKey: "GTEST123",
   }),
-  EXPECTED_NETWORK: "TESTNET",
 }));
 
 import { render, screen } from "@testing-library/react";

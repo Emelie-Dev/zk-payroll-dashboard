@@ -30,7 +30,6 @@ function EmployeeDirectory() {
   const { employees: storedEmployees, isLoading: storeLoading } = useEmployeeStore();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [localLoading, setLocalLoading] = useState(true);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [localLoading, setLocalLoading] = useState(
@@ -272,6 +271,7 @@ function EmployeeDirectory() {
         employee={selectedEmployee} 
         isOpen={isDetailOpen} 
         onClose={() => setIsDetailOpen(false)} 
+      />
       <AddEmployeeModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
