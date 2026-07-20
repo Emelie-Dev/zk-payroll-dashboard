@@ -1,39 +1,212 @@
-import { Home, Users, Settings, History, Shield, Play } from "lucide-react";
 
-function Sidebar() {
-    return (
-        <div className="hidden md:block w-64 bg-white shadow-md">
-            <div className="p-6">
-                <h1 className="text-2xl font-bold text-gray-800">ZK Payroll</h1>
-            </div>
-            <nav className="mt-6">
-                <a className="flex items-center px-6 py-3 text-gray-700 bg-gray-100 border-r-4 border-blue-500" href="/">
-                    <Home className="w-5 h-5 mr-3" />
-                    Dashboard
-                </a>
-                <a className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900" href="/employees">
-                    <Users className="w-5 h-5 mr-3" />
-                    Employees
-                </a>
-                <a className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900" href="/payroll/execute">
-                    <Play className="w-5 h-5 mr-3" />
-                    Execute Payroll
-                </a>
-                <a className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900" href="/history">
-                    <History className="w-5 h-5 mr-3" />
-                    History
-                </a>
-                <a className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900" href="/compliance">
-                    <Shield className="w-5 h-5 mr-3" />
-                    Compliance
-                </a>
-                <a className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900" href="/settings">
-                    <Settings className="w-5 h-5 mr-3" />
-                    Settings
-                </a>
-            </nav>
-        </div>
-    );
+"use client";
+
+import { usePathname } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import {
+  Home,
+  Users,
+  Settings,
+  History,
+  Archive,
+  Shield,
+  Play,
+  Building2,
+  Landmark,
+  CalendarDays,
+  Menu,
+  X,
+  FileSearch,
+  AlertTriangle,
+  ClipboardList,
+  Upload,
+  FileDown
+} from "lucide-react";
+import { getNavigationForRole, ROLE_LABELS } from "@/lib/auth/roles";
+import type { NavigationItem } from "@/lib/auth/roles";
+import type { UserRole } from "@/types";
+
+// Icons map for role-based navigation layout strings
+const icons: Record<NavigationItem["icon"], React.ComponentType<{ className?: string }>> = {
+  home: Home,
+  users: Users,
+  settings: Settings,
+  history: History,
+  archive: Archive,
+  shield: Shield,
+  play: Play,
+  building: Building2,
+  treasury: Landmark,
+  calendar: CalendarDays,
+  "file-search": FileSearch,
+  alert: AlertTriangle,
+  clipboard: ClipboardList,
+  upload: Upload,
+  download: FileDown,
+};
+
+// Global static layout links array including both branches' additions
+const NAV_LINKS = [
+  { href: "/", icon: Home, label: "Dashboard" },
+  { href: "/employees", icon: Users, label: "Employees" },
+  { href: "/payroll/schedule", icon: CalendarDays, label: "Payroll Schedule" },
+  { href: "/payroll/execute", icon: Play, label: "Execute Payroll" },
+  { href: "/history", icon: History, label: "History" },
+  { href: "/history/archived", icon: Archive, label: "Archived Payrolls" },
+  { href: "/exports", icon: FileDown, label: "Exports" },
+  { href: "/treasury", icon: Landmark, label: "Treasury" },
+  { href: "/compliance", icon: Shield, label: "Compliance" },
+  { href: "/setup", icon: Building2, label: "Company Setup" },
+  { href: "/incidents", icon: AlertTriangle, label: "Incidents" },
+  { href: "/settings", icon: Settings, label: "Settings" },
+];
+
+function NavLinks({ onClick }: { onClick?: () => void }) {
+  const pathname = usePathname() ?? "/";
+  return (
+    <nav aria-label="Main navigation" className="mt-6">
+      {NAV_LINKS.map(({ href, icon: Icon, label }) => {
+        const active = pathname === href || (href !== "/" && pathname.startsWith(href));
+        return (
+          <a
+            key={href}
+            href={href}
+            onClick={onClick}
+            aria-current={active ? "page" : undefined}
+            className={`flex items-center px-6 py-3 hover:bg-gray-50 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500 ${
+              active ? "bg-gray-100 text-gray-900 border-r-4 border-blue-500" : "text-gray-600"
+            }`}
+          >
+            <Icon className="w-5 h-5 mr-3" aria-hidden="true" />
+            {label}
+          </a>
+        );
+      })}
+    </nav>
+  );
 }
 
-export default Sidebar;
+export function DesktopRoleSidebar({ role }: { role: UserRole }) {
+  const pathname = usePathname();
+  const items = getNavigationForRole(role);
+
+  return (
+    <div className="hidden md:block w-64 bg-white shadow-md flex-shrink-0">
+      <div className="p-6">
+        <h1 className="text-2xl font-bold text-gray-800">ZK Payroll</h1>
+        <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-indigo-600">
+          {ROLE_LABELS[role]} workspace
+        </p>
+      </div>
+      <nav className="mt-6" aria-label={`${ROLE_LABELS[role]} navigation`}>
+        {items.map((item) => {
+          const Icon = icons[item.icon] || Home;
+          const disabled = item.access?.[role] === "disabled";
+          const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+
+          if (disabled) {
+            return (
+              <span
+                key={item.href}
+                className="flex items-center px-6 py-3 text-gray-400 cursor-not-allowed"
+                aria-disabled="true"
+                title={item.disabledReason?.[role]}
+              >
+                <Icon className="w-5 h-5 mr-3" aria-hidden="true" />
+                {item.label}
+              </span>
+            );
+          }
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-indigo-500 ${
+                active
+                  ? "bg-gray-100 border-r-4 border-blue-500 text-gray-700"
+                  : ""
+              }`}
+              aria-current={active ? "page" : undefined}
+            >
+              <Icon className="w-5 h-5 mr-3" aria-hidden="true" />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
+  );
+}
+
+export default function Sidebar({ role }: { role?: UserRole } = {}) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      closeBtnRef.current?.focus();
+    }
+  }, [open]);
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="md:hidden fixed top-4 left-4 z-40 p-2 rounded-md bg-white shadow-md text-gray-600 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+        aria-label="Open navigation menu"
+        aria-expanded={open}
+        aria-controls="mobile-nav"
+      >
+        <Menu className="w-5 h-5" aria-hidden="true" />
+      </button>
+
+      {open && (
+        <>
+          <div
+            className="md:hidden fixed inset-0 z-40 bg-black/40"
+            aria-hidden="true"
+            onClick={() => setOpen(false)}
+          />
+          <div
+            id="mobile-nav"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
+            className="md:hidden fixed top-0 left-0 z-50 h-full w-64 bg-white shadow-xl"
+          >
+            <div className="flex items-center justify-between p-6 border-b">
+              <h1 className="text-xl font-bold text-gray-800">ZK Payroll</h1>
+              <button
+                ref={closeBtnRef}
+                type="button"
+                autoFocus
+                onClick={() => setOpen(false)}
+                className="p-1 rounded-md text-gray-500 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                aria-label="Close navigation menu"
+              >
+                <X className="w-5 h-5" aria-hidden="true" />
+              </button>
+            </div>
+            <NavLinks onClick={() => setOpen(false)} />
+          </div>
+        </>
+      )}
+
+      {/* Desktop layout workspace logic toggle */}
+      {role ? (
+        <DesktopRoleSidebar role={role} />
+      ) : (
+        <div className="hidden md:block w-64 bg-white shadow-md flex-shrink-0">
+          <div className="p-6">
+            <h1 className="text-2xl font-bold text-gray-800">ZK Payroll</h1>
+          </div>
+          <NavLinks />
+        </div>
+      )}
+    </>
+  );
+}

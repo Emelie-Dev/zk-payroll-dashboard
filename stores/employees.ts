@@ -9,6 +9,7 @@ interface EmployeeState {
   updateEmployee: (id: string, updates: Partial<Employee>) => void;
   removeEmployee: (id: string) => void;
   setEmployees: (employees: Employee[]) => void;
+  setLoading: (loading: boolean) => void;
 }
 
 export const useEmployeeStore = create<EmployeeState>()(
@@ -35,6 +36,7 @@ export const useEmployeeStore = create<EmployeeState>()(
         })),
 
       setEmployees: (employees) => set({ employees }),
+      setLoading: (loading) => set({ isLoading: loading }),
     }),
     { name: 'zk-payroll-employees' }
   )

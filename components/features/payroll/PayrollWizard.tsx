@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useEffect, useState, useRef } from "react";
 import {
   CheckCircle,
   Circle,
@@ -9,11 +9,18 @@ import {
   ArrowLeft,
   ArrowRight,
   RotateCcw,
+  Save,
+  Trash2,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { usePayrollWizardStore } from "@/stores/payrollWizard";
+import { useWalletStore } from "@/stores/walletStore";
+import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
+import PayrollReceipt from "./PayrollReceipt";
 import type { PayrollWizardStep } from "@/types";
+import { trackEvent, mapErrorToType, bucketEmployeeCount } from "@/lib/telemetry";
 
 const STEPS: { key: PayrollWizardStep; label: string }[] = [
   { key: "review", label: "Review" },
@@ -46,7 +53,21 @@ function PayrollWizard() {
     setSubmissionError,
     setTransactionHash,
     reset,
+    hasDraft,
+    restoreDraft,
+    clearDraft,
   } = usePayrollWizardStore();
+  const [showDraftBanner, setShowDraftBanner] = useState(false);
+  const draftResolvedRef = useRef(false);
+
+  useEffect(() => {
+    if (!draftResolvedRef.current && hasDraft() && employeeIds.length > 0 && submissionStatus !== "success") {
+      setShowDraftBanner(true);
+    }
+  }, [employeeIds.length, hasDraft, submissionStatus]);
+
+  const network = useWalletStore((s) => s.network);
+  const isWrongNetwork = network !== EXPECTED_NETWORK;
 
   const selectedEmployees = useMemo(
     () => MOCK_EMPLOYEES.filter((e) => employeeIds.includes(e.id)),
@@ -54,8 +75,14 @@ function PayrollWizard() {
   );
 
   const handleStartPayroll = useCallback(() => {
-    setEmployeeIds(MOCK_EMPLOYEES.map((e) => e.id));
+    const selected = MOCK_EMPLOYEES.map((e) => e.id);
+    setEmployeeIds(selected);
     setTotalAmount(MOCK_EMPLOYEES.reduce((sum, e) => sum + e.salary, 0));
+    draftResolvedRef.current = true;
+
+    trackEvent('payroll_wizard_started', {
+      employeeCountBucket: bucketEmployeeCount(selected.length)
+    });
   }, [setEmployeeIds, setTotalAmount]);
 
   const handleGenerateProof = useCallback(async () => {
@@ -67,13 +94,17 @@ function PayrollWizard() {
     const success = Math.random() > 0.2;
     if (success) {
       setProofStatus("success");
+      trackEvent('payroll_proof_generation_completed', { success: true });
       toast.success("Proof generated successfully");
       nextStep();
     } else {
       setProofStatus("error");
-      setProofError(
-        "Proof generation failed: circuit constraint mismatch. Please retry.",
-      );
+      const errMsg = "Proof generation failed: circuit constraint mismatch. Please retry.";
+      setProofError(errMsg);
+      trackEvent('payroll_proof_generation_completed', {
+        success: false,
+        error_type: mapErrorToType(errMsg)
+      });
       toast.error("Proof generation failed", {
         description: "Circuit constraint mismatch.",
       });
@@ -83,6 +114,7 @@ function PayrollWizard() {
   const handleSubmit = useCallback(async () => {
     setSubmissionStatus("submitting");
     setSubmissionError(null);
+    nextStep();
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -90,15 +122,18 @@ function PayrollWizard() {
     if (success) {
       setSubmissionStatus("success");
       setTransactionHash(`0x${Date.now().toString(16)}abc`);
+      trackEvent('payroll_submission_completed', { success: true });
       toast.success("Payroll submitted successfully", {
         description: "Transaction submitted to the Stellar network.",
       });
-      nextStep();
     } else {
       setSubmissionStatus("error");
-      setSubmissionError(
-        "Submission failed: network timeout. The transaction may still be processing.",
-      );
+      const errMsg = "Submission failed: network timeout. The transaction may still be processing.";
+      setSubmissionError(errMsg);
+      trackEvent('payroll_submission_completed', {
+        success: false,
+        error_type: mapErrorToType(errMsg)
+      });
       toast.error("Submission failed", {
         description: "Network timeout. The transaction may still be processing.",
       });
@@ -112,6 +147,58 @@ function PayrollWizard() {
       <h2 id="payroll-wizard-heading" className="text-lg font-semibold text-gray-900">
         Execute Payroll
       </h2>
+
+      {showDraftBanner && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+          <Save className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+          <div className="flex-1">
+            <h3 className="text-sm font-medium text-amber-800">Draft Payroll Recovered</h3>
+            <p className="text-sm text-amber-700 mt-1">
+              An in-progress payroll draft was found. {employeeIds.length} employee
+              {employeeIds.length !== 1 ? "s" : ""} selected, total amount: $
+              {totalAmount.toLocaleString()}. Your progress was automatically saved.
+            </p>
+            <p className="text-xs text-amber-600 mt-2">
+              Sensitive fields (proof artifacts, transaction hashes) are never persisted in drafts.
+            </p>
+            <div className="flex items-center gap-2 mt-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDraftBanner(false);
+                  draftResolvedRef.current = true;
+                }}
+                className="px-3 py-1.5 rounded-md text-xs font-medium bg-amber-600 text-white hover:bg-amber-700 transition-colors"
+              >
+                Continue with draft
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  clearDraft();
+                  setShowDraftBanner(false);
+                  draftResolvedRef.current = true;
+                }}
+                className="px-3 py-1.5 rounded-md text-xs font-medium bg-white text-amber-700 hover:bg-amber-50 border border-amber-300 transition-colors inline-flex items-center gap-1"
+              >
+                <Trash2 className="w-3 h-3" />
+                Discard draft
+              </button>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setShowDraftBanner(false);
+              draftResolvedRef.current = true;
+            }}
+            className="text-amber-400 hover:text-amber-600 transition-colors"
+            aria-label="Dismiss draft banner"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       <nav aria-label="Payroll execution progress" className="flex items-center">
         {STEPS.map((step, i) => (
@@ -157,6 +244,7 @@ function PayrollWizard() {
             totalAmount={totalAmount}
             onStart={handleStartPayroll}
             onNext={nextStep}
+            isWrongNetwork={isWrongNetwork}
           />
         )}
         {currentStep === "proof" && (
@@ -166,6 +254,7 @@ function PayrollWizard() {
             onGenerate={handleGenerateProof}
             onRetry={handleGenerateProof}
             onBack={prevStep}
+            isWrongNetwork={isWrongNetwork}
           />
         )}
         {currentStep === "confirm" && (
@@ -175,6 +264,7 @@ function PayrollWizard() {
             totalAmount={totalAmount}
             onBack={prevStep}
             onSubmit={handleSubmit}
+            isWrongNetwork={isWrongNetwork}
           />
         )}
         {currentStep === "submit" && (
@@ -182,6 +272,8 @@ function PayrollWizard() {
             status={submissionStatus}
             error={submissionError}
             transactionHash={transactionHash}
+            totalAmount={totalAmount}
+            employeeCount={employeeIds.length}
             onRetry={handleSubmit}
             onReset={reset}
           />
@@ -197,12 +289,14 @@ function ReviewStep({
   totalAmount,
   onStart,
   onNext,
+  isWrongNetwork,
 }: {
   employeeIds: string[];
   selectedEmployees: { id: string; name: string; salary: number }[];
   totalAmount: number;
   onStart: () => void;
   onNext: () => void;
+  isWrongNetwork: boolean;
 }) {
   if (employeeIds.length === 0) {
     return (
@@ -213,7 +307,9 @@ function ReviewStep({
         <button
           type="button"
           onClick={onStart}
-          className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+          disabled={isWrongNetwork}
+          title={isWrongNetwork ? 'Switch to Testnet in Freighter' : undefined}
+          className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Start Payroll Run
         </button>
@@ -261,12 +357,14 @@ function ProofStep({
   onGenerate,
   onRetry,
   onBack,
+  isWrongNetwork,
 }: {
   status: "idle" | "generating" | "success" | "error";
   error: string | null;
   onGenerate: () => void;
   onRetry: () => void;
   onBack: () => void;
+  isWrongNetwork: boolean;
 }) {
   return (
     <div className="space-y-4">
@@ -282,7 +380,9 @@ function ProofStep({
           <button
             type="button"
             onClick={onGenerate}
-            className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+            disabled={isWrongNetwork}
+            title={isWrongNetwork ? 'Switch to Testnet in Freighter' : undefined}
+            className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Generate Proof
           </button>
@@ -335,12 +435,14 @@ function ConfirmStep({
   totalAmount,
   onBack,
   onSubmit,
+  isWrongNetwork,
 }: {
   employeeIds: string[];
   selectedEmployees: { id: string; name: string; salary: number }[];
   totalAmount: number;
   onBack: () => void;
   onSubmit: () => void;
+  isWrongNetwork: boolean;
 }) {
   return (
     <div className="space-y-4">
@@ -389,7 +491,9 @@ function ConfirmStep({
         <button
           type="button"
           onClick={onSubmit}
-          className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+          disabled={isWrongNetwork}
+          title={isWrongNetwork ? 'Switch to Testnet in Freighter' : undefined}
+          className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Submit Payroll
         </button>
@@ -402,12 +506,16 @@ function SubmitStep({
   status,
   error,
   transactionHash,
+  totalAmount,
+  employeeCount,
   onRetry,
   onReset,
 }: {
   status: "idle" | "submitting" | "success" | "error";
   error: string | null;
   transactionHash: string | null;
+  totalAmount: number;
+  employeeCount: number;
   onRetry: () => void;
   onReset: () => void;
 }) {
@@ -425,27 +533,12 @@ function SubmitStep({
       )}
 
       {status === "success" && (
-        <div className="text-center py-8 space-y-3">
-          <CheckCircle className="w-12 h-12 text-green-600 mx-auto" />
-          <h4 className="text-lg font-semibold text-gray-900">
-            Payroll Submitted
-          </h4>
-          <p className="text-sm text-gray-600">
-            The transaction has been submitted to the network.
-          </p>
-          {transactionHash && (
-            <p className="font-mono text-xs text-gray-500 break-all">
-              Tx: {transactionHash}
-            </p>
-          )}
-          <button
-            type="button"
-            onClick={onReset}
-            className="mt-4 px-6 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
-          >
-            Start New Payroll
-          </button>
-        </div>
+        <PayrollReceipt 
+          totalAmount={totalAmount}
+          employeeCount={employeeCount}
+          transactionHash={transactionHash}
+          onReset={onReset}
+        />
       )}
 
       {status === "error" && (
