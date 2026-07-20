@@ -45,7 +45,7 @@ Use these exact labels consistently across the app.
 
 ### Pattern
 
-```
+```text
 [Action] failed: [specific reason]. [Optional next step].
 ```
 
@@ -108,7 +108,7 @@ Use these terms consistently throughout the dashboard.
 
 Empty states should follow this pattern:
 
-```
+```text
 Title: [Noun] + [missing-state verb]
 Description: [What to do next] + [optional benefit]
 ```

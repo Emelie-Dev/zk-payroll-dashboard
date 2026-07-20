@@ -445,7 +445,7 @@ graph TD
 
 ## File Dependencies
 
-```
+```text
 TransactionDetailDrawer.tsx
 ├── components/ui/sheet.tsx
 │   └── @radix-ui/react-dialog

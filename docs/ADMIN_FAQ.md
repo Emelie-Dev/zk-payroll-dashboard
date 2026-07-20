@@ -183,10 +183,10 @@ This guide answers common operational questions for administrators managing payr
 
 **A:**
 
-| Access Level | Can View | Cannot Do |
-|--------------|----------|-----------|
-| **Read-Only** | Employee records, payroll runs, transactions, proofs | Submit payments, modify records, revoke other auditors |
-| **Full-Audit** | All read-only + internal logs, reconciliation details, audit trails | Administrative actions (still read-only to data) |
+| Access Level   | Can View                                                            | Cannot Do                                              |
+|----------------|---------------------------------------------------------------------|--------------------------------------------------------|
+| **Read-Only**  | Employee records, payroll runs, transactions, proofs                | Submit payments, modify records, revoke other auditors |
+| **Full-Audit** | All read-only + internal logs, reconciliation details, audit trails | Administrative actions (still read-only to data)       |
 
 **Use read-only** for most auditors. Use **full-audit** only for internal compliance teams.
 

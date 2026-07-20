@@ -108,7 +108,7 @@ After your wallet is funded:
 2. Open `.env.local`.
 3. Set `ADMIN_PUBLIC_KEY` to your public key.
 
-```
+```text
 ADMIN_PUBLIC_KEY=GBXT...YOUR_PUBLIC_KEY_HERE...J29M
 ```
 

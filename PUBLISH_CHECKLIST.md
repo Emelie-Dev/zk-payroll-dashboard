@@ -24,7 +24,7 @@ see [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md).
 
 - [ ] `git status` is clean — no uncommitted changes after the bump
 
-**Common mistakes**
+### Common mistakes
 
 | Mistake | Fix |
 | --------- | ----- |
@@ -46,7 +46,7 @@ All checks below are enforced by the [CI workflow](.github/workflows/ci.yml)
 - [ ] `npm run test:coverage` — coverage threshold met *(if configured)*
 - [ ] **CI is green** on the release branch / PR — check the GitHub Actions dashboard
 
-**Common mistakes**
+### Common mistakes
 
 | Mistake | Fix |
 | --------- | ----- |
@@ -72,7 +72,7 @@ All checks below are enforced by the [CI workflow](.github/workflows/ci.yml)
 - [ ] **`docs/` files** — updated for any behaviour changes in this release
 - [ ] **`.env.example`** — lists any new required environment variables
 
-**Common mistakes**
+### Common mistakes
 
 | Mistake | Fix |
 | --------- | ----- |
@@ -106,7 +106,7 @@ All checks below are enforced by the [CI workflow](.github/workflows/ci.yml)
 > The project currently has **no `"files"` field and no `.npmignore`**.
 > Add one before the first publish to avoid shipping the entire repo.
 
-**Common mistakes**
+### Common mistakes
 
 | Mistake | Fix |
 | --------- | ----- |
@@ -200,7 +200,7 @@ Verify these `package.json` fields before publish:
   the [deploy workflow](.github/workflows/deploy.yml) handles build & deploy
   automatically
 
-**Common mistakes**
+### Common mistakes
 
 | Mistake | Fix |
 | --------- | ----- |
@@ -232,7 +232,7 @@ If a broken version is published:
 
 ## Quick Reference: Publish Flow
 
-```
+```text
 Bump version  →  Update CHANGELOG  →  Commit & tag  →  Push tag  →
 CI passes     →  Build & pack verify  →  npm publish --provenance  →
 Post-publish smoke test  →  Create GitHub Release  →  Merge to main (Vercel)

@@ -8,7 +8,7 @@ This guide helps developers integrate and customize the new Transaction Detail f
 
 ### New Files Added
 
-```
+```text
 components/
 ├── ui/
 │   ├── badge.tsx              # Status indicator component
@@ -74,7 +74,7 @@ These are standard shadcn/ui style components.
 
 Copy `TransactionDetailDrawer.tsx` to:
 
-```
+```text
 components/features/transactions/TransactionDetailDrawer.tsx
 ```
 

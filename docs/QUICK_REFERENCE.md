@@ -24,7 +24,7 @@ import TransactionDetailDrawer from "@/components/features/transactions/Transact
 
 ### New Components
 
-```
+```text
 components/features/transactions/TransactionDetailDrawer.tsx
 components/ui/sheet.tsx
 components/ui/badge.tsx
@@ -33,14 +33,14 @@ components/ui/scroll-area.tsx
 
 ### Modified
 
-```
+```text
 components/features/transactions/TransactionHistory.tsx
 README.md
 ```
 
 ### Documentation
 
-```
+```text
 docs/TRANSACTION_DETAIL_FEATURE.md
 docs/TRANSACTION_DETAIL_USAGE.md
 docs/MIGRATION_GUIDE.md
@@ -52,7 +52,7 @@ CHANGELOG.md
 
 ### Tests
 
-```
+```text
 __tests__/transaction-detail.test.tsx
 ```
 

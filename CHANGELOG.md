@@ -68,4 +68,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Previous Versions
 
-_To be documented from git history_
+### To be documented from git history
