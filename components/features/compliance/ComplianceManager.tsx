@@ -156,6 +156,7 @@ function ComplianceManager() {
       {/* Tab Switcher */}
       <div className="flex border-b border-gray-200">
         <button
+          type="button"
           onClick={() => setActiveTab("access")}
           className={`px-6 py-3 text-sm font-medium transition-colors relative ${
             activeTab === "access"
@@ -169,6 +170,7 @@ function ComplianceManager() {
           )}
         </button>
         <button
+          type="button"
           onClick={() => setActiveTab("exports")}
           className={`px-6 py-3 text-sm font-medium transition-colors relative ${
             activeTab === "exports"
@@ -215,83 +217,6 @@ function ComplianceManager() {
                 </p>
               </div>
             </div>
-      {pendingRequests.length > 0 && (
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-amber-600" />
-            Pending Requests ({pendingRequests.length})
-          </h3>
-          <div className="bg-white rounded-lg border divide-y">
-            {pendingRequests.map((req) => (
-              <div key={req.id} className="px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-sm text-gray-900">{req.requesterName}</span>
-                    <span className="text-sm text-gray-500">({req.requesterOrg})</span>
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full ${
-                        req.scope === "full-audit"
-                          ? "bg-purple-100 text-purple-800"
-                          : "bg-blue-100 text-blue-800"
-                      }`}
-                    >
-                      {req.scope === "full-audit" ? "Full Audit" : "Read-only"}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-600 mt-1">{req.rationale}</p>
-                  <div className="flex items-center gap-3 mt-1">
-                    <span className="text-xs text-gray-500">
-                      Requested {new Date(req.createdAt).toLocaleDateString()}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {req.requesterEmail}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => handleApproveRequest(req)}
-                    className="px-3 py-1.5 rounded-md text-xs font-medium bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 transition-colors flex items-center gap-1"
-                  >
-                    <CheckCircle className="w-3 h-3" />
-                    Approve
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleRejectRequest(req.id)}
-                    className="px-3 py-1.5 rounded-md text-xs font-medium bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 transition-colors flex items-center gap-1"
-                  >
-                    <XCircle className="w-3 h-3" />
-                    Reject
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <AuditActivityFeed />
-
-      {activeKeys.length > 0 && (
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-green-600" />
-            Active Keys ({activeKeys.length})
-          </h3>
-          <div className="bg-white rounded-lg border divide-y">
-            {activeKeys.map((key) => (
-              <ViewKeyRow
-                key={key.id}
-                viewKey={key}
-                isRevealed={revealedKeys.has(key.id)}
-                isCopied={copiedId === key.id}
-                onToggleReveal={() => toggleReveal(key.id)}
-                onCopy={() => copyKeyId(key.keyId, key.id)}
-                onRevoke={() => handleRevoke(key.id)}
-              />
-            ))}
           </div>
 
           {showForm && (
@@ -383,6 +308,63 @@ function ComplianceManager() {
             </div>
           )}
 
+          {pendingRequests.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <Clock className="w-4 h-4 text-amber-600" />
+                Pending Requests ({pendingRequests.length})
+              </h3>
+              <div className="bg-white rounded-lg border divide-y">
+                {pendingRequests.map((req) => (
+                  <div key={req.id} className="px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-sm text-gray-900">{req.requesterName}</span>
+                        <span className="text-sm text-gray-500">({req.requesterOrg})</span>
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full ${
+                            req.scope === "full-audit"
+                              ? "bg-purple-100 text-purple-800"
+                              : "bg-blue-100 text-blue-800"
+                          }`}
+                        >
+                          {req.scope === "full-audit" ? "Full Audit" : "Read-only"}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">{req.rationale}</p>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-xs text-gray-500">
+                          Requested {new Date(req.createdAt).toLocaleDateString()}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {req.requesterEmail}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleApproveRequest(req)}
+                        className="px-3 py-1.5 rounded-md text-xs font-medium bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 transition-colors flex items-center gap-1"
+                      >
+                        <CheckCircle className="w-3 h-3" />
+                        Approve
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRejectRequest(req.id)}
+                        className="px-3 py-1.5 rounded-md text-xs font-medium bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 transition-colors flex items-center gap-1"
+                      >
+                        <XCircle className="w-3 h-3" />
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {activeKeys.length > 0 && (
             <div>
               <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2">
@@ -426,13 +408,12 @@ function ComplianceManager() {
               </div>
             </div>
           )}
+
+          <AuditActivityFeed />
         </div>
       ) : (
         <AuditExportRequest />
       )}
-    </section>
-  );
-}
     </section>
   );
 }

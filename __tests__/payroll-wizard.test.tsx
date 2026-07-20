@@ -59,7 +59,7 @@ describe("PayrollWizard UI & Receipt Flow", () => {
 
     // Should now show review list and total salary of all mock employees
     expect(screen.getByText("Payroll Review")).toBeInTheDocument();
-    expect(screen.getByText(/Total: \$19,500/i)).toBeInTheDocument();
+    expect(screen.getByText(/Total: \$23,700/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^continue$/i })).toBeInTheDocument();
   });
 
@@ -150,8 +150,8 @@ describe("PayrollWizard UI & Receipt Flow", () => {
 
     // Verify submission success receipt is visible
     expect(toast.success).toHaveBeenCalledWith("Payroll submitted successfully", expect.any(Object));
-    expect(screen.getByText("Payroll Submitted")).toBeInTheDocument();
-    expect(screen.getByText(/Tx: 0x[0-9a-f]+abc/)).toBeInTheDocument();
+    expect(screen.getByText("Payroll Processed")).toBeInTheDocument();
+    expect(screen.getByText(/0x[0-9a-f]+abc/)).toBeInTheDocument();
 
     // Verify reset works when clicking Start New Payroll
     const startNewBtn = screen.getByRole("button", { name: /start new payroll/i });

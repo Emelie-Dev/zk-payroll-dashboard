@@ -4,13 +4,13 @@ import { X, Mail, MapPin, Briefcase, Calendar, DollarSign, Wallet } from "lucide
 import type { Employee } from "@/types";
 import OnboardingBadge from "./OnboardingBadge";
 
-interface EmployeeDetailProps {
+export interface EmployeeDetailDrawerProps {
   employee: Employee | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function EmployeeDetail({ employee, isOpen, onClose }: EmployeeDetailProps) {
+export function EmployeeDetailDrawer({ employee, isOpen, onClose }: EmployeeDetailDrawerProps) {
   if (!isOpen || !employee) return null;
 
   return (
@@ -100,7 +100,7 @@ export default function EmployeeDetail({ employee, isOpen, onClose }: EmployeeDe
                 </div>
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500" /> Salary Commitment
+                    <CustomCheckCircleIcon className="w-3.5 h-3.5 text-indigo-500" /> Salary Commitment
                   </div>
                   <p className="text-xs font-mono break-all text-gray-500">
                     {employee.salaryCommitment}
@@ -124,7 +124,7 @@ export default function EmployeeDetail({ employee, isOpen, onClose }: EmployeeDe
   );
 }
 
-function CheckCircle2(props: any) {
+function CustomCheckCircleIcon(props: any) {
   return (
     <svg
       {...props}
@@ -158,7 +158,6 @@ import {
 } from "lucide-react";
 import { useEmployeeStore } from "@/stores/employees";
 import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
-import type { Employee } from "@/types";
 import EmptyState from "@/components/ui/EmptyState";
 
 interface CommitmentEntry {
@@ -213,7 +212,7 @@ function buildCommitmentHistory(employee: Employee): CommitmentEntry[] {
   return entries;
 }
 
-function EmployeeDetail({ employeeId }: { employeeId: string }) {
+export default function EmployeeDetail({ employeeId }: { employeeId: string }) {
   const router = useRouter();
   const { employees: storedEmployees, isLoading } = useEmployeeStore();
 
@@ -482,5 +481,3 @@ function EmployeeDetail({ employeeId }: { employeeId: string }) {
     </section>
   );
 }
-
-export default EmployeeDetail;

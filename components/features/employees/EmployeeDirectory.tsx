@@ -8,7 +8,7 @@ import { MOCK_EMPLOYEES } from "@/lib/api/mockData";
 import type { Employee } from "@/types";
 import EmptyState from "@/components/ui/EmptyState";
 import OnboardingBadge from "./OnboardingBadge";
-import EmployeeDetail from "./EmployeeDetail";
+import { EmployeeDetailDrawer } from "./EmployeeDetail";
 import { AddEmployeeModal } from "./AddEmployeeModal";
 
 type StatusFilter = "all" | "active" | "inactive" | "pending";
@@ -30,7 +30,6 @@ function EmployeeDirectory() {
   const { employees: storedEmployees, isLoading: storeLoading } = useEmployeeStore();
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [localLoading, setLocalLoading] = useState(true);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [localLoading, setLocalLoading] = useState(
@@ -180,31 +179,36 @@ function EmployeeDirectory() {
                 return (
                   <li 
                     key={emp.id} 
-                    className="px-4 py-4 hover:bg-gray-50 active:bg-gray-100 cursor-pointer transition-colors"
-                    onClick={() => handleRowClick(emp)}
+                    className="hover:bg-gray-50 active:bg-gray-100 transition-colors"
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">{emp.name}</p>
-                        {emp.email && (
-                          <p className="text-xs text-gray-500 truncate mt-0.5">{emp.email}</p>
-                        )}
-                        <p className="text-xs text-gray-500 mt-1">
-                          {emp.department ?? "—"} · ${emp.salary.toLocaleString()}
-                        </p>
-                        <div className="mt-2 flex gap-2 flex-wrap">
-                          <span
-                            className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${STATUS_BADGE[status]}`}
-                          >
-                            {status}
-                          </span>
-                          <OnboardingBadge status={emp.onboardingStatus} showIcon={false} />
+                    <button
+                      type="button"
+                      onClick={() => handleRowClick(emp)}
+                      className="w-full text-left px-4 py-4 focus:outline-none"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">{emp.name}</p>
+                          {emp.email && (
+                            <p className="text-xs text-gray-500 truncate mt-0.5">{emp.email}</p>
+                          )}
+                          <p className="text-xs text-gray-500 mt-1">
+                            {emp.department ?? "—"} · ${emp.salary.toLocaleString()}
+                          </p>
+                          <div className="mt-2 flex gap-2 flex-wrap">
+                            <span
+                              className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${STATUS_BADGE[status]}`}
+                            >
+                              {status}
+                            </span>
+                            <OnboardingBadge status={emp.onboardingStatus} showIcon={false} />
+                          </div>
+                          <p className="text-[10px] text-gray-400 mt-2">
+                            Since {new Date(emp.startDate).toLocaleDateString()}
+                          </p>
                         </div>
-                        <p className="text-[10px] text-gray-400 mt-2">
-                          Since {new Date(emp.startDate).toLocaleDateString()}
-                        </p>
                       </div>
-                    </div>
+                    </button>
                   </li>
                 );
               })}
@@ -268,10 +272,11 @@ function EmployeeDirectory() {
         )}
       </div>
 
-      <EmployeeDetail 
+      <EmployeeDetailDrawer 
         employee={selectedEmployee} 
         isOpen={isDetailOpen} 
         onClose={() => setIsDetailOpen(false)} 
+      />
       <AddEmployeeModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

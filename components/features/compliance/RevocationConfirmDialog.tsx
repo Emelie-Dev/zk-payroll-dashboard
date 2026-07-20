@@ -72,10 +72,11 @@ export function RevocationConfirmDialog({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">
+            <label htmlFor="revocation-reason" className="block text-sm font-medium mb-2">
               Revocation Reason (Optional)
             </label>
             <textarea
+              id="revocation-reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="e.g., Audit complete, Access no longer needed, Security incident..."
