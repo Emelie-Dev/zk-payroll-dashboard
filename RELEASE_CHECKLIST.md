@@ -19,12 +19,14 @@ Use this checklist before publishing a new version. Each item links to the relev
   - `Security` — vulnerability fixes
 - [ ] **Check that CHANGELOG links reference real issues/PRs**
 - [ ] **Create a git tag** matching the new version (`v{major}.{minor}.{patch}`)
+
   ```bash
   git tag -a v1.0.1 -m "v1.0.1"
   git push origin v1.0.1
   ```
 
 **Common mistakes**
+
 - Forgetting to tag the release commit
 - Bumping version after tagging (tag and commit must match)
 - Using a non-standard tag format (use `v1.2.3`)
@@ -41,6 +43,7 @@ All items below are enforced by [CI workflow](.github/workflows/ci.yml). Run the
 - [ ] `npm run test:smoke` — smoke tests pass
 
 **Common mistakes**
+
 - Pushing with failing CI — run locally first
 - Ignoring TypeScript errors by using `// @ts-ignore` or `any` where a real type exists
 - Committing `test.only` or `test.skip` left over from debugging
@@ -55,6 +58,7 @@ All items below are enforced by [CI workflow](.github/workflows/ci.yml). Run the
 - [ ] **Inline comments** — remove stale or misleading comments in changed code
 
 **Common mistakes**
+
 - README references removed features or old parameter names
 - New exports are undocumented
 - Docs describe behaviour that was modified in this release
@@ -72,6 +76,7 @@ All items below are enforced by [CI workflow](.github/workflows/ci.yml). Run the
 - [ ] **If deploying to Vercel**: [deploy workflow](.github/workflows/deploy.yml) handles this automatically after merge to `main`
 
 **Common mistakes**
+
 - `.env` or secrets baked into the build output
 - Large unnecessary files included in the published package (node_modules, `.next/`, `.git/`)
 - Build succeeds locally but fails in CI due to environment differences
@@ -87,6 +92,7 @@ All items below are enforced by [CI workflow](.github/workflows/ci.yml). Run the
 - [ ] **Environment variables** — `.env.example` is up to date with any new required vars
 
 **Common mistakes**
+
 - Hardcoded dev endpoints or API keys in production config
 - Missing environment variables that cause runtime failures in production
 - `package.json` `"name"` does not match the npm package name
@@ -101,6 +107,7 @@ All items below are enforced by [CI workflow](.github/workflows/ci.yml). Run the
 - [ ] **A maintainer (other than the releaser) has reviewed the release** for a fresh set of eyes
 
 **Common mistakes**
+
 - Skipping peer review for the release itself
 - Releasing late in the day — prefer morning releases so issues can be handled during business hours
 
@@ -131,6 +138,7 @@ gh release create v{version} --generate-notes
 ### If deploying to Vercel
 
 Merge the release branch to `main`. The [deploy workflow](.github/workflows/deploy.yml) handles:
+
 1. `vercel build --prod`
 2. `vercel deploy --prebuilt --prod`
 

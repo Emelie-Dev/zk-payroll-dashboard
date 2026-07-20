@@ -16,15 +16,18 @@ see [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md).
 - [ ] Version matches the annotated git tag (`v{major}.{minor}.{patch}`)
 - [ ] Tag created on the **version-bump commit** (not before, not after)
 - [ ] Tag pushed to origin:
+
   ```bash
   git tag -a v1.2.3 -m "v1.2.3"
   git push origin v1.2.3
   ```
+
 - [ ] `git status` is clean — no uncommitted changes after the bump
 
 **Common mistakes**
+
 | Mistake | Fix |
-|---------|-----|
+| --------- | ----- |
 | Bumping version *after* tagging | Delete the tag, bump, re-tag |
 | Non-standard tag format (`1.2.3` instead of `v1.2.3`) | Use the `v` prefix consistently |
 | Tag not pushed | `git push origin v{version}` |
@@ -44,8 +47,9 @@ All checks below are enforced by the [CI workflow](.github/workflows/ci.yml)
 - [ ] **CI is green** on the release branch / PR — check the GitHub Actions dashboard
 
 **Common mistakes**
+
 | Mistake | Fix |
-|---------|-----|
+| --------- | ----- |
 | `test.only` / `test.skip` left in from debugging | Search: `grep -r "\.only\|\.skip" __tests__/` |
 | Coverage dropped but went unreviewed | Compare against the previous release |
 | CI green locally but red in Actions | Run `npm ci && npm run build` in a clean checkout |
@@ -69,8 +73,9 @@ All checks below are enforced by the [CI workflow](.github/workflows/ci.yml)
 - [ ] **`.env.example`** — lists any new required environment variables
 
 **Common mistakes**
+
 | Mistake | Fix |
-|---------|-----|
+| --------- | ----- |
 | New exports are undocumented | Audit `lib/zk/` for missing doc comments |
 | README references removed features | Search README for old parameter names |
 | CHANGELOG entry under the wrong version heading | Move the entry before tagging |
@@ -81,9 +86,11 @@ All checks below are enforced by the [CI workflow](.github/workflows/ci.yml)
 
 - [ ] `npm run build` — production build completes without warnings
 - [ ] Inspect what will ship:
+
   ```bash
   npm pack --dry-run
   ```
+
   The output **must include**:
   - Compiled JS / TypeScript declaration (`.d.ts`) files
   - `package.json`, `README.md`, `LICENSE`, `CHANGELOG.md`
@@ -100,8 +107,9 @@ All checks below are enforced by the [CI workflow](.github/workflows/ci.yml)
 > Add one before the first publish to avoid shipping the entire repo.
 
 **Common mistakes**
+
 | Mistake | Fix |
-|---------|-----|
+| --------- | ----- |
 | `.env` / secrets in the build output | Add to `.npmignore` and re-pack |
 | Package is unexpectedly large | Compare `npm pack --dry-run` size to previous release |
 | Build passes locally but fails in CI | Always confirm CI green before publishing |
@@ -113,7 +121,7 @@ All checks below are enforced by the [CI workflow](.github/workflows/ci.yml)
 Verify these `package.json` fields before publish:
 
 | Field | Expected |
-|-------|----------|
+| ------- | ---------- |
 | `"name"` | `@zk-payroll/sdk` (scoped) |
 | `"version"` | Matches the git tag |
 | `"private"` | `false` **or removed** |
@@ -138,12 +146,15 @@ Verify these `package.json` fields before publish:
 ### Pre-publish
 
 - [ ] Logged into the correct npm account and scope:
+
   ```bash
   npm whoami
   npm whoami --registry=https://registry.npmjs.org/
   ```
+
 - [ ] 2FA is enabled on the npm account (required for scoped packages)
 - [ ] Dry run — no errors:
+
   ```bash
   npm publish --dry-run
   ```
@@ -151,10 +162,13 @@ Verify these `package.json` fields before publish:
 ### Publish
 
 - [ ] Publish with provenance (recommended for supply-chain security):
+
   ```bash
   npm publish --provenance --access public
   ```
+
   Or without provenance:
+
   ```bash
   npm publish --access public
   ```
@@ -162,27 +176,34 @@ Verify these `package.json` fields before publish:
 ### Post-publish
 
 - [ ] Verify the package is live:
+
   ```bash
   npm view @zk-payroll/sdk@latest
   ```
+
 - [ ] **Smoke-test the published package** in a clean directory:
+
   ```bash
   cd /tmp && mkdir sdk-smoke && cd sdk-smoke
   npm init -y
   npm install @zk-payroll/sdk@latest
   node -e "require('@zk-payroll/sdk')"
   ```
+
 - [ ] **Create a GitHub Release**:
+
   ```bash
   gh release create v{version} --generate-notes
   ```
+
 - [ ] **Vercel deployment** *(if applicable)*: merge to `main` —
   the [deploy workflow](.github/workflows/deploy.yml) handles build & deploy
   automatically
 
 **Common mistakes**
+
 | Mistake | Fix |
-|---------|-----|
+| --------- | ----- |
 | Published from the wrong npm account | `npm unpublish` within 72 h, republish from correct account |
 | Skipped the dry run → bad file list | `npm deprecate` the broken version, publish a patch |
 | Forgot the GitHub Release | `gh release create v{version} --generate-notes` |
@@ -194,13 +215,17 @@ Verify these `package.json` fields before publish:
 If a broken version is published:
 
 1. **Deprecate** (preferred — keeps dependents' installs working but warns them):
+
    ```bash
    npm deprecate @zk-payroll/sdk@"x.y.z" "Known issue — use x.y.z+1 instead"
    ```
+
 2. **Unpublish** (within 72 hours, only if absolutely necessary):
+
    ```bash
    npm unpublish @zk-payroll/sdk@x.y.z
    ```
+
 3. **Publish a patch** with the fix as soon as possible.
 
 ---
@@ -218,7 +243,7 @@ Post-publish smoke test  →  Create GitHub Release  →  Merge to main (Vercel)
 ## Related Files
 
 | Resource | Path |
-|----------|------|
+| ---------- | ------ |
 | Release process | [RELEASE_CHECKLIST.md](./RELEASE_CHECKLIST.md) |
 | CI (lint, typecheck, test, build) | [ci.yml](.github/workflows/ci.yml) |
 | Deploy (Vercel) | [deploy.yml](.github/workflows/deploy.yml) |
@@ -228,4 +253,4 @@ Post-publish smoke test  →  Create GitHub Release  →  Merge to main (Vercel)
 
 ---
 
-*Report issues with this checklist at https://github.com/zkpayroll/zk-payroll-dashboard/issues*
+*Report issues with this checklist at <https://github.com/zkpayroll/zk-payroll-dashboard/issues>*

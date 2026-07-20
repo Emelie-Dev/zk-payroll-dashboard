@@ -63,6 +63,7 @@ npm install @radix-ui/react-dialog@^1.1.17 @radix-ui/react-scroll-area@^1.2.12
 ### 2. Copy UI Components
 
 Copy the following components to your `components/ui/` directory:
+
 - `sheet.tsx`
 - `badge.tsx`
 - `scroll-area.tsx`
@@ -72,6 +73,7 @@ These are standard shadcn/ui style components.
 ### 3. Copy Feature Component
 
 Copy `TransactionDetailDrawer.tsx` to:
+
 ```
 components/features/transactions/TransactionDetailDrawer.tsx
 ```
@@ -81,12 +83,14 @@ components/features/transactions/TransactionDetailDrawer.tsx
 Apply changes to `TransactionHistory.tsx` to integrate the detail drawer:
 
 **Add imports:**
+
 ```typescript
 import { Eye } from "lucide-react";
 import TransactionDetailDrawer from "./TransactionDetailDrawer";
 ```
 
 **Add state:**
+
 ```typescript
 const [selectedTransaction, setSelectedTransaction] = 
   useState<PayrollTransaction | null>(null);
@@ -99,16 +103,18 @@ const handleViewDetails = (transaction: PayrollTransaction) => {
 ```
 
 **Add Actions column header:**
+
 ```tsx
 <th scope="col" className="...">
   <span className="sr-only">Actions</span>
 </th>
 ```
 
-**Update empty state colspan:** 
+**Update empty state colspan:**
 Change from `5` to `6`
 
 **Add row click handler:**
+
 ```tsx
 <tr
   key={tx.id}
@@ -118,6 +124,7 @@ Change from `5` to `6`
 ```
 
 **Add Details button cell:**
+
 ```tsx
 <td className="px-6 py-4">
   <button
@@ -136,6 +143,7 @@ Change from `5` to `6`
 ```
 
 **Add drawer at end of component:**
+
 ```tsx
 <TransactionDetailDrawer
   transaction={selectedTransaction}
@@ -151,18 +159,21 @@ Change from `5` to `6`
 All styling uses Tailwind CSS. To customize:
 
 **Colors:**
+
 - Verified status: `bg-green-100 text-green-800`
 - Pending status: `bg-yellow-100 text-yellow-800`
 - Failed status: `bg-red-100 text-red-800`
 - Primary actions: `text-indigo-700 bg-indigo-50`
 
 **Drawer width:**
+
 ```tsx
 // In sheet.tsx, right variant
 "... sm:max-w-xl"  // Change xl to 2xl, 3xl, etc.
 ```
 
 **Section spacing:**
+
 ```tsx
 <div className="space-y-6 py-6">  // Adjust spacing
 ```
@@ -188,6 +199,7 @@ To add a new section to the drawer:
 **Add new transaction fields:**
 
 1. Update `PayrollTransaction` type in `types/models.ts`:
+
 ```typescript
 export interface PayrollTransaction {
   // existing fields...
@@ -195,7 +207,8 @@ export interface PayrollTransaction {
 }
 ```
 
-2. Add display in drawer:
+1. Add display in drawer:
+
 ```tsx
 <div className="p-3 border border-gray-200 rounded-lg">
   <div className="text-xs text-gray-500 mb-1">Your Field</div>
@@ -210,11 +223,13 @@ export interface PayrollTransaction {
 To add new status types:
 
 1. Update type:
+
 ```typescript
 status: "pending" | "verified" | "failed" | "your-status";
 ```
 
-2. Add to status handlers in TransactionDetailDrawer:
+1. Add to status handlers in TransactionDetailDrawer:
+
 ```typescript
 const getStatusIcon = () => {
   switch (transaction.status) {
@@ -233,7 +248,7 @@ const getStatusBadge = () => {
 };
 ```
 
-3. Add description in verification section.
+1. Add description in verification section.
 
 ## Testing
 
@@ -328,6 +343,7 @@ useEffect(() => {
 ✅ Skip links where appropriate
 
 To test accessibility:
+
 1. Navigate using only keyboard
 2. Use screen reader (NVDA/JAWS/VoiceOver)
 3. Check color contrast ratios
@@ -366,6 +382,7 @@ const formattedDate = useMemo(
 ### Issue: Drawer not closing on overlay click
 
 **Solution:** Ensure SheetOverlay is rendered in SheetContent:
+
 ```tsx
 <SheetPortal>
   <SheetOverlay />  {/* Must be here */}
@@ -375,6 +392,7 @@ const formattedDate = useMemo(
 ### Issue: Copy to clipboard not working
 
 **Solution:** Requires HTTPS or localhost:
+
 ```typescript
 // Fallback for non-HTTPS
 if (!navigator.clipboard) {
@@ -385,11 +403,13 @@ if (!navigator.clipboard) {
 ### Issue: Animations not working
 
 **Solution:** Ensure `tailwindcss-animate` is installed:
+
 ```bash
 npm install tailwindcss-animate
 ```
 
 And added to `tailwind.config.ts`:
+
 ```typescript
 plugins: [require("tailwindcss-animate")]
 ```
@@ -399,37 +419,43 @@ plugins: [require("tailwindcss-animate")]
 If you need to revert this feature:
 
 1. **Remove state from TransactionHistory:**
+
 ```typescript
 // Remove these lines
 const [selectedTransaction, setSelectedTransaction] = useState(null);
 const [detailDrawerOpen, setDetailDrawerOpen] = useState(false);
 ```
 
-2. **Remove Actions column:**
+1. **Remove Actions column:**
+
 - Remove `<th>` for Actions in thead
 - Remove `<td>` with Details button in tbody
 - Change empty state colspan back to `5`
 
-3. **Remove hover effects:**
+1. **Remove hover effects:**
+
 ```typescript
 // Change back to:
 <tr key={tx.id}>
 ```
 
-4. **Remove drawer render:**
+1. **Remove drawer render:**
+
 ```typescript
 // Remove:
 <TransactionDetailDrawer ... />
 ```
 
-5. **Remove import:**
+1. **Remove import:**
+
 ```typescript
 // Remove:
 import TransactionDetailDrawer from "./TransactionDetailDrawer";
 import { Eye } from "lucide-react";
 ```
 
-6. **Remove new files:**
+1. **Remove new files:**
+
 ```bash
 rm components/features/transactions/TransactionDetailDrawer.tsx
 rm components/ui/sheet.tsx
@@ -441,6 +467,7 @@ rm __tests__/transaction-detail.test.tsx
 ## Support
 
 For issues or questions:
+
 - Check existing tests for examples
 - Review the comprehensive documentation
 - Open an issue on GitHub
@@ -449,6 +476,7 @@ For issues or questions:
 ## Next Steps
 
 Recommended enhancements:
+
 1. Add PDF export functionality
 2. Implement email sharing
 3. Add audit trail section

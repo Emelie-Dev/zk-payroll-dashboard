@@ -5,7 +5,7 @@ A step-by-step guide for running the ZK Payroll Dashboard locally with a realist
 ## 📋 Prerequisites
 
 | Tool | Version | Purpose |
-|------|---------|---------|
+| ------ | --------- | --------- |
 | Node.js | 18+ | JavaScript runtime |
 | npm / pnpm | Latest | Package manager |
 | Freighter Wallet | Chrome / Firefox extension | Stellar wallet for testnet |
@@ -79,6 +79,7 @@ curl "https://friendbot.stellar.org?addr=GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 Replace the address with your Freighter wallet's public key.
 
 **Expected response:**
+
 ```json
 {
   "hash": "...",
@@ -120,6 +121,7 @@ npm run test:smoke
 ```
 
 These cover:
+
 - Wallet connection states (connect, disconnect, loading, error)
 - Payroll initiation (summary cards, proof generation)
 - Dashboard status (history table, status visibility)
@@ -129,6 +131,7 @@ These cover:
 Use this checklist to confirm the dashboard is wired correctly:
 
 ### Wallet Connection
+
 - [ ] Freighter shows **Testnet** network
 - [ ] Freighter is unlocked and funded
 - [ ] Clicking **Connect Wallet** on the dashboard triggers Freighter
@@ -137,17 +140,20 @@ Use this checklist to confirm the dashboard is wired correctly:
 - [ ] Disconnecting clears the wallet state
 
 ### Dashboard Home
+
 - [ ] After connecting, the company setup banner appears (if no company)
 - [ ] Clicking **Set up now** navigates to `/setup`
 - [ ] Dashboard displays payroll summary cards (Total Payroll, Active Employees, Pending Approvals)
 - [ ] Mock ZK proof generation works and shows a commitment hash
 
 ### Employee Directory
+
 - [ ] `/employees` shows the employee directory with filter buttons
 - [ ] All / Active / Inactive / Pending filters work
 - [ ] Empty state is shown when no employees match a filter
 
 ### Transaction History
+
 - [ ] `/history` shows transaction history table
 - [ ] Filters panel can be opened/closed
 - [ ] Status, employee, date range, and payroll run filters work
@@ -155,6 +161,7 @@ Use this checklist to confirm the dashboard is wired correctly:
 - [ ] "No transactions match the current filters" appears when no results
 
 ### Compliance / Audit
+
 - [ ] `/compliance` shows Auditor Access Management
 - [ ] Generating a new view key creates an active key entry
 - [ ] Revealing a key shows the full key ID
@@ -162,27 +169,32 @@ Use this checklist to confirm the dashboard is wired correctly:
 - [ ] Expired keys are visually distinguishable
 
 ### Navigation
+
 - [ ] Sidebar links navigate correctly: Dashboard, Employees, History, Compliance
 - [ ] The active page is highlighted in the sidebar
 
 ## 🐛 Troubleshooting
 
 ### "Freighter not detected"
+
 - Ensure Freighter is installed and unlocked
 - Refresh the page after installing
 - Check that Freighter is not in "Public" or "Futurenet" mode
 
 ### "Failed to connect wallet"
+
 - Make sure your testnet account is funded
 - Try unlocking and re-locking Freighter
 - Check the browser console for detailed errors
 
 ### "Horizon request failed"
+
 - Verify `.env.local` has the correct URLs
 - Testnet Horizon should be `https://horizon-testnet.stellar.org`
 - Check your internet connection
 
 ### "Port 3000 already in use"
+
 ```bash
 # Kill the process on port 3000
 lsof -ti:3000 | xargs kill -9

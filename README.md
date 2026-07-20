@@ -114,6 +114,7 @@ Once the transaction is confirmed, it will appear in the **Transaction History**
 ### 4. Transaction Details 🆕
 
 Click any transaction row or the "Details" button to open a comprehensive detail view that shows:
+
 - **Transaction Summary**: Total amount and employee count
 - **Verification Status**: With detailed metadata and explanations
 - **Zero-Knowledge Proof**: Masked by default for privacy, viewable on demand
@@ -122,6 +123,7 @@ Click any transaction row or the "Details" button to open a comprehensive detail
 - **Privacy Protection**: Clear indication of what remains encrypted
 
 For detailed usage instructions, see [Transaction Detail Usage Guide](docs/TRANSACTION_DETAIL_USAGE.md).
+
 ## 📚 Operator docs
 
 - [Dashboard setup guide](docs/SETUP_GUIDE.md)

@@ -5,7 +5,7 @@ A lightweight guide for writing consistent UX copy across the ZK Payroll Dashboa
 ## 🎯 Tone & Voice
 
 | Attribute | Standard |
-|-----------|----------|
+| ----------- | ---------- |
 | **Tone** | Professional, reassuring, and direct |
 | **Voice** | Active voice, second-person ("you") when addressing the user |
 | **Sentence length** | Keep under 25 words where possible |
@@ -15,7 +15,7 @@ A lightweight guide for writing consistent UX copy across the ZK Payroll Dashboa
 ### Examples
 
 | ✅ Do | ❌ Don't |
-|-------|----------|
+| ------- | ---------- |
 | "Connect your wallet to get started" | "Connect Wallet To Get Started" |
 | "No employees yet" | "You Have No Employees" |
 | "Add employees to get started with payroll." | "Employee Addition Required for Payroll Initiation" |
@@ -26,7 +26,7 @@ A lightweight guide for writing consistent UX copy across the ZK Payroll Dashboa
 Use these exact labels consistently across the app.
 
 | Status | Usage | Badge Style |
-|--------|-------|-------------|
+| -------- | ------- | ------------- |
 | `verified` | Payroll transaction verified on-chain | Green (`bg-green-100 text-green-800`) |
 | `pending` | Transaction submitted but not yet confirmed | Yellow (`bg-yellow-100 text-yellow-800`) |
 | `failed` | Transaction rejected by the network | Red (`bg-red-100 text-red-800`) |
@@ -52,7 +52,7 @@ Use these exact labels consistently across the app.
 ### Message Catalog
 
 | Scenario | Error Copy |
-|----------|------------|
+| ---------- | ------------ |
 | Wallet connection failure | "Failed to connect wallet. Ensure Freighter is unlocked and on Testnet." |
 | Proof generation failure | "Proof generation failed: circuit constraint mismatch. Please retry." |
 | Transaction submission failure | "Submission failed: network timeout. The transaction may still be processing." |
@@ -70,7 +70,7 @@ Use these exact labels consistently across the app.
 ## 🔔 Success & Confirmation Messages
 
 | Scenario | Confirmation Copy |
-|----------|-------------------|
+| ---------- | ------------------- |
 | Wallet connected | "Wallet connected" (announced via screen reader) |
 | Proof generated | "Proof generated successfully" |
 | Payroll submitted | "Payroll submitted successfully — Transaction submitted to the Stellar network." |
@@ -81,7 +81,7 @@ Use these exact labels consistently across the app.
 ## ⚡ Warning Messages
 
 | Scenario | Warning Copy |
-|----------|--------------|
+| ---------- | -------------- |
 | Company not set up | "Company setup required — Complete your company setup to start managing payroll." |
 | Action required (pending approvals) | "Action required" |
 | Low treasury balance | "Treasury balance is low — Fund your account before the next pay run." |
@@ -92,7 +92,7 @@ Use these exact labels consistently across the app.
 Use these terms consistently throughout the dashboard.
 
 | Term | Definition | Usage Notes |
-|------|------------|-------------|
+| ------ | ------------ | ------------- |
 | **Payroll** | The process of paying employees for a given period | Not "salary run" or "pay cycle" |
 | **Payroll run** | A single batch of payments in one period | |
 | **Proof** | A zero-knowledge proof verifying payroll correctness | Short for "ZK proof" |
@@ -114,6 +114,7 @@ Description: [What to do next] + [optional benefit]
 ```
 
 Examples:
+
 - "No employees yet → Add employees to get started with payroll."
 - "No transactions yet → Process your first payroll to see it here."
 - "No view keys generated → Generate a view key to grant auditor access."
