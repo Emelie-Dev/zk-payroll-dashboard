@@ -62,14 +62,16 @@ The **ZK Payroll Dashboard** is a privacy-first web application designed for man
    ```
 
 4. **Run Development Server**
+
    ```bash
    npm run dev
    ```
+
    Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
 
 ## 🏗 Project Structure
 
-```
+```text
 zk-payroll-dashboard/
 ├── app/                  # Next.js App Router pages
 │   ├── globals.css       # Global styles & Tailwind directives
