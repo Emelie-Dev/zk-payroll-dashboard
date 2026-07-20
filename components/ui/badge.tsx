@@ -21,6 +21,8 @@ const badgeVariants = cva(
           "border-transparent bg-yellow-100 text-yellow-800",
         info:
           "border-transparent bg-blue-100 text-blue-800",
+        error:
+          "border-transparent bg-red-100 text-red-800",
       },
     },
     defaultVariants: {
@@ -40,3 +42,4 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 }
 
 export { Badge, badgeVariants }
+export default Badge

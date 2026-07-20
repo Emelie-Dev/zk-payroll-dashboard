@@ -29,6 +29,7 @@ const STATUS_STYLES: Record<string, string> = {
   verified: "bg-green-100 text-green-800",
   pending: "bg-yellow-100 text-yellow-800",
   failed: "bg-red-100 text-red-800",
+  cancelled: "bg-gray-100 text-gray-800",
 };
 
 import type { LucideIcon } from "lucide-react";
@@ -37,6 +38,7 @@ const STATUS_ICONS: Record<string, LucideIcon> = {
   verified: CheckCircle,
   pending: Clock,
   failed: XCircle,
+  cancelled: XCircle,
 };
 
 export function findPayrollRun(id: string, runs = MOCK_PAYROLL_RUNS): PayrollRun | undefined {

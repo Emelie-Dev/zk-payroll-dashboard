@@ -118,6 +118,17 @@ export const MOCK_TRANSACTIONS: PayrollTransaction[] = [
     status: "pending",
     isArchived: false,
   },
+  {
+    id: "tx_004",
+    companyId: "company_001",
+    timestamp: "2025-04-30T09:00:00Z",
+    createdAt: "2025-04-30T09:00:00Z",
+    totalAmount: 4800,
+    employeeCount: 1,
+    proof: "",
+    status: "cancelled",
+    isArchived: false,
+  },
 ];
 
 export const MOCK_PAYROLL_RUNS: PayrollRun[] = MOCK_TRANSACTIONS.map(tx => ({

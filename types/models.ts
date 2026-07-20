@@ -40,7 +40,7 @@ export interface PayrollTransaction {
   totalAmount: number;
   employeeCount: number;
   proof: string;
-  status: "pending" | "verified" | "failed";
+  status: "pending" | "verified" | "failed" | "cancelled";
   txHash?: string;
   isArchived?: boolean;
 }

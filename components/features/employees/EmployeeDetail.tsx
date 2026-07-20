@@ -1,8 +1,30 @@
 "use client";
 
-import { X, Mail, MapPin, Briefcase, Calendar, DollarSign, Wallet } from "lucide-react";
+import { useMemo } from "react";
+import { useRouter } from "next/navigation";
+import {
+  X,
+  Mail,
+  MapPin,
+  Briefcase,
+  Calendar,
+  DollarSign,
+  Wallet,
+  ArrowLeft,
+  Users,
+  Loader2,
+  Clock,
+  Shield,
+  FileText,
+  Circle,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
+import { useEmployeeStore } from "@/stores/employees";
+import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
 import type { Employee } from "@/types";
 import OnboardingBadge from "./OnboardingBadge";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface EmployeeDetailProps {
   employee: Employee | null;
@@ -10,7 +32,7 @@ interface EmployeeDetailProps {
   onClose: () => void;
 }
 
-export default function EmployeeDetail({ employee, isOpen, onClose }: EmployeeDetailProps) {
+function EmployeeDetailSlideOver({ employee, isOpen, onClose }: EmployeeDetailProps) {
   if (!isOpen || !employee) return null;
 
   return (
@@ -124,43 +146,6 @@ export default function EmployeeDetail({ employee, isOpen, onClose }: EmployeeDe
   );
 }
 
-function CheckCircle2(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
-  )
-}
-import { useMemo } from "react";
-import { useRouter } from "next/navigation";
-import {
-  ArrowLeft,
-  Users,
-  Loader2,
-  Clock,
-  Shield,
-  FileText,
-  Circle,
-  CheckCircle2,
-  XCircle,
-} from "lucide-react";
-import { useEmployeeStore } from "@/stores/employees";
-import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
-import type { Employee } from "@/types";
-import EmptyState from "@/components/ui/EmptyState";
-
 interface CommitmentEntry {
   id: string;
   commitment: string;
@@ -181,7 +166,7 @@ const STATUS_BADGE: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800",
 };
 
-const PAYROLL_STATUS_ICON: Record<string, typeof CheckCircle2> = {
+const PAYROLL_STATUS_ICON: Record<string, React.ComponentType<any>> = {
   verified: CheckCircle2,
   pending: Clock,
   failed: XCircle,
@@ -213,7 +198,7 @@ function buildCommitmentHistory(employee: Employee): CommitmentEntry[] {
   return entries;
 }
 
-function EmployeeDetail({ employeeId }: { employeeId: string }) {
+function EmployeeDetailFullPage({ employeeId }: { employeeId: string }) {
   const router = useRouter();
   const { employees: storedEmployees, isLoading } = useEmployeeStore();
 
@@ -483,4 +468,20 @@ function EmployeeDetail({ employeeId }: { employeeId: string }) {
   );
 }
 
-export default EmployeeDetail;
+export default function EmployeeDetail(props: {
+  employee?: Employee | null;
+  isOpen?: boolean;
+  onClose?: () => void;
+  employeeId?: string;
+}) {
+  if (props.employeeId !== undefined) {
+    return <EmployeeDetailFullPage employeeId={props.employeeId} />;
+  }
+  return (
+    <EmployeeDetailSlideOver
+      employee={props.employee ?? null}
+      isOpen={props.isOpen ?? false}
+      onClose={props.onClose ?? (() => {})}
+    />
+  );
+}

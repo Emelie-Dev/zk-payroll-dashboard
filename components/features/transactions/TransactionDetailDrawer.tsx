@@ -61,6 +61,8 @@ function TransactionDetailDrawer({
         return <Clock className="w-5 h-5 text-yellow-600" />;
       case "failed":
         return <XCircle className="w-5 h-5 text-red-600" />;
+      case "cancelled":
+        return <XCircle className="w-5 h-5 text-gray-500" />;
     }
   };
 
@@ -72,6 +74,8 @@ function TransactionDetailDrawer({
         return <Badge variant="warning">Pending</Badge>;
       case "failed":
         return <Badge variant="destructive">Failed</Badge>;
+      case "cancelled":
+        return <Badge variant="secondary">Cancelled</Badge>;
     }
   };
 
@@ -200,6 +204,8 @@ function TransactionDetailDrawer({
                       "This transaction is awaiting verification. The zero-knowledge proof is being processed."}
                     {transaction.status === "failed" &&
                       "This transaction failed verification. Please contact support if you believe this is an error."}
+                    {transaction.status === "cancelled" &&
+                      "This transaction has been cancelled."}
                   </div>
                 </div>
 
