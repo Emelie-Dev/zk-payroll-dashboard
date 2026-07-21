@@ -193,11 +193,7 @@ function EmployeeDirectory() {
                             {emp.department ?? "—"} · ${emp.salary.toLocaleString()}
                           </p>
                           <div className="mt-2 flex gap-2 flex-wrap">
-                            <span
-                              className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${STATUS_BADGE[status]}`}
-                            >
-                              {status}
-                            </span>
+                            <StatusBadge status={status} showIcon={false} className="px-2 py-0.5 text-[10px]" />
                             <OnboardingBadge status={emp.onboardingStatus} showIcon={false} />
                           </div>
                           <p className="text-[10px] text-gray-400 mt-2">

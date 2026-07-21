@@ -23,6 +23,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import StatusBadge from "@/components/ui/StatusBadge";
+import Badge from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { PayrollTransaction } from "@/types";
 
