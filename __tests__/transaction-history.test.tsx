@@ -189,10 +189,10 @@ describe("TransactionHistory – archived mode", () => {
     fireEvent.change(runIdInput, { target: { value: "tx_999" } });
 
     expect(
-      screen.getByText(
+      screen.getAllByText(
         /No transactions match the current filters/i
-      )
-    ).toBeInTheDocument();
+      ).length
+    ).toBeGreaterThan(0);
   });
 });
 

@@ -326,6 +326,7 @@ export default function ImportReviewQueue() {
         salaryCommitment: `0ximported_${record.rowIndex}`,
         isActive: true,
         status: "pending",
+        onboardingStatus: "completed",
         startDate: record.startDate,
       });
       toast.success(`${record.name} approved and added to directory`);
@@ -347,6 +348,7 @@ export default function ImportReviewQueue() {
           salaryCommitment: `0ximported_${r.rowIndex}`,
           isActive: true,
           status: "pending",
+          onboardingStatus: "completed",
           startDate: r.startDate,
         });
       }
