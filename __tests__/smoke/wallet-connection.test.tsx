@@ -3,25 +3,47 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import WalletConnect from "@/components/features/wallet/WalletConnect";
 import { useWalletStore } from "@/stores/walletStore";
 
+const mockConnect = vi.fn();
+const mockDisconnect = vi.fn();
+
 vi.mock("@/components/providers/StellarProvider", () => ({
   useStellar: () => ({
-    connect: vi.fn(),
-    disconnect: vi.fn(),
+    connect: mockConnect,
+    disconnect: mockDisconnect,
     isFreighterInstalled: true,
   }),
   EXPECTED_NETWORK: "TESTNET",
 }));
 
 beforeEach(() => {
+  mockConnect.mockReset();
+  mockDisconnect.mockReset();
   useWalletStore.getState().reset();
 });
 
 describe("Smoke: Wallet Connection", () => {
   it("renders connect button when disconnected", () => {
     render(<WalletConnect />);
+
     expect(
-      screen.getByRole("button", { name: /connect freighter/i }),
+      screen.getByRole("button", {
+        name: /connect freighter/i,
+      }),
     ).toBeInTheDocument();
+  });
+
+  it("calls connect when the connect button is clicked", async () => {
+    render(<WalletConnect />);
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /connect freighter/i,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(mockConnect).toHaveBeenCalledTimes(1);
+    });
   });
 
   it("shows connected state with wallet address", () => {
