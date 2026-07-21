@@ -43,9 +43,32 @@ const NETWORK_CONFIG: Record<
     },
 };
 
-export const EXPECTED_NETWORK: StellarNetwork = 'TESTNET';
+const CONFIGURABLE_NETWORKS: StellarNetwork[] = ['TESTNET', 'PUBLIC'];
+const DEFAULT_NETWORK: StellarNetwork = 'TESTNET';
 
 const log = createLogger('StellarProvider');
+
+// Resolves the network this app is configured to run against from
+// NEXT_PUBLIC_STELLAR_NETWORK. Falls back to TESTNET when the variable is
+// unset or holds an unsupported value, so a misconfigured deployment degrades
+// to the safest default instead of crashing the client bundle.
+function resolveExpectedNetwork(): StellarNetwork {
+    const configured = process.env.NEXT_PUBLIC_STELLAR_NETWORK;
+
+    if (configured && CONFIGURABLE_NETWORKS.includes(configured as StellarNetwork)) {
+        return configured as StellarNetwork;
+    }
+
+    if (configured) {
+        log.warn('NEXT_PUBLIC_STELLAR_NETWORK has an unsupported value; defaulting to TESTNET', {
+            value: configured,
+        });
+    }
+
+    return DEFAULT_NETWORK;
+}
+
+export const EXPECTED_NETWORK: StellarNetwork = resolveExpectedNetwork();
 
 // ─── Context Types ────────────────────────────────────────────────────────────
 
