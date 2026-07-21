@@ -174,11 +174,12 @@ function EmployeeDirectory() {
               {filtered.map((emp) => {
                 const status = deriveStatus(emp);
                 return (
-                  <li 
-                    key={emp.id} 
-                    className="px-4 py-4 hover:bg-gray-50 active:bg-gray-100 cursor-pointer transition-colors"
-                    onClick={() => handleRowClick(emp)}
-                  >
+                  <li key={emp.id}>
+                    <button
+                      type="button"
+                      className="w-full text-left px-4 py-4 hover:bg-gray-50 active:bg-gray-100 cursor-pointer transition-colors"
+                      onClick={() => handleRowClick(emp)}
+                    >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">{emp.name}</p>
@@ -197,6 +198,7 @@ function EmployeeDirectory() {
                         </p>
                       </div>
                     </div>
+                    </button>
                   </li>
                 );
               })}
