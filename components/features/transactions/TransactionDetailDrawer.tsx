@@ -22,7 +22,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
+import StatusBadge from "@/components/ui/StatusBadge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { PayrollTransaction } from "@/types";
 
@@ -67,16 +67,7 @@ function TransactionDetailDrawer({
   };
 
   const getStatusBadge = () => {
-    switch (transaction.status) {
-      case "verified":
-        return <Badge variant="success">Verified</Badge>;
-      case "pending":
-        return <Badge variant="warning">Pending</Badge>;
-      case "failed":
-        return <Badge variant="destructive">Failed</Badge>;
-      case "cancelled":
-        return <Badge variant="secondary">Cancelled</Badge>;
-    }
+    return <StatusBadge status={transaction.status} />;
   };
 
   const formatDate = (dateString: string) => {

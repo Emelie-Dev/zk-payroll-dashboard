@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AlertTriangle, CheckCircle, ArrowDownLeft, Plus } from "lucide-react";
 import { MOCK_TREASURY_BALANCE, MOCK_TRANSACTIONS, MOCK_COMPANIES } from "@/lib/api/mockData";
 import FundingForecast from "./FundingForecast";
+import StatusBadge from "@/components/ui/StatusBadge";
 
 function TreasuryView() {
   const [toastVisible, setToastVisible] = useState(false);
@@ -150,9 +151,7 @@ function TreasuryView() {
                     ${tx.totalAmount.toLocaleString()}
                   </td>
                   <td className="px-6 py-4">
-                    <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-                      {tx.status}
-                    </span>
+                    <StatusBadge status={tx.status} />
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
                     {new Date(tx.createdAt).toLocaleDateString()}
