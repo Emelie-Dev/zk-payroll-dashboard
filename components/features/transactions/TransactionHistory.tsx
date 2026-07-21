@@ -20,6 +20,7 @@ import { MOCK_TRANSACTIONS, MOCK_EMPLOYEES } from "@/lib/api/mockData";
 import type { PayrollTransaction } from "@/types";
 import TransactionDetailDrawer from "./TransactionDetailDrawer";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import StatusBadge from "@/components/ui/StatusBadge";
 
 type StatusFilter = "all" | "verified" | "pending" | "failed" | "cancelled";
 
@@ -94,12 +95,7 @@ function downloadCsv(csv: string, filename: string) {
   URL.revokeObjectURL(url);
 }
 
-const STATUS_STYLES: Record<string, string> = {
-  verified: "bg-green-100 text-green-800",
-  pending: "bg-yellow-100 text-yellow-800",
-  failed: "bg-red-100 text-red-800",
-  cancelled: "bg-gray-100 text-gray-800",
-};
+
 
 interface TransactionHistoryProps {
   mode?: "history" | "archived";
@@ -629,13 +625,7 @@ function TransactionHistory({ mode = "history" }: TransactionHistoryProps) {
                           ${tx.totalAmount.toLocaleString()} · {new Date(tx.createdAt).toLocaleDateString()}
                         </p>
                       </div>
-                      <span
-                        className={`flex-shrink-0 px-2 py-1 text-xs font-medium rounded-full ${
-                          STATUS_STYLES[tx.status] ?? "bg-gray-100 text-gray-600"
-                        }`}
-                      >
-                        {tx.status}
-                      </span>
+                      <StatusBadge status={tx.status} />
                     </div>
                     <div className="mt-3 flex gap-2">
                       <a
@@ -745,13 +735,7 @@ function TransactionHistory({ mode = "history" }: TransactionHistoryProps) {
                         ${tx.totalAmount.toLocaleString()}
                       </td>
                       <td className="px-6 py-4">
-                        <span
-                          className={`px-2 py-1 text-xs font-medium rounded-full ${
-                            STATUS_STYLES[tx.status] ?? "bg-gray-100 text-gray-600"
-                          }`}
-                        >
-                          {tx.status}
-                        </span>
+                        <StatusBadge status={tx.status} />
                       </td>
                       <td className="px-6 py-4 text-gray-600">
                         {new Date(tx.createdAt).toLocaleDateString()}

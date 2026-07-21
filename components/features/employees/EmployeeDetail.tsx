@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
+import StatusBadge from "@/components/ui/StatusBadge";
 import {
   X,
   Mail,
@@ -160,23 +161,7 @@ function deriveStatus(e: Employee): "active" | "inactive" | "pending" {
   return "active";
 }
 
-const STATUS_BADGE: Record<string, string> = {
-  active: "bg-green-100 text-green-800",
-  inactive: "bg-gray-100 text-gray-600",
-  pending: "bg-yellow-100 text-yellow-800",
-};
 
-const PAYROLL_STATUS_ICON: Record<string, React.ComponentType<any>> = {
-  verified: CheckCircle2,
-  pending: Clock,
-  failed: XCircle,
-};
-
-const PAYROLL_STATUS_COLOR: Record<string, string> = {
-  verified: "text-green-600",
-  pending: "text-yellow-600",
-  failed: "text-red-600",
-};
 
 function buildCommitmentHistory(employee: Employee): CommitmentEntry[] {
   const entries: CommitmentEntry[] = [
@@ -295,11 +280,7 @@ function EmployeeDetailFullPage({ employeeId }: { employeeId: string }) {
                 <p className="text-sm text-gray-500">{employee.email}</p>
               )}
             </div>
-            <span
-              className={`ml-auto px-3 py-1 text-xs font-medium rounded-full ${STATUS_BADGE[status]}`}
-            >
-              {status}
-            </span>
+            <StatusBadge status={status} showIcon={false} className="ml-auto px-3 py-1" />
           </div>
 
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -435,31 +416,22 @@ function EmployeeDetailFullPage({ employeeId }: { employeeId: string }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {payrollActivity.map((run) => {
-                const StatusIcon = PAYROLL_STATUS_ICON[run.status] ?? Clock;
-                const statusColor = PAYROLL_STATUS_COLOR[run.status] ?? "text-gray-600";
-                return (
-                  <tr key={run.id}>
-                    <td className="px-6 py-3 font-mono text-xs text-gray-900">
-                      {run.id}
-                    </td>
-                    <td className="px-6 py-3">
-                      <span
-                        className={`inline-flex items-center gap-1.5 text-sm ${statusColor}`}
-                      >
-                        <StatusIcon className="w-3.5 h-3.5" aria-hidden="true" />
-                        {run.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-3 text-sm font-medium text-gray-900">
-                      ${run.totalAmount.toLocaleString()}
-                    </td>
-                    <td className="px-6 py-3 text-sm text-gray-600">
-                      {new Date(run.createdAt).toLocaleDateString()}
-                    </td>
-                  </tr>
-                );
-              })}
+              {payrollActivity.map((run) => (
+                <tr key={run.id}>
+                  <td className="px-6 py-3 font-mono text-xs text-gray-900">
+                    {run.id}
+                  </td>
+                  <td className="px-6 py-3">
+                    <StatusBadge status={run.status} />
+                  </td>
+                  <td className="px-6 py-3 text-sm font-medium text-gray-900">
+                    ${run.totalAmount.toLocaleString()}
+                  </td>
+                  <td className="px-6 py-3 text-sm text-gray-600">
+                    {new Date(run.createdAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         )}

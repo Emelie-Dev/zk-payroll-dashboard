@@ -10,6 +10,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import OnboardingBadge from "./OnboardingBadge";
 import EmployeeDetail from "./EmployeeDetail";
 import { AddEmployeeModal } from "./AddEmployeeModal";
+import StatusBadge from "@/components/ui/StatusBadge";
 
 type StatusFilter = "all" | "active" | "inactive" | "pending";
 
@@ -20,11 +21,7 @@ function deriveStatus(e: Employee): "active" | "inactive" | "pending" {
   return "active";
 }
 
-const STATUS_BADGE: Record<"active" | "inactive" | "pending", string> = {
-  active: "bg-green-100 text-green-800",
-  inactive: "bg-gray-100 text-gray-600",
-  pending: "bg-yellow-100 text-yellow-800",
-};
+
 
 function EmployeeDirectory() {
   const { employees: storedEmployees, isLoading: storeLoading } = useEmployeeStore();
@@ -192,11 +189,7 @@ function EmployeeDirectory() {
                           {emp.department ?? "—"} · ${emp.salary.toLocaleString()}
                         </p>
                         <div className="mt-2 flex gap-2 flex-wrap">
-                          <span
-                            className={`px-2 py-0.5 text-[10px] font-medium rounded-full ${STATUS_BADGE[status]}`}
-                          >
-                            {status}
-                          </span>
+                          <StatusBadge status={status} showIcon={false} className="text-[10px] px-2 py-0.5" />
                           <OnboardingBadge status={emp.onboardingStatus} showIcon={false} />
                         </div>
                         <p className="text-[10px] text-gray-400 mt-2">
@@ -242,9 +235,7 @@ function EmployeeDirectory() {
                         ${emp.salary.toLocaleString()}
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full ${STATUS_BADGE[status]}`}>
-                          {status}
-                        </span>
+                         <StatusBadge status={status} showIcon={false} />
                       </td>
                       <td className="px-6 py-4">
                         <OnboardingBadge status={emp.onboardingStatus} />
