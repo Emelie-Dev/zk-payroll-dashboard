@@ -9,6 +9,7 @@ vi.mock("@/components/providers/StellarProvider", () => ({
     disconnect: vi.fn(),
     isFreighterInstalled: true,
   }),
+  EXPECTED_NETWORK: "TESTNET",
 }));
 
 beforeEach(() => {
@@ -50,5 +51,30 @@ describe("Smoke: Wallet Connection", () => {
     render(<WalletConnect />);
     expect(screen.getByRole("alert")).toBeInTheDocument();
     expect(screen.getByText("Connection rejected")).toBeInTheDocument();
+  });
+
+  it("shows a Wrong Network badge when connected to a network other than EXPECTED_NETWORK", () => {
+    useWalletStore.setState({
+      isConnected: true,
+      publicKey: "GBXTQW2V3MHZLZ5K2JZ29MQJ3DQJ29MQJ3DQJ29MQJ29MQJ29MQJ29MQ",
+      network: "PUBLIC",
+    });
+
+    render(<WalletConnect />);
+
+    expect(screen.getByText("Wrong Network")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(/wrong network/i);
+  });
+
+  it("does not show the Wrong Network badge when connected to the expected network", () => {
+    useWalletStore.setState({
+      isConnected: true,
+      publicKey: "GBXTQW2V3MHZLZ5K2JZ29MQJ3DQJ29MQJ3DQJ29MQJ29MQJ29MQJ29MQ",
+      network: "TESTNET",
+    });
+
+    render(<WalletConnect />);
+
+    expect(screen.queryByText("Wrong Network")).not.toBeInTheDocument();
   });
 });

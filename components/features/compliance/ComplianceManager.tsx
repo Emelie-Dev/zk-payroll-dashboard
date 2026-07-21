@@ -275,7 +275,7 @@ function ComplianceManager() {
 
       <AuditActivityFeed />
 
-          {showForm && (
+      {showForm && (
             <div
               role="form"
               aria-label="Generate new view key"
@@ -414,6 +414,7 @@ function ComplianceManager() {
     </section>
   );
 }
+
 function ViewKeyRow({
   viewKey,
   isRevealed,

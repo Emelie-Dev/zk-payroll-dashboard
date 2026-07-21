@@ -221,7 +221,7 @@ export default function CsvImport() {
           salaryCommitment,
           isActive: true,
           status: "pending",
-          onboardingStatus: "completed",
+          onboardingStatus: "not_started",
           startDate: new Date(row.startDate).toISOString(),
         };
 

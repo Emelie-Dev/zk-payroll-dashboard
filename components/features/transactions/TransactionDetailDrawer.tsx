@@ -22,7 +22,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
+import StatusBadge from "@/components/ui/StatusBadge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { PayrollTransaction } from "@/types";
 
@@ -61,18 +61,13 @@ function TransactionDetailDrawer({
         return <Clock className="w-5 h-5 text-yellow-600" />;
       case "failed":
         return <XCircle className="w-5 h-5 text-red-600" />;
+      case "cancelled":
+        return <XCircle className="w-5 h-5 text-gray-500" />;
     }
   };
 
   const getStatusBadge = () => {
-    switch (transaction.status) {
-      case "verified":
-        return <Badge variant="success">Verified</Badge>;
-      case "pending":
-        return <Badge variant="warning">Pending</Badge>;
-      case "failed":
-        return <Badge variant="destructive">Failed</Badge>;
-    }
+    return <StatusBadge status={transaction.status} />;
   };
 
   const formatDate = (dateString: string) => {
@@ -200,6 +195,8 @@ function TransactionDetailDrawer({
                       "This transaction is awaiting verification. The zero-knowledge proof is being processed."}
                     {transaction.status === "failed" &&
                       "This transaction failed verification. Please contact support if you believe this is an error."}
+                    {transaction.status === "cancelled" &&
+                      "This transaction has been cancelled."}
                   </div>
                 </div>
 

@@ -16,12 +16,7 @@ import type { ImportRecord, ImportRecordIssue } from "@/stores/importReview";
 import { useEmployeeStore } from "@/stores/employees";
 import { toast } from "sonner";
 import EmptyState from "@/components/ui/EmptyState";
-
-const STATUS_BADGES: Record<ImportRecord["status"], string> = {
-  pending: "bg-yellow-100 text-yellow-800",
-  approved: "bg-green-100 text-green-800",
-  rejected: "bg-red-100 text-red-800",
-};
+import StatusBadge from "@/components/ui/StatusBadge";
 
 const SEVERITY_BADGES: Record<ImportRecordIssue["severity"], string> = {
   warning: "bg-amber-50 text-amber-700 border-amber-200",
@@ -326,7 +321,7 @@ export default function ImportReviewQueue() {
         salaryCommitment: `0ximported_${record.rowIndex}`,
         isActive: true,
         status: "pending",
-        onboardingStatus: "completed",
+        onboardingStatus: "not_started",
         startDate: record.startDate,
       });
       toast.success(`${record.name} approved and added to directory`);
@@ -348,7 +343,7 @@ export default function ImportReviewQueue() {
           salaryCommitment: `0ximported_${r.rowIndex}`,
           isActive: true,
           status: "pending",
-          onboardingStatus: "completed",
+          onboardingStatus: "not_started",
           startDate: r.startDate,
         });
       }
@@ -528,11 +523,7 @@ export default function ImportReviewQueue() {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${STATUS_BADGES[record.status]}`}
-                      >
-                        {record.status}
-                      </span>
+                      <StatusBadge status={record.status} showIcon={false} />
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
