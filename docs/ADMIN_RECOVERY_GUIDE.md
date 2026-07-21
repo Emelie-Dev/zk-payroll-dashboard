@@ -15,11 +15,13 @@ Use this guide when wallet, network, or funding issues block payroll work. It is
 ### Freighter is not detected
 
 Symptoms:
+
 - The dashboard asks you to install Freighter even though the extension is installed.
 - The connect wallet action does nothing.
 - The browser extension is locked or hidden from the current browser profile.
 
 Recovery steps:
+
 1. Unlock Freighter and refresh the dashboard.
 2. Confirm the dashboard tab has permission to access the extension.
 3. Disable conflicting wallet extensions for the session if multiple Stellar wallets inject providers.
@@ -29,11 +31,13 @@ Recovery steps:
 ### Wrong wallet account is connected
 
 Symptoms:
+
 - The connected address does not match `ADMIN_PUBLIC_KEY`.
 - Admin-only actions are hidden or fail authorization.
 - Payroll actions fail before reaching the network.
 
 Recovery steps:
+
 1. Disconnect from the dashboard header.
 2. Switch Freighter to the intended admin account.
 3. Confirm the public key matches the configured `ADMIN_PUBLIC_KEY` value.
@@ -43,11 +47,13 @@ Recovery steps:
 ### Wallet is on the wrong network
 
 Symptoms:
+
 - Freighter shows Public, Futurenet, or a custom network while the dashboard expects Testnet.
 - Explorer links open but cannot find recent transactions.
 - Balances in the wallet do not match dashboard expectations.
 
 Recovery steps:
+
 1. Open Freighter settings and switch to the expected network.
 2. For local development, confirm `.env.local` uses the same network values as the wallet.
 3. Refresh the dashboard after changing networks.
@@ -66,11 +72,13 @@ NEXT_PUBLIC_SOROBAN_RPC_URL=https://soroban-testnet.stellar.org
 ### Horizon or Soroban RPC is unavailable
 
 Symptoms:
+
 - Payroll submission fails with a timeout.
 - Transaction history stops updating.
 - Wallet is connected, but balances or statuses do not refresh.
 
 Recovery steps:
+
 1. Check the configured Horizon and Soroban RPC URLs.
 2. Open the URLs from the same network environment to rule out a local firewall or DNS problem.
 3. Retry read-only dashboard actions before retrying a payroll submission.
@@ -80,11 +88,13 @@ Recovery steps:
 ### Transaction status is unclear
 
 Symptoms:
+
 - The dashboard shows a timeout after submit.
 - Freighter showed an approval prompt, but the dashboard did not update.
 - The history page does not show the new payroll run.
 
 Recovery steps:
+
 1. Search Stellar Expert for the transaction hash if the dashboard or wallet displayed one.
 2. If no hash is available, inspect the admin account's recent operations in the explorer.
 3. Treat a confirmed transaction as complete even if the dashboard still shows a stale state.
@@ -96,11 +106,13 @@ Recovery steps:
 ### Treasury has insufficient payroll asset balance
 
 Symptoms:
+
 - Payroll submission fails before or during transaction simulation.
 - The dashboard shows a low treasury balance warning.
 - Some employees cannot be included in the run.
 
 Recovery steps:
+
 1. Open the treasury page and compare the expected payroll total with the available asset balance.
 2. Fund the treasury account with the payroll asset used by the run.
 3. Confirm the funding transaction on Stellar Explorer.
@@ -110,11 +122,13 @@ Recovery steps:
 ### Treasury has insufficient XLM for fees or reserves
 
 Symptoms:
+
 - Transactions fail even though the payroll asset balance is high enough.
 - Account reserve or transaction fee errors appear.
 - New trustlines or contract interactions cannot be completed.
 
 Recovery steps:
+
 1. Check the treasury account's XLM balance.
 2. Keep enough XLM for minimum reserves, trustlines, and transaction fees.
 3. On Testnet, fund with Friendbot if this is a development account.
@@ -132,11 +146,13 @@ curl "https://friendbot.stellar.org?addr=GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ### Proof generation fails before submission
 
 Symptoms:
+
 - The dashboard reports proof generation failure.
 - The payroll transaction is not sent to Freighter for approval.
 - The payroll run remains pending.
 
 Recovery steps:
+
 1. Check whether employee records have missing or invalid payroll data.
 2. Retry after refreshing the dashboard to clear stale client state.
 3. If the failure is reproducible, export or record the payroll run inputs needed for debugging.
@@ -146,7 +162,7 @@ Recovery steps:
 ## Recovery notes by dashboard area
 
 | Area | What to check | Recovery action |
-|------|---------------|-----------------|
+| ------ | --------------- | ----------------- |
 | Dashboard | Payroll summary cards and pending approvals | Confirm the run is still pending before retrying. |
 | Employees | Active, inactive, and pending employee filters | Remove invalid employees from the run or update their status. |
 | Treasury | Asset balance, XLM balance, and warnings | Fund the treasury before running payroll. |

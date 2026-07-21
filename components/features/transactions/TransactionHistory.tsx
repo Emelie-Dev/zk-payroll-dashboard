@@ -164,7 +164,7 @@ function TransactionHistory({ mode = "history" }: TransactionHistoryProps) {
     }
 
     return results;
-  }, [filters]);
+  }, [filters, mode]);
 
   const activeFilterCount = [
     filters.status !== "all",

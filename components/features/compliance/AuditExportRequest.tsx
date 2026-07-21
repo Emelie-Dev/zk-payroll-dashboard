@@ -55,8 +55,9 @@ export default function AuditExportRequest() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase mb-1.5">Start Date</label>
+                <label htmlFor="start-date" className="block text-xs font-semibold text-gray-400 uppercase mb-1.5">Start Date</label>
                 <input 
+                  id="start-date"
                   type="date" 
                   value={dateRange.start}
                   onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
@@ -64,8 +65,9 @@ export default function AuditExportRequest() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase mb-1.5">End Date</label>
+                <label htmlFor="end-date" className="block text-xs font-semibold text-gray-400 uppercase mb-1.5">End Date</label>
                 <input 
+                  id="end-date"
                   type="date" 
                   value={dateRange.end}
                   onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
@@ -75,7 +77,7 @@ export default function AuditExportRequest() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-400 uppercase mb-1.5">Data Sensitivity Level</label>
+              <div className="block text-xs font-semibold text-gray-400 uppercase mb-1.5">Data Sensitivity Level</div>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setLevel("summary")}

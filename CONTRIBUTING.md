@@ -16,7 +16,8 @@ pnpm dev
 ```bash
 pnpm dev          # Start dev server
 pnpm build        # Build for production
-pnpm lint         # Lint
+pnpm lint         # Lint Next.js/React
+pnpm lint:md      # Lint Markdown files
 pnpm test         # Run all unit tests
 pnpm test:smoke   # Run smoke tests for critical user journeys
 ```
@@ -43,7 +44,7 @@ Run them with `pnpm test:smoke`. CI runs these automatically on every push and P
 ## Issue Labels
 
 | Label | Points |
-|-------|--------|
+| ------- | -------- |
 | `good-first-issue` | 100 |
 | `medium` | 150 |
 | `high` | 200 |

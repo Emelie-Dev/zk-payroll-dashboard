@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import PayrollSummary from "@/components/features/payroll/PayrollSummary";
+import { generatePayrollProof } from "@/lib/zk";
 
 vi.mock("@/lib/zk", () => ({
   generatePayrollProof: vi.fn().mockResolvedValue({
@@ -30,6 +31,14 @@ describe("Smoke: Payroll Initiation Flow", () => {
   });
 
   it("transitions to generating state on click", async () => {
+    let resolvePromise!: (val: any) => void;
+    (generatePayrollProof as any).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolvePromise = resolve;
+        })
+    );
+
     render(<PayrollSummary />);
     const button = screen.getByRole("button", {
       name: /generate mock payroll proof/i,
@@ -39,10 +48,16 @@ describe("Smoke: Payroll Initiation Flow", () => {
       fireEvent.click(button);
     });
     
-    await waitFor(() => {
-      expect(button).toBeDisabled();
-    });
+    expect(button).toBeDisabled();
     expect(screen.getByText("Generating...")).toBeInTheDocument();
+
+    // Resolve to prevent act warnings
+    await act(async () => {
+      resolvePromise({
+        proof: { proof: { commitment: "mock" } },
+        verification: { isValid: true },
+      });
+    });
   });
 
   it("shows success message after proof generation", async () => {

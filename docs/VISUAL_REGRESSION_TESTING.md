@@ -21,7 +21,7 @@ Visual regression tests capture representative states for:
 
 Tests are organized by feature area:
 
-```
+```text
 __tests__/visual-regression/
 ├── dashboard-states.test.tsx      # Dashboard and admin panel states
 ├── payroll-flow-states.test.tsx   # Payroll execution and history views
@@ -154,7 +154,7 @@ Snapshot files are committed to version control. This allows:
 
 ### Snapshot Location
 
-```
+```text
 __tests__/visual-regression/__snapshots__/
 ├── dashboard-states.test.tsx.snap
 └── payroll-flow-states.test.tsx.snap
