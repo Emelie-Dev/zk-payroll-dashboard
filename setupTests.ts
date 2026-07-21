@@ -23,6 +23,15 @@ const localStorageMock = {
 
 Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
+// jsdom does not implement ResizeObserver, which Radix ScrollArea relies on.
+if (typeof globalThis.ResizeObserver === 'undefined') {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof globalThis.ResizeObserver;
+}
+
 vi.mock('next/navigation', () => ({
   usePathname: () => '/',
   useRouter: () => ({

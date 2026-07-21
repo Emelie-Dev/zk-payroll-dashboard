@@ -1,10 +1,10 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import EmployeeDetail from "@/components/features/employees/EmployeeDetail";
+import EmployeeDetailPageContent from "@/components/features/employees/EmployeeDetailPageContent";
 
 function EmployeeDetailPage({ params }: { params: { id: string } }) {
   return (
     <DashboardLayout>
-      <EmployeeDetail employeeId={params.id} />
+      <EmployeeDetailPageContent employeeId={params.id} />
     </DashboardLayout>
   );
 }

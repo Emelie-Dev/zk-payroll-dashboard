@@ -1,16 +1,6 @@
-"use client";
-
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import StatusBadge from "@/components/ui/StatusBadge";
 import {
-  X,
-  Mail,
-  MapPin,
-  Briefcase,
-  Calendar,
-  DollarSign,
-  Wallet,
   ArrowLeft,
   Users,
   Loader2,
@@ -24,163 +14,6 @@ import {
 import { useEmployeeStore } from "@/stores/employees";
 import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
 import type { Employee } from "@/types";
-import OnboardingBadge from "./OnboardingBadge";
-import EmptyState from "@/components/ui/EmptyState";
-
-export interface EmployeeDetailDrawerProps {
-  employee: Employee | null;
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export function EmployeeDetailDrawer({ employee, isOpen, onClose }: EmployeeDetailDrawerProps) {
-  if (!isOpen || !employee) return null;
-
-  return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 z-[60] transition-opacity"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      
-      {/* Slide-over */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-lg bg-white shadow-2xl z-[70] overflow-y-auto transform transition-transform duration-300 ease-in-out">
-        <div className="sticky top-0 bg-white border-b border-gray-100 p-4 flex items-center justify-between z-10">
-          <h2 className="text-xl font-bold text-gray-900">Employee Details</h2>
-          <button
-            onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
-            aria-label="Close details"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-
-        <div className="p-6">
-          {/* Header Section */}
-          <div className="flex flex-col items-center text-center mb-8">
-            <div className="h-24 w-24 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
-              <span className="text-3xl font-bold text-indigo-600">
-                {employee.name.split(' ').map(n => n[0]).join('')}
-              </span>
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900">{employee.name}</h3>
-            <p className="text-gray-500">{employee.department || "General"}</p>
-            
-            <div className="mt-4">
-               <OnboardingBadge status={employee.onboardingStatus} />
-            </div>
-          </div>
-
-          <div className="space-y-8">
-            {/* Professional Info */}
-            <section>
-              <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Professional Information</h4>
-              <div className="grid grid-cols-1 gap-4">
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Briefcase className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-xs text-gray-500">Department</p>
-                    <p className="text-sm font-medium text-gray-900">{employee.department || "Not Assigned"}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Calendar className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-xs text-gray-500">Start Date</p>
-                    <p className="text-sm font-medium text-gray-900">{new Date(employee.startDate).toLocaleDateString()}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <DollarSign className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-xs text-gray-500">Monthly Salary</p>
-                    <p className="text-sm font-medium text-gray-900">${employee.salary.toLocaleString()}</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Account Info */}
-            <section>
-              <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Account Information</h4>
-              <div className="space-y-4">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <Mail className="w-3.5 h-3.5" /> Email Address
-                  </div>
-                  <p className="text-sm font-medium text-gray-900">{employee.email || "No email provided"}</p>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <Wallet className="w-3.5 h-3.5" /> Stellar Address
-                  </div>
-                  <p className="text-xs font-mono break-all bg-gray-100 p-2 rounded text-gray-600">
-                    {employee.address}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <CustomCheckCircleIcon className="w-3.5 h-3.5 text-indigo-500" /> Salary Commitment
-                  </div>
-                  <p className="text-xs font-mono break-all text-gray-500">
-                    {employee.salaryCommitment}
-                  </p>
-                </div>
-              </div>
-            </section>
-          </div>
-        </div>
-        
-        <div className="sticky bottom-0 bg-gray-50 border-t border-gray-100 p-6">
-          <button 
-            className="w-full bg-white border border-gray-200 text-gray-700 py-2.5 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-            onClick={onClose}
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function CustomCheckCircleIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
-  )
-}
-import { useMemo } from "react";
-import { useRouter } from "next/navigation";
-import {
-  ArrowLeft,
-  Users,
-  Loader2,
-  Clock,
-  Shield,
-  FileText,
-  Circle,
-  CheckCircle2,
-  XCircle,
-} from "lucide-react";
-import { useEmployeeStore } from "@/stores/employees";
-import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
 import EmptyState from "@/components/ui/EmptyState";
 
 interface CommitmentEntry {
@@ -197,7 +30,23 @@ function deriveStatus(e: Employee): "active" | "inactive" | "pending" {
   return "active";
 }
 
+const STATUS_BADGE: Record<string, string> = {
+  active: "bg-green-100 text-green-800",
+  inactive: "bg-gray-100 text-gray-600",
+  pending: "bg-yellow-100 text-yellow-800",
+};
 
+const PAYROLL_STATUS_ICON: Record<string, typeof CheckCircle2> = {
+  verified: CheckCircle2,
+  pending: Clock,
+  failed: XCircle,
+};
+
+const PAYROLL_STATUS_COLOR: Record<string, string> = {
+  verified: "text-green-600",
+  pending: "text-yellow-600",
+  failed: "text-red-600",
+};
 
 function buildCommitmentHistory(employee: Employee): CommitmentEntry[] {
   const entries: CommitmentEntry[] = [
@@ -219,7 +68,7 @@ function buildCommitmentHistory(employee: Employee): CommitmentEntry[] {
   return entries;
 }
 
-export default function EmployeeDetail({ employeeId }: { employeeId: string }) {
+function EmployeeDetailPageContent({ employeeId }: { employeeId: string }) {
   const router = useRouter();
   const { employees: storedEmployees, isLoading } = useEmployeeStore();
 
@@ -316,7 +165,11 @@ export default function EmployeeDetail({ employeeId }: { employeeId: string }) {
                 <p className="text-sm text-gray-500">{employee.email}</p>
               )}
             </div>
-            <StatusBadge status={status} showIcon={false} className="ml-auto px-3 py-1" />
+            <span
+              className={`ml-auto px-3 py-1 text-xs font-medium rounded-full ${STATUS_BADGE[status]}`}
+            >
+              {status}
+            </span>
           </div>
 
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -452,22 +305,31 @@ export default function EmployeeDetail({ employeeId }: { employeeId: string }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {payrollActivity.map((run) => (
-                <tr key={run.id}>
-                  <td className="px-6 py-3 font-mono text-xs text-gray-900">
-                    {run.id}
-                  </td>
-                  <td className="px-6 py-3">
-                    <StatusBadge status={run.status} />
-                  </td>
-                  <td className="px-6 py-3 text-sm font-medium text-gray-900">
-                    ${run.totalAmount.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-3 text-sm text-gray-600">
-                    {new Date(run.createdAt).toLocaleDateString()}
-                  </td>
-                </tr>
-              ))}
+              {payrollActivity.map((run) => {
+                const StatusIcon = PAYROLL_STATUS_ICON[run.status] ?? Clock;
+                const statusColor = PAYROLL_STATUS_COLOR[run.status] ?? "text-gray-600";
+                return (
+                  <tr key={run.id}>
+                    <td className="px-6 py-3 font-mono text-xs text-gray-900">
+                      {run.id}
+                    </td>
+                    <td className="px-6 py-3">
+                      <span
+                        className={`inline-flex items-center gap-1.5 text-sm ${statusColor}`}
+                      >
+                        <StatusIcon className="w-3.5 h-3.5" aria-hidden="true" />
+                        {run.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-3 text-sm font-medium text-gray-900">
+                      ${run.totalAmount.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-3 text-sm text-gray-600">
+                      {new Date(run.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
@@ -475,3 +337,5 @@ export default function EmployeeDetail({ employeeId }: { employeeId: string }) {
     </section>
   );
 }
+
+export default EmployeeDetailPageContent;

@@ -38,6 +38,7 @@ This guide answers common operational questions for administrators managing payr
    - System resources are exhausted (try again with fewer employees)
 
 **Next Steps:**
+
 - Review the error message in the Dashboard for specific details
 - Check the [Troubleshooting section](#troubleshooting) below
 - Contact the ZK Payroll support team with the run ID and timestamp
@@ -73,11 +74,13 @@ This guide answers common operational questions for administrators managing payr
 **A:** When a payroll run shows "Reconciliation Failed," it means the Dashboard could not verify that all submitted payments were processed correctly on-chain.
 
 **Causes:**
+
 - On-chain settlement is still in progress (can take 5-30 minutes)
 - Some transactions succeeded but others failed
 - The reconciliation service encountered a temporary error
 
 **What to do:**
+
 1. **Wait and refresh** - Settlement can take time. Refresh the page in 5-10 minutes.
 2. **Check on-chain** - Review the transaction hash in a Stellar block explorer.
 3. **Manual reconciliation** - If the issue persists:
@@ -94,13 +97,14 @@ This guide answers common operational questions for administrators managing payr
 **A:** The Dashboard validates data completeness before payroll submission. Missing fields include:
 
 | Field | Why It's Required | How to Fix |
-|-------|-------------------|-----------|
+| ------- | ------------------- | ----------- |
 | Employee Name | Audit trail and compliance | Edit the employee record, add full name |
 | Stellar Address | Required for payment delivery | Verify the employee's wallet address is correct |
 | Salary Amount | Core payroll data | Set the compensation amount for the pay period |
 | Salary Commitment | ZK proof verification | This hash is generated when the salary is recorded |
 
 **To resolve:**
+
 1. Go to the Employees section
 2. Find employees with incomplete data (marked with a warning icon)
 3. Fill in all required fields
@@ -167,6 +171,7 @@ This guide answers common operational questions for administrators managing payr
 5. The auditor **loses immediate access** - revocation is permanent until re-granted
 
 **The revocation is logged:**
+
 - Timestamp of revocation
 - Who revoked the access
 - Reason (if provided)
@@ -178,10 +183,10 @@ This guide answers common operational questions for administrators managing payr
 
 **A:**
 
-| Access Level | Can View | Cannot Do |
-|--------------|----------|-----------|
-| **Read-Only** | Employee records, payroll runs, transactions, proofs | Submit payments, modify records, revoke other auditors |
-| **Full-Audit** | All read-only + internal logs, reconciliation details, audit trails | Administrative actions (still read-only to data) |
+| Access Level   | Can View                                                            | Cannot Do                                              |
+|----------------|---------------------------------------------------------------------|--------------------------------------------------------|
+| **Read-Only**  | Employee records, payroll runs, transactions, proofs                | Submit payments, modify records, revoke other auditors |
+| **Full-Audit** | All read-only + internal logs, reconciliation details, audit trails | Administrative actions (still read-only to data)       |
 
 **Use read-only** for most auditors. Use **full-audit** only for internal compliance teams.
 
@@ -209,6 +214,7 @@ This guide answers common operational questions for administrators managing payr
 - Settlement is in progress
 
 **What to do:**
+
 1. **Wait** - Settlement typically completes within 30 minutes
 2. **Check the progress bar** - Shows how many payments have been processed
 3. **Review discrepancies** - If any, they're listed under "Discrepancies"
@@ -238,12 +244,14 @@ This guide answers common operational questions for administrators managing payr
 **A:** Discrepancies mean the submitted amount doesn't match what was recorded on-chain.
 
 **Common causes:**
+
 1. **Rounding errors** - Verify decimal precision matches
 2. **Partial failure** - Some payments failed (see error details)
 3. **Network reorg** - A blockchain reorganization affected the transaction
 4. **External interference** - Funds were moved outside the expected flow
 
 **To investigate:**
+
 1. Note the discrepancy description
 2. Check the transaction hash in Stellar Explorer
 3. Compare:
@@ -328,7 +336,7 @@ This guide answers common operational questions for administrators managing payr
 
 ### Contact Support
 
-- **Email:** support@zkpayroll.com
+- **Email:** <support@zkpayroll.com>
 - **Telegram:** [ZK Payroll Community](https://t.me/zkpayroll)
 - **Docs:** [ZK Payroll SDK Documentation](https://github.com/zkpayroll/zk-payroll-sdk/tree/main/docs)
 

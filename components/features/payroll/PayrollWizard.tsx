@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { usePayrollWizardStore } from "@/stores/payrollWizard";
 import { useWalletStore } from "@/stores/walletStore";
 import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
+import { IncidentBanner } from "@/components/ui/IncidentBanner";
 import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
 import PayrollReceipt from "./PayrollReceipt";
 import type { PayrollWizardStep } from "@/types";
@@ -86,6 +87,13 @@ function PayrollWizard() {
   }, [setEmployeeIds, setTotalAmount]);
 
   const handleGenerateProof = useCallback(async () => {
+    if (isWrongNetwork) {
+      toast.error("Wrong network", {
+        description: `Switch your wallet to ${EXPECTED_NETWORK} to continue.`,
+      });
+      return;
+    }
+
     setProofStatus("generating");
     setProofError(null);
 
@@ -109,9 +117,16 @@ function PayrollWizard() {
         description: "Circuit constraint mismatch.",
       });
     }
-  }, [setProofStatus, setProofError, nextStep]);
+  }, [setProofStatus, setProofError, nextStep, isWrongNetwork]);
 
   const handleSubmit = useCallback(async () => {
+    if (isWrongNetwork) {
+      toast.error("Wrong network", {
+        description: `Switch your wallet to ${EXPECTED_NETWORK} to continue.`,
+      });
+      return;
+    }
+
     setSubmissionStatus("submitting");
     setSubmissionError(null);
     nextStep();
@@ -138,7 +153,7 @@ function PayrollWizard() {
         description: "Network timeout. The transaction may still be processing.",
       });
     }
-  }, [setSubmissionStatus, setSubmissionError, setTransactionHash, nextStep]);
+  }, [setSubmissionStatus, setSubmissionError, setTransactionHash, nextStep, isWrongNetwork]);
 
   const idx = stepIndex(currentStep);
 
@@ -147,6 +162,13 @@ function PayrollWizard() {
       <h2 id="payroll-wizard-heading" className="text-lg font-semibold text-gray-900">
         Execute Payroll
       </h2>
+
+      {isWrongNetwork && (
+        <IncidentBanner
+          variant="warning"
+          message={`Wallet network mismatch: your wallet is connected to ${network}, but this app requires ${EXPECTED_NETWORK}. Switch networks in your wallet to resume payroll actions.`}
+        />
+      )}
 
       {showDraftBanner && (
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
@@ -276,6 +298,7 @@ function PayrollWizard() {
             employeeCount={employeeIds.length}
             onRetry={handleSubmit}
             onReset={reset}
+            isWrongNetwork={isWrongNetwork}
           />
         )}
       </div>
@@ -510,6 +533,7 @@ function SubmitStep({
   employeeCount,
   onRetry,
   onReset,
+  isWrongNetwork,
 }: {
   status: "idle" | "submitting" | "success" | "error";
   error: string | null;
@@ -518,6 +542,7 @@ function SubmitStep({
   employeeCount: number;
   onRetry: () => void;
   onReset: () => void;
+  isWrongNetwork: boolean;
 }) {
   return (
     <div className="space-y-4">
@@ -550,7 +575,9 @@ function SubmitStep({
             <button
               type="button"
               onClick={onRetry}
-              className="px-4 py-2 rounded-md bg-red-50 text-red-700 text-sm font-medium hover:bg-red-100 border border-red-200 transition-colors inline-flex items-center gap-1"
+              disabled={isWrongNetwork}
+              title={isWrongNetwork ? `Switch to ${EXPECTED_NETWORK} in your wallet` : undefined}
+              className="px-4 py-2 rounded-md bg-red-50 text-red-700 text-sm font-medium hover:bg-red-100 border border-red-200 transition-colors inline-flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               Retry Submission

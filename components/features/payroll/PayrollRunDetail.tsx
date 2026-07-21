@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
 import type { PayrollRun } from "@/types/models";
+import StatusBadge from "@/components/ui/StatusBadge";
 import {
   classifyRun,
   formatPayrollDate,
@@ -25,11 +26,7 @@ import {
   RUN_KIND_STYLES,
 } from "@/lib/payroll/scheduleUtils";
 
-const STATUS_STYLES: Record<string, string> = {
-  verified: "bg-green-100 text-green-800",
-  pending: "bg-yellow-100 text-yellow-800",
-  failed: "bg-red-100 text-red-800",
-};
+
 
 import type { LucideIcon } from "lucide-react";
 
@@ -37,6 +34,7 @@ const STATUS_ICONS: Record<string, LucideIcon> = {
   verified: CheckCircle,
   pending: Clock,
   failed: XCircle,
+  cancelled: XCircle,
 };
 
 export function findPayrollRun(id: string, runs = MOCK_PAYROLL_RUNS): PayrollRun | undefined {
@@ -164,14 +162,7 @@ export default function PayrollRunDetail({ run: propRun }: PayrollRunDetailProps
                 >
                   {kindStyles.label}
                 </span>
-                <span
-                  className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                    STATUS_STYLES[run.status]
-                  }`}
-                >
-                  <StatusIcon className="w-3.5 h-3.5" aria-hidden="true" />
-                  {run.status.charAt(0).toUpperCase() + run.status.slice(1)}
-                </span>
+                <StatusBadge status={run.status} />
               </div>
             </div>
           </div>

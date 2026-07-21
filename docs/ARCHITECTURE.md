@@ -53,6 +53,7 @@ sequenceDiagram
 ### Component State
 
 **TransactionHistory**:
+
 ```typescript
 {
   filters: Filters,
@@ -63,6 +64,7 @@ sequenceDiagram
 ```
 
 **TransactionDetailDrawer**:
+
 ```typescript
 {
   showProof: boolean,
@@ -83,6 +85,7 @@ interface TransactionDetailDrawerProps {
 ## Component Breakdown
 
 ### 1. TransactionHistory
+
 **Responsibility**: List transactions, manage selection
 
 ```mermaid
@@ -94,14 +97,17 @@ graph LR
 ```
 
 **Key Methods**:
+
 - `handleViewDetails(transaction)`: Opens drawer with selected transaction
 - `handleExport()`: Exports filtered transactions
 - `clearFilters()`: Resets all filters
 
 ### 2. TransactionDetailDrawer
+
 **Responsibility**: Display comprehensive transaction details
 
 **Sections**:
+
 1. Header: Title, description, status
 2. Summary: Amount, employee count
 3. Timeline: Creation and verification dates
@@ -111,6 +117,7 @@ graph LR
 7. Privacy Notice: Data protection info
 
 **Key Methods**:
+
 - `copyToClipboard(text, field)`: Copy with feedback
 - `maskValue(value, chars)`: Mask sensitive values
 - `getStatusIcon()`: Return status-specific icon
@@ -120,12 +127,15 @@ graph LR
 ### 3. UI Components
 
 #### Sheet (Drawer)
+
 **Based on**: `@radix-ui/react-dialog`
 
 **Variants**:
+
 - `side`: "left" | "right" | "top" | "bottom"
 
 **Features**:
+
 - Overlay backdrop
 - Slide animation
 - Focus trap
@@ -133,9 +143,11 @@ graph LR
 - Scroll locking
 
 #### Badge
+
 **Purpose**: Status indicators
 
 **Variants**:
+
 - `success`: Green (verified)
 - `warning`: Yellow (pending)
 - `destructive`: Red (failed)
@@ -144,9 +156,11 @@ graph LR
 - `info`: Blue
 
 #### ScrollArea
+
 **Based on**: `@radix-ui/react-scroll-area`
 
 **Features**:
+
 - Custom scrollbar styling
 - Smooth scrolling
 - Viewport control
@@ -156,11 +170,13 @@ graph LR
 ### Tailwind Classes
 
 **Spacing System**:
+
 - `space-y-6`: Section spacing
 - `gap-2`: Icon/text gaps
 - `px-6 py-4`: Standard padding
 
 **Color Palette**:
+
 ```css
 /* Status Colors */
 .verified   { @apply bg-green-100 text-green-800 }
@@ -173,6 +189,7 @@ graph LR
 ```
 
 **Typography**:
+
 ```css
 .heading-lg     { @apply text-2xl font-semibold }
 .heading-sm     { @apply text-sm font-semibold }
@@ -184,11 +201,13 @@ graph LR
 ### Responsive Design
 
 **Breakpoints**:
+
 - Mobile: < 640px (sm)
 - Tablet: 640px - 1024px
 - Desktop: > 1024px
 
 **Drawer Width**:
+
 - Mobile: 75% viewport width
 - Desktop: max 576px (xl)
 
@@ -222,6 +241,7 @@ type TransactionStatus = "pending" | "verified" | "failed";
    - No individual salaries exposed
 
 2. **Data Exposure**:
+
    ```typescript
    // ✅ Safe to show
    - Total amount
@@ -238,6 +258,7 @@ type TransactionStatus = "pending" | "verified" | "failed";
    ```
 
 3. **External Links**:
+
    ```tsx
    <a 
      href={explorerUrl}
@@ -257,12 +278,14 @@ if (value.length <= visibleChars * 2) return value;  // Bounds check
 ## Performance Optimizations
 
 ### 1. Conditional Rendering
+
 ```typescript
 // Only render when open
 {open && <DrawerContent />}
 ```
 
 ### 2. Event Delegation
+
 ```typescript
 // Row click vs button click
 onClick={(e) => {
@@ -272,6 +295,7 @@ onClick={(e) => {
 ```
 
 ### 3. Memoization Opportunities
+
 ```typescript
 // Can be memoized if needed
 const formattedDate = useMemo(
@@ -281,6 +305,7 @@ const formattedDate = useMemo(
 ```
 
 ### 4. Lazy Loading
+
 ```typescript
 // Future optimization
 const TransactionDetailDrawer = lazy(() => 
@@ -319,11 +344,13 @@ const TransactionDetailDrawer = lazy(() =>
 ## Error Handling
 
 ### Null Safety
+
 ```typescript
 if (!transaction) return null;
 ```
 
 ### Optional Fields
+
 ```typescript
 {transaction.txHash && (
   <BlockchainSection hash={transaction.txHash} />
@@ -331,6 +358,7 @@ if (!transaction) return null;
 ```
 
 ### Clipboard Fallback
+
 ```typescript
 try {
   await navigator.clipboard.writeText(text);
@@ -344,18 +372,21 @@ try {
 ## Testing Strategy
 
 ### Unit Tests
+
 - Component rendering
 - Status display logic
 - Data formatting
 - User interactions
 
 ### Integration Tests
+
 - Drawer open/close flow
 - Copy to clipboard
 - External link navigation
 - Keyboard navigation
 
 ### Accessibility Tests
+
 - ARIA attributes present
 - Keyboard navigation works
 - Screen reader compatibility
@@ -364,6 +395,7 @@ try {
 ## Extension Points
 
 ### 1. Add New Sections
+
 ```typescript
 // In TransactionDetailDrawer.tsx
 <section>
@@ -373,6 +405,7 @@ try {
 ```
 
 ### 2. Custom Actions
+
 ```typescript
 // Add action buttons
 <SheetFooter>
@@ -383,6 +416,7 @@ try {
 ```
 
 ### 3. Additional Data
+
 ```typescript
 // Extend transaction type
 interface ExtendedTransaction extends PayrollTransaction {
@@ -411,7 +445,7 @@ graph TD
 
 ## File Dependencies
 
-```
+```text
 TransactionDetailDrawer.tsx
 ├── components/ui/sheet.tsx
 │   └── @radix-ui/react-dialog
@@ -429,6 +463,7 @@ TransactionDetailDrawer.tsx
 ## Build Output
 
 ### Bundle Size Impact
+
 - `TransactionDetailDrawer.tsx`: ~8KB
 - `sheet.tsx`: ~3KB
 - `badge.tsx`: ~1KB
@@ -437,11 +472,13 @@ TransactionDetailDrawer.tsx
 - **Total Addition**: ~14KB minified
 
 ### Tree Shaking
+
 All components use ES6 modules for optimal tree shaking.
 
 ## Browser Support
 
 ### Required Features
+
 - ✅ ES6+ JavaScript
 - ✅ CSS Grid & Flexbox
 - ✅ Clipboard API (with fallback)
@@ -449,6 +486,7 @@ All components use ES6 modules for optimal tree shaking.
 - ✅ Radix UI primitives
 
 ### Tested Browsers
+
 - Chrome/Edge 90+
 - Firefox 88+
 - Safari 14+

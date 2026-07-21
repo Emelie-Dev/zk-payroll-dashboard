@@ -3,11 +3,13 @@
 ## 🚀 Quick Start
 
 ### Open Detail View
+
 ```typescript
 // Click table row or Details button - it just works!
 ```
 
 ### Component Usage
+
 ```tsx
 import TransactionDetailDrawer from "@/components/features/transactions/TransactionDetailDrawer";
 
@@ -21,7 +23,8 @@ import TransactionDetailDrawer from "@/components/features/transactions/Transact
 ## 📁 Files
 
 ### New Components
-```
+
+```text
 components/features/transactions/TransactionDetailDrawer.tsx
 components/ui/sheet.tsx
 components/ui/badge.tsx
@@ -29,13 +32,15 @@ components/ui/scroll-area.tsx
 ```
 
 ### Modified
-```
+
+```text
 components/features/transactions/TransactionHistory.tsx
 README.md
 ```
 
 ### Documentation
-```
+
+```text
 docs/TRANSACTION_DETAIL_FEATURE.md
 docs/TRANSACTION_DETAIL_USAGE.md
 docs/MIGRATION_GUIDE.md
@@ -46,14 +51,15 @@ CHANGELOG.md
 ```
 
 ### Tests
-```
+
+```text
 __tests__/transaction-detail.test.tsx
 ```
 
 ## 🎨 Key Features
 
 | Feature | Implementation |
-|---------|---------------|
+| --------- | --------------- |
 | **View Details** | Click row or Details button |
 | **Privacy** | ZK proofs masked by default |
 | **Copy** | One-click copy with feedback |
@@ -66,6 +72,7 @@ __tests__/transaction-detail.test.tsx
 ## 💻 Common Code Patterns
 
 ### Add New Section
+
 ```tsx
 <section>
   <h4 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -79,6 +86,7 @@ __tests__/transaction-detail.test.tsx
 ```
 
 ### Add Info Box
+
 ```tsx
 <div className="p-4 border border-gray-200 rounded-lg">
   <div className="text-xs text-gray-500 mb-1">Label</div>
@@ -89,6 +97,7 @@ __tests__/transaction-detail.test.tsx
 ```
 
 ### Add Copy Button
+
 ```tsx
 <button
   type="button"
@@ -103,6 +112,7 @@ __tests__/transaction-detail.test.tsx
 ## 🎯 Status Badges
 
 ### Usage
+
 ```tsx
 import { Badge } from "@/components/ui/badge";
 
@@ -113,6 +123,7 @@ import { Badge } from "@/components/ui/badge";
 ```
 
 ### Variants
+
 - `success` - Green (verified)
 - `warning` - Yellow (pending)
 - `destructive` - Red (failed)
@@ -123,6 +134,7 @@ import { Badge } from "@/components/ui/badge";
 ## 🔒 Privacy Functions
 
 ### Mask Value
+
 ```typescript
 const maskValue = (value: string, visibleChars = 8) => {
   if (value.length <= visibleChars * 2) return value;
@@ -135,6 +147,7 @@ maskValue(transaction.proof, 12)
 ```
 
 ### Toggle Visibility
+
 ```typescript
 const [showProof, setShowProof] = useState(false);
 
@@ -148,6 +161,7 @@ const [showProof, setShowProof] = useState(false);
 ## 📋 Data Types
 
 ### PayrollTransaction
+
 ```typescript
 interface PayrollTransaction {
   id: string;              // "tx_001"
@@ -165,6 +179,7 @@ interface PayrollTransaction {
 ## 🎨 Styling Reference
 
 ### Color Classes
+
 ```css
 /* Status Colors */
 bg-green-100 text-green-800  /* Verified */
@@ -181,6 +196,7 @@ bg-gray-50                         /* Light background */
 ```
 
 ### Spacing
+
 ```css
 space-y-6    /* Section spacing */
 space-y-3    /* Item spacing */
@@ -191,6 +207,7 @@ mb-4         /* Header margin */
 ```
 
 ### Typography
+
 ```css
 text-2xl font-semibold          /* Page title */
 text-lg font-semibold           /* Section heading */
@@ -203,6 +220,7 @@ font-mono text-sm               /* Code/hash */
 ## 🧪 Testing
 
 ### Run Tests
+
 ```bash
 npm test transaction-detail
 npm run test:watch
@@ -210,6 +228,7 @@ npm run test:coverage
 ```
 
 ### Test Example
+
 ```typescript
 it("displays transaction details", () => {
   render(
@@ -227,7 +246,7 @@ it("displays transaction details", () => {
 ## 🔧 Troubleshooting
 
 | Issue | Solution |
-|-------|----------|
+| ------- | ---------- |
 | Drawer not opening | Check state and click handlers |
 | Copy not working | Requires HTTPS or localhost |
 | Styles not applied | Check Tailwind config |
@@ -237,7 +256,7 @@ it("displays transaction details", () => {
 ## ⌨️ Keyboard Shortcuts
 
 | Key | Action |
-|-----|--------|
+| ----- | -------- |
 | `Tab` | Navigate elements |
 | `Shift + Tab` | Navigate backwards |
 | `Enter` / `Space` | Activate button |
@@ -246,6 +265,7 @@ it("displays transaction details", () => {
 ## 🔗 Quick Links
 
 ### Documentation
+
 - [Full Feature Docs](./TRANSACTION_DETAIL_FEATURE.md)
 - [User Guide](./TRANSACTION_DETAIL_USAGE.md)
 - [Migration Guide](./MIGRATION_GUIDE.md)
@@ -253,6 +273,7 @@ it("displays transaction details", () => {
 - [Implementation Summary](./IMPLEMENTATION_SUMMARY.md)
 
 ### Related Components
+
 - `TransactionHistory`: Main table component
 - `Sheet`: Drawer base component
 - `Badge`: Status indicators
@@ -271,6 +292,7 @@ analytics.track("zk_proof_revealed");
 ## 🎯 Best Practices
 
 ### Do ✅
+
 - Keep proofs masked by default
 - Use status badges consistently
 - Provide copy functionality
@@ -279,6 +301,7 @@ analytics.track("zk_proof_revealed");
 - Use proper ARIA labels
 
 ### Don't ❌
+
 - Expose individual salaries
 - Show unmasked data by default
 - Hardcode external URLs
@@ -307,6 +330,7 @@ const TransactionDetailDrawer = lazy(() =>
 ## 🎨 Customization Examples
 
 ### Add New Status
+
 ```typescript
 // 1. Update type
 type Status = "verified" | "pending" | "failed" | "archived";
@@ -321,11 +345,13 @@ case "archived":
 ```
 
 ### Change Drawer Side
+
 ```tsx
 <SheetContent side="left">  {/* or "top" | "bottom" */}
 ```
 
 ### Custom Privacy Message
+
 ```tsx
 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
   <div className="text-xs text-blue-900">

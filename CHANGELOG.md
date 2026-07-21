@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - **Transaction Detail Drawer**: Comprehensive detail view for inspecting payroll transactions
   - View transaction summary with total amount and employee count
   - Display verification status with clear visual indicators and explanations
@@ -36,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated README with feature highlights
 
 ### Changed
+
 - **TransactionHistory**: Enhanced with transaction detail integration
   - Added hover effects on table rows
   - Added "Details" button in new Actions column
@@ -44,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Import and use TransactionDetailDrawer component
 
 ### Technical Details
+
 - Implemented progressive disclosure pattern for sensitive data
 - Added value masking utility for ZK proofs
 - Integrated clipboard API with user feedback
@@ -52,15 +55,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Maintained privacy-first design principles
 
 ### Security
+
 - ZK proofs masked by default to prevent accidental exposure
 - Individual salaries remain encrypted and hidden
 - Clear privacy notice on every transaction detail view
 - Secure external links with `noopener` and `noreferrer`
 
 ### Dependencies
+
 - Added `@radix-ui/react-dialog` ^1.1.17
 - Added `@radix-ui/react-scroll-area` ^1.2.12
 
 ## Previous Versions
 
-_To be documented from git history_
+### To be documented from git history

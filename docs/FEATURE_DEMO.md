@@ -7,7 +7,8 @@ This document provides a visual walkthrough of the Transaction Detail View featu
 ## Before & After
 
 ### Before Implementation ❌
-```
+
+```text
 ┌────────────────────────────────────────────────────────┐
 │  Transaction History                                    │
 ├────────────────────────────────────────────────────────┤
@@ -24,7 +25,8 @@ Problem: No way to see transaction details!
 ```
 
 ### After Implementation ✅
-```
+
+```text
 ┌─────────────────────────────────────────┬──────────────────────┐
 │  Transaction History                    │ Transaction Details  │
 ├─────────────────────────────────────────┤                      │
@@ -50,7 +52,8 @@ Solution: Rich detail view with all metadata!
 ## User Flow
 
 ### Step 1: View Transaction History
-```
+
+```text
 ┌──────────────────────────────────────────────────────┐
 │  📊 Transaction History                   [Filter] 🔽 │
 ├──────────────────────────────────────────────────────┤
@@ -67,7 +70,8 @@ Solution: Rich detail view with all metadata!
 ```
 
 ### Step 2: Hover Over Row
-```
+
+```text
 ┌──────────────────────────────────────────────────────┐
 │  📊 Transaction History                   [Filter] 🔽 │
 ├──────────────────────────────────────────────────────┤
@@ -86,7 +90,8 @@ Solution: Rich detail view with all metadata!
 ```
 
 ### Step 3: Click to Open Detail Drawer
-```
+
+```text
 ┌─────────────────────────────────┐
 │  Transaction History        [X] │  ← Drawer slides in!
 ├─────────────────────────────────┤
@@ -131,7 +136,8 @@ Solution: Rich detail view with all metadata!
 ## Detail Drawer Sections
 
 ### 1. Header Section
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ Transaction Details                  [X]│ ← Close button
 ├─────────────────────────────────────────┤
@@ -143,7 +149,8 @@ Solution: Rich detail view with all metadata!
 ```
 
 ### 2. Transaction Summary
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ 💰 Transaction Summary                  │
 ├─────────────────────────────────────────┤
@@ -159,7 +166,8 @@ Solution: Rich detail view with all metadata!
 ```
 
 ### 3. Timeline
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ 📅 Timeline                             │
 ├─────────────────────────────────────────┤
@@ -179,7 +187,8 @@ Solution: Rich detail view with all metadata!
 ```
 
 ### 4. Verification Status
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ 🛡 Verification                         │
 ├─────────────────────────────────────────┤
@@ -201,7 +210,8 @@ Solution: Rich detail view with all metadata!
 ```
 
 ### 5. Verification Status (Proof Shown)
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ 🛡 Verification                         │
 ├─────────────────────────────────────────┤
@@ -218,7 +228,8 @@ Solution: Rich detail view with all metadata!
 ```
 
 ### 6. Blockchain Details
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ 🔗 Blockchain Details                   │
 ├─────────────────────────────────────────┤
@@ -234,7 +245,8 @@ Solution: Rich detail view with all metadata!
 ```
 
 ### 7. Privacy Notice
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ ┌─────────────────────────────────────┐│
 │ │ 🛡 Privacy Protected                ││
@@ -252,7 +264,8 @@ Solution: Rich detail view with all metadata!
 ## Status Variations
 
 ### Verified Transaction ✅
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ Transaction Details              ✅ [X]│
 ├─────────────────────────────────────────┤
@@ -267,7 +280,8 @@ Solution: Rich detail view with all metadata!
 ```
 
 ### Pending Transaction ⏳
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ Transaction Details              ⏳ [X]│
 ├─────────────────────────────────────────┤
@@ -282,7 +296,8 @@ Solution: Rich detail view with all metadata!
 ```
 
 ### Failed Transaction ❌
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ Transaction Details              ❌ [X]│
 ├─────────────────────────────────────────┤
@@ -299,7 +314,8 @@ Solution: Rich detail view with all metadata!
 ## Interactive Elements
 
 ### Copy Button States
-```
+
+```text
 Default:        [📋 Copy]
 Hover:          [📋 Copy]  (with darker background)
 Active:         [📋 Copy]  (pressed down)
@@ -307,7 +323,8 @@ After Click:    [✅ Copied!]  (2 seconds)
 ```
 
 ### Show/Hide Proof Toggle
-```
+
+```text
 Hidden:  [👁 Show]  → Click → [🙈 Hide]
         0xzkp...234           0xzkproof_abc...xyz234
 
@@ -316,14 +333,16 @@ Shown:   [🙈 Hide]  → Click → [👁 Show]
 ```
 
 ### External Link
-```
+
+```text
 [🔗 View on Explorer] → Opens new tab → Stellar Expert
 ```
 
 ## Responsive Behavior
 
 ### Desktop (> 1024px)
-```
+
+```text
 ┌─────────────────────────┬───────────────────────┐
 │                         │                       │
 │   Transaction History   │   Detail Drawer       │
@@ -334,7 +353,8 @@ Shown:   [🙈 Hide]  → Click → [👁 Show]
 ```
 
 ### Tablet (640px - 1024px)
-```
+
+```text
 ┌──────────────────────┬──────────────────────┐
 │                      │                      │
 │  Transaction History │  Detail Drawer       │
@@ -345,7 +365,8 @@ Shown:   [🙈 Hide]  → Click → [👁 Show]
 ```
 
 ### Mobile (< 640px)
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │                                         │
 │            Detail Drawer                │
@@ -363,7 +384,8 @@ Shown:   [🙈 Hide]  → Click → [👁 Show]
 ## Accessibility Features
 
 ### Keyboard Navigation
-```
+
+```text
 Tab Order:
 1. [Close Button] ←───────────┐
 2. [Show/Hide Proof]           │
@@ -374,7 +396,8 @@ Tab Order:
 ```
 
 ### Screen Reader Announcements
-```
+
+```text
 Opening drawer:
 → "Transaction Details dialog opened"
 → "View complete information about this payroll transaction"
@@ -393,14 +416,16 @@ Close:
 ## Color Coding
 
 ### Status Colors
-```
+
+```text
 ✅ Verified:  🟢 Green   (bg-green-100, text-green-800)
 ⏳ Pending:   🟡 Yellow  (bg-yellow-100, text-yellow-800)
 ❌ Failed:    🔴 Red     (bg-red-100, text-red-800)
 ```
 
 ### Action Colors
-```
+
+```text
 Primary:    🔵 Indigo  (text-indigo-700, bg-indigo-50)
 Secondary:  ⚪ Gray    (text-gray-700, bg-gray-100)
 Success:    🟢 Green   (text-green-700, bg-green-50)
@@ -410,7 +435,8 @@ Info:       🔵 Blue    (text-blue-900, bg-blue-50)
 ## Animation Flow
 
 ### Opening Animation
-```
+
+```text
 1. User clicks → [Transaction Row]
    
 2. Overlay fades in:
@@ -426,7 +452,8 @@ Total: 500ms
 ```
 
 ### Closing Animation
-```
+
+```text
 1. User clicks close/overlay/escape
    
 2. Content fades out:
@@ -444,7 +471,8 @@ Total: 300ms
 ## Use Case Examples
 
 ### Operator: Daily Verification
-```
+
+```text
 1. Open Transaction History
 2. Click today's payroll transaction
 3. Check: Status = ✅ Verified
@@ -455,7 +483,8 @@ Total: 300ms
 ```
 
 ### Auditor: Compliance Review
-```
+
+```text
 1. Filter: Last Month's transactions
 2. Click first transaction
 3. Review: Verification metadata
@@ -467,7 +496,8 @@ Total: 300ms
 ```
 
 ### Finance: Reconciliation
-```
+
+```text
 1. Open transaction from report
 2. Copy: Transaction hash
 3. Paste: Into bank system
@@ -480,14 +510,16 @@ Total: 300ms
 ## Error States
 
 ### No Transaction Selected
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ (Drawer not shown)                      │
 └─────────────────────────────────────────┘
 ```
 
 ### Transaction Without Hash
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ Transaction Details                  [X]│
 │                                         │
@@ -499,7 +531,8 @@ Total: 300ms
 ```
 
 ### Copy Failed (No HTTPS)
-```
+
+```text
 ┌─────────────────────────────────────────┐
 │ [📋 Copy] → (Click) →  ❌ Copy Failed   │
 │                                         │
@@ -523,6 +556,7 @@ The Transaction Detail View provides:
 ---
 
 **For full documentation, see:**
+
 - [Feature Documentation](./TRANSACTION_DETAIL_FEATURE.md)
 - [User Guide](./TRANSACTION_DETAIL_USAGE.md)
 - [Quick Reference](./QUICK_REFERENCE.md)

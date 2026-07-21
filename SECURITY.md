@@ -5,7 +5,7 @@ This document explains the security headers and Content Security Policy (CSP) co
 ## Security Headers
 
 | Header | Value | Rationale |
-|--------|-------|-----------|
+| -------- | ------- | ----------- |
 | `Content-Security-Policy` | See CSP section below | Primary defense against XSS and injection attacks |
 | `X-Frame-Options` | `DENY` | Prevents clickjacking by blocking all iframe embedding |
 | `X-Content-Type-Options` | `nosniff` | Prevents browsers from MIME-sniffing responses away from declared content type |
@@ -17,7 +17,7 @@ This document explains the security headers and Content Security Policy (CSP) co
 ## Content Security Policy Directives
 
 | Directive | Value | Rationale |
-|-----------|-------|-----------|
+| ----------- | ------- | ----------- |
 | `default-src` | `'self'` | Fallback — only allow resources from the application origin |
 | `script-src` | `'self' 'wasm-unsafe-eval'` | Allow own scripts and WASM execution for ZK proof generation (snarkjs, noir). In development, `'unsafe-eval'` is added for Next.js hot module replacement |
 | `style-src` | `'self' 'unsafe-inline'` | `'unsafe-inline'` is required because Tailwind CSS and many UI libraries inject inline styles |

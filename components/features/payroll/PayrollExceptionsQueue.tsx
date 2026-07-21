@@ -16,12 +16,14 @@ const REASON_CODES: Record<PayrollTransaction["status"], string> = {
   pending: "Awaiting ZK proof generation",
   failed: "Transaction submission failed",
   verified: "",
+  cancelled: "Transaction was cancelled by user",
 };
 
 const NEXT_STEPS: Record<PayrollTransaction["status"], string> = {
   pending: "Trigger proof generation or check wallet connectivity",
   failed: "Review transaction hash and retry via payroll wizard",
   verified: "",
+  cancelled: "No further action needed",
 };
 
 const STATUS_ICONS: Record<string, React.ElementType> = {
