@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import TransactionDetailDrawer from "@/components/features/transactions/TransactionDetailDrawer";
 import type { PayrollTransaction } from "@/types";
 
@@ -194,5 +195,147 @@ describe("TransactionDetailDrawer", () => {
     );
 
     expect(screen.getAllByText("February 28, 2025").length).toBeGreaterThan(0);
+  });
+
+  describe("accessibility", () => {
+    it("renders as a modal dialog", () => {
+      render(
+        <TransactionDetailDrawer
+          transaction={mockTransaction}
+          open={true}
+          onOpenChange={vi.fn()}
+        />
+      );
+
+      const dialog = screen.getByRole("dialog");
+      expect(dialog).toBeInTheDocument();
+      // Radix labels the dialog with the SheetTitle for screen readers.
+      expect(dialog).toHaveAccessibleName(/transaction details/i);
+    });
+
+    it("exposes a close control with an accessible name", () => {
+      render(
+        <TransactionDetailDrawer
+          transaction={mockTransaction}
+          open={true}
+          onOpenChange={vi.fn()}
+        />
+      );
+
+      expect(
+        screen.getByRole("button", { name: /close/i })
+      ).toBeInTheDocument();
+    });
+
+    it("closes when the Escape key is pressed", async () => {
+      const onOpenChange = vi.fn();
+      const user = userEvent.setup();
+
+      render(
+        <TransactionDetailDrawer
+          transaction={mockTransaction}
+          open={true}
+          onOpenChange={onOpenChange}
+        />
+      );
+
+      await user.keyboard("{Escape}");
+
+      await waitFor(() => {
+        expect(onOpenChange).toHaveBeenCalledWith(false);
+      });
+    });
+
+    it("moves focus into the drawer when it opens", async () => {
+      render(
+        <TransactionDetailDrawer
+          transaction={mockTransaction}
+          open={true}
+          onOpenChange={vi.fn()}
+        />
+      );
+
+      const dialog = screen.getByRole("dialog");
+      await waitFor(() => {
+        expect(dialog.contains(document.activeElement)).toBe(true);
+      });
+    });
+
+    it("exposes the ZK proof toggle with an accessible name and state", async () => {
+      const user = userEvent.setup();
+
+      render(
+        <TransactionDetailDrawer
+          transaction={mockTransaction}
+          open={true}
+          onOpenChange={vi.fn()}
+        />
+      );
+
+      const toggle = screen.getByRole("button", {
+        name: /show zero-knowledge proof/i,
+      });
+      expect(toggle).toHaveAttribute("aria-expanded", "false");
+
+      await user.click(toggle);
+
+      const collapse = screen.getByRole("button", {
+        name: /hide zero-knowledge proof/i,
+      });
+      expect(collapse).toHaveAttribute("aria-expanded", "true");
+    });
+
+    it("gives copy controls descriptive accessible names", () => {
+      render(
+        <TransactionDetailDrawer
+          transaction={mockTransaction}
+          open={true}
+          onOpenChange={vi.fn()}
+        />
+      );
+
+      expect(
+        screen.getByRole("button", { name: /copy transaction hash/i })
+      ).toBeInTheDocument();
+    });
+
+    it("announces clipboard actions via a live region", async () => {
+      const mockWriteText = vi.fn();
+      Object.defineProperty(navigator, "clipboard", {
+        value: { writeText: mockWriteText },
+        configurable: true,
+      });
+
+      render(
+        <TransactionDetailDrawer
+          transaction={mockTransaction}
+          open={true}
+          onOpenChange={vi.fn()}
+        />
+      );
+
+      fireEvent.click(
+        screen.getByRole("button", { name: /copy transaction hash/i })
+      );
+
+      const status = await screen.findByRole("status");
+      expect(status).toHaveTextContent(/copied to clipboard/i);
+    });
+
+    it("labels the explorer link as opening in a new tab", () => {
+      render(
+        <TransactionDetailDrawer
+          transaction={mockTransaction}
+          open={true}
+          onOpenChange={vi.fn()}
+        />
+      );
+
+      const link = screen.getByRole("link", {
+        name: /opens in a new tab/i,
+      });
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    });
   });
 });

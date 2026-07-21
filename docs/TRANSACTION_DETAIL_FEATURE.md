@@ -381,6 +381,40 @@ When backend is available:
 - Privacy notice always visible
 - Progressive disclosure pattern
 
+## Accessibility
+
+The detail drawer is built on the Radix Dialog primitive (`Sheet`), which provides
+accessible modal semantics out of the box. The following behavior is guaranteed and
+covered by `__tests__/transaction-detail.test.tsx`:
+
+- **Modal semantics** — the drawer exposes `role="dialog"` and is labelled by its
+  title ("Transaction Details") for screen readers.
+- **Focus handling** — opening the drawer moves focus inside it and traps focus within
+  the dialog; closing restores focus to the trigger. Behavior is predictable and does
+  not change when the underlying transaction data changes.
+- **Close controls** — the close (`✕`) control carries an accessible "Close" name, and
+  pressing `Escape` closes the drawer.
+- **Accessible names** — the ZK proof toggle exposes `aria-expanded` plus a "Show/Hide
+  zero-knowledge proof" label; copy buttons announce what they copy; the explorer link
+  states that it opens in a new tab.
+- **Live announcements** — copying the transaction hash or proof updates an
+  `aria-live="polite"` region so assistive technology announces the success.
+- **Decorative icons** — all purely decorative Lucide icons are marked `aria-hidden`
+  so they are not read out redundantly.
+
+### QA notes — keyboard behavior
+
+1. Open a transaction from the history table with `Enter`/click. Focus should move
+   into the drawer.
+2. Press `Tab`/`Shift+Tab` — focus should cycle only through the drawer's controls
+   (close, proof toggle, copy buttons, explorer link) and never reach the page behind
+   the overlay.
+3. Activate the ZK proof "Show"/"Hide" toggle with `Enter` or `Space`; verify the proof
+   reveals/masks and the button's expanded state updates.
+4. Activate the copy buttons and confirm a screen reader announces "…copied to
+   clipboard".
+5. Press `Escape` — the drawer closes and focus returns to the originating row/button.
+
 ## Conclusion
 
 This implementation provides a professional, secure, and user-friendly way to inspect payroll transactions in detail. It balances transparency requirements with privacy protection, making it suitable for both operators and auditors while maintaining the zero-knowledge privacy guarantees of the payroll system.
