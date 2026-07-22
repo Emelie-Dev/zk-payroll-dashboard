@@ -52,7 +52,7 @@ export function RevocationHistoryView({ history, isLoading = false }: Revocation
                   Access revoked by <span className="font-medium">{entry.revokedBy}</span>
                 </p>
                 {entry.reason && (
-                  <p className="text-sm text-gray-700 mt-2 italic">&quot;{entry.reason}&quot;</p>
+                  <p className="text-sm text-gray-700 mt-2 italic">&ldquo;{entry.reason}&rdquo;</p>
                 )}
               </div>
             </div>

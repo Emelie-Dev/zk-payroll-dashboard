@@ -193,8 +193,8 @@ describe('Middleware route protection', () => {
     expect(res.status).toBe(200);
   });
 
-  it('redirects operator away from admin-only page /employees', async () => {
-    const res = await runMiddleware('/employees', employeeSession);
+  it('redirects auditor away from admin-only page /employees', async () => {
+    const res = await runMiddleware('/employees', auditorSession);
     expect(res.status).toBe(307);
   });
 

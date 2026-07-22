@@ -27,13 +27,13 @@ import type { Employee } from "@/types";
 import OnboardingBadge from "./OnboardingBadge";
 import EmptyState from "@/components/ui/EmptyState";
 
-interface EmployeeDetailProps {
+export interface EmployeeDetailDrawerProps {
   employee: Employee | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
-function EmployeeDetailSlideOver({ employee, isOpen, onClose }: EmployeeDetailProps) {
+export function EmployeeDetailDrawer({ employee, isOpen, onClose }: EmployeeDetailDrawerProps) {
   if (!isOpen || !employee) return null;
 
   return (
@@ -123,7 +123,7 @@ function EmployeeDetailSlideOver({ employee, isOpen, onClose }: EmployeeDetailPr
                 </div>
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500" /> Salary Commitment
+                    <CustomCheckCircleIcon className="w-3.5 h-3.5 text-indigo-500" /> Salary Commitment
                   </div>
                   <p className="text-xs font-mono break-all text-gray-500">
                     {employee.salaryCommitment}
@@ -145,6 +145,26 @@ function EmployeeDetailSlideOver({ employee, isOpen, onClose }: EmployeeDetailPr
       </div>
     </>
   );
+}
+
+function CustomCheckCircleIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  )
 }
 
 interface CommitmentEntry {
@@ -183,7 +203,7 @@ function buildCommitmentHistory(employee: Employee): CommitmentEntry[] {
   return entries;
 }
 
-function EmployeeDetailFullPage({ employeeId }: { employeeId: string }) {
+export default function EmployeeDetail({ employeeId }: { employeeId: string }) {
   const router = useRouter();
   const { employees: storedEmployees, isLoading } = useEmployeeStore();
 
@@ -437,23 +457,5 @@ function EmployeeDetailFullPage({ employeeId }: { employeeId: string }) {
         )}
       </div>
     </section>
-  );
-}
-
-export default function EmployeeDetail(props: {
-  employee?: Employee | null;
-  isOpen?: boolean;
-  onClose?: () => void;
-  employeeId?: string;
-}) {
-  if (props.employeeId !== undefined) {
-    return <EmployeeDetailFullPage employeeId={props.employeeId} />;
-  }
-  return (
-    <EmployeeDetailSlideOver
-      employee={props.employee ?? null}
-      isOpen={props.isOpen ?? false}
-      onClose={props.onClose ?? (() => {})}
-    />
   );
 }

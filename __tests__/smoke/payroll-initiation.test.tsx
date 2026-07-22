@@ -4,12 +4,21 @@ import PayrollSummary from "@/components/features/payroll/PayrollSummary";
 import { generatePayrollProof } from "@/lib/zk";
 
 vi.mock("@/lib/zk", () => ({
-  generatePayrollProof: vi.fn().mockResolvedValue({
-    proof: { publicSignals: [], proof: { commitment: "abc123def456" } },
-    publicInputs: { merkleRoot: "", totalPayrollAmount: "", payrollPeriodId: "" },
-    sorobanArgs: [],
-    verification: { isValid: true, verifiedAt: new Date().toISOString() },
-  }),
+  generatePayrollProof: vi.fn().mockImplementation(
+    () =>
+      new Promise((resolve) =>
+        setTimeout(
+          () =>
+            resolve({
+              proof: { publicSignals: [], proof: { commitment: "abc123def456" } },
+              publicInputs: { merkleRoot: "", totalPayrollAmount: "", payrollPeriodId: "" },
+              sorobanArgs: [],
+              verification: { isValid: true, verifiedAt: new Date().toISOString() },
+            }),
+          50
+        )
+      )
+  ),
 }));
 
 describe("Smoke: Payroll Initiation Flow", () => {

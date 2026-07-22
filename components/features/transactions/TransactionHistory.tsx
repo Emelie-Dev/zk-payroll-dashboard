@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef, Suspense } from "react";
 import {
   ArrowUpRight,
   ArrowDownLeft,
@@ -16,6 +16,7 @@ import {
   Check,
   ExternalLink,
 } from "lucide-react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { MOCK_TRANSACTIONS, MOCK_EMPLOYEES } from "@/lib/api/mockData";
 import type { PayrollTransaction } from "@/types";
 import TransactionDetailDrawer from "./TransactionDetailDrawer";
@@ -101,17 +102,67 @@ interface TransactionHistoryProps {
   mode?: "history" | "archived";
 }
 
-function TransactionHistory({ mode = "history" }: TransactionHistoryProps) {
+function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [filters, setFilters] = useState<Filters>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedTransaction, setSelectedTransaction] =
     useState<PayrollTransaction | null>(null);
+  const [invalidTxId, setInvalidTxId] = useState<string | null>(null);
   const [detailDrawerOpen, setDetailDrawerOpen] = useState(false);
 
   const handleViewDetails = (transaction: PayrollTransaction) => {
     setSelectedTransaction(transaction);
+    setInvalidTxId(null);
     setDetailDrawerOpen(true);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tx", transaction.id);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
+
+  const handleDrawerOpenChange = (open: boolean) => {
+    setDetailDrawerOpen(open);
+    if (!open) {
+      setSelectedTransaction(null);
+      setInvalidTxId(null);
+
+      const params = new URLSearchParams(searchParams.toString());
+      if (params.has("tx")) {
+        params.delete("tx");
+        const query = params.toString();
+        router.replace(`${pathname}${query ? `?${query}` : ""}`, { scroll: false });
+      }
+    }
+  };
+
+  const prevTxIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const txId = searchParams.get("tx");
+    if (txId !== prevTxIdRef.current) {
+      prevTxIdRef.current = txId;
+      if (txId) {
+        const foundTx = MOCK_TRANSACTIONS.find((t) => t.id === txId);
+        if (foundTx) {
+          setSelectedTransaction(foundTx);
+          setInvalidTxId(null);
+        } else {
+          setSelectedTransaction(null);
+          setInvalidTxId(txId);
+        }
+        setDetailDrawerOpen(true);
+      } else {
+        setDetailDrawerOpen(false);
+        setSelectedTransaction(null);
+        setInvalidTxId(null);
+      }
+    }
+  }, [searchParams]);
+
   const [isLoading, setIsLoading] = useState(
     process.env.NODE_ENV === 'test' ? false : true
   );
@@ -787,9 +838,18 @@ function TransactionHistory({ mode = "history" }: TransactionHistoryProps) {
       <TransactionDetailDrawer
         transaction={selectedTransaction}
         open={detailDrawerOpen}
-        onOpenChange={setDetailDrawerOpen}
+        onOpenChange={handleDrawerOpenChange}
+        invalidTxId={invalidTxId}
       />
     </section>
+  );
+}
+
+function TransactionHistory(props: TransactionHistoryProps) {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-96 bg-gray-100 rounded-lg"></div>}>
+      <TransactionHistoryInner {...props} />
+    </Suspense>
   );
 }
 

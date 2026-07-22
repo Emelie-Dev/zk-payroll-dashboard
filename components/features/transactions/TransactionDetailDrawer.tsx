@@ -23,6 +23,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import StatusBadge from "@/components/ui/StatusBadge";
+import Badge from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { PayrollTransaction } from "@/types";
 
@@ -30,15 +31,58 @@ interface TransactionDetailDrawerProps {
   transaction: PayrollTransaction | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  invalidTxId?: string | null;
 }
 
 function TransactionDetailDrawer({
   transaction,
   open,
   onOpenChange,
+  invalidTxId,
 }: TransactionDetailDrawerProps) {
   const [showProof, setShowProof] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  if (!transaction && !invalidTxId) return null;
+
+  if (invalidTxId) {
+    return (
+      <Sheet open={open} onOpenChange={onOpenChange}>
+        <SheetContent className="w-full sm:max-w-xl">
+          <SheetHeader className="space-y-4 pb-6 border-b">
+            <div className="flex items-start justify-between">
+              <div className="space-y-2">
+                <SheetTitle className="text-2xl">Transaction Details</SheetTitle>
+                <SheetDescription>
+                  View complete information about this payroll transaction
+                </SheetDescription>
+              </div>
+              <XCircle className="w-5 h-5 text-red-600" />
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="destructive">Invalid ID</Badge>
+              <span className="text-sm text-gray-500">•</span>
+              <span className="text-sm text-gray-600 font-mono">
+                {invalidTxId}
+              </span>
+            </div>
+          </SheetHeader>
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mb-4">
+              <XCircle className="w-8 h-8 text-red-600" />
+            </div>
+            <h4 className="text-lg font-bold text-gray-900 mb-2">Transaction Not Found</h4>
+            <p className="text-sm text-gray-500 max-w-sm px-4">
+              The transaction ID <code className="px-1.5 py-0.5 bg-red-50 rounded text-red-700 font-mono text-xs font-semibold">{invalidTxId}</code> could not be located in our records.
+            </p>
+            <div className="mt-8 p-4 bg-gray-50 rounded-lg text-xs text-gray-500 max-w-sm border border-gray-100">
+              Please double check the transaction link or verify that the transaction exists in your account history.
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+    );
+  }
 
   if (!transaction) return null;
 

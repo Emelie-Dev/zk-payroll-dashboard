@@ -8,7 +8,7 @@ import { MOCK_EMPLOYEES } from "@/lib/api/mockData";
 import type { Employee } from "@/types";
 import EmptyState from "@/components/ui/EmptyState";
 import OnboardingBadge from "./OnboardingBadge";
-import EmployeeDetail from "./EmployeeDetail";
+import { EmployeeDetailDrawer } from "./EmployeeDetail";
 import { AddEmployeeModal } from "./AddEmployeeModal";
 import StatusBadge from "@/components/ui/StatusBadge";
 
@@ -174,30 +174,33 @@ function EmployeeDirectory() {
               {filtered.map((emp) => {
                 const status = deriveStatus(emp);
                 return (
-                  <li key={emp.id}>
+                  <li 
+                    key={emp.id} 
+                    className="hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                  >
                     <button
                       type="button"
-                      className="w-full text-left px-4 py-4 hover:bg-gray-50 active:bg-gray-100 cursor-pointer transition-colors"
                       onClick={() => handleRowClick(emp)}
+                      className="w-full text-left px-4 py-4 focus:outline-none"
                     >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">{emp.name}</p>
-                        {emp.email && (
-                          <p className="text-xs text-gray-500 truncate mt-0.5">{emp.email}</p>
-                        )}
-                        <p className="text-xs text-gray-500 mt-1">
-                          {emp.department ?? "—"} · ${emp.salary.toLocaleString()}
-                        </p>
-                        <div className="mt-2 flex gap-2 flex-wrap">
-                          <StatusBadge status={status} showIcon={false} className="text-[10px] px-2 py-0.5" />
-                          <OnboardingBadge status={emp.onboardingStatus} showIcon={false} />
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">{emp.name}</p>
+                          {emp.email && (
+                            <p className="text-xs text-gray-500 truncate mt-0.5">{emp.email}</p>
+                          )}
+                          <p className="text-xs text-gray-500 mt-1">
+                            {emp.department ?? "—"} · ${emp.salary.toLocaleString()}
+                          </p>
+                          <div className="mt-2 flex gap-2 flex-wrap">
+                            <StatusBadge status={status} showIcon={false} className="px-2 py-0.5 text-[10px]" />
+                            <OnboardingBadge status={emp.onboardingStatus} showIcon={false} />
+                          </div>
+                          <p className="text-[10px] text-gray-400 mt-2">
+                            Since {new Date(emp.startDate).toLocaleDateString()}
+                          </p>
                         </div>
-                        <p className="text-[10px] text-gray-400 mt-2">
-                          Since {new Date(emp.startDate).toLocaleDateString()}
-                        </p>
                       </div>
-                    </div>
                     </button>
                   </li>
                 );
@@ -260,7 +263,7 @@ function EmployeeDirectory() {
         )}
       </div>
 
-      <EmployeeDetail 
+      <EmployeeDetailDrawer 
         employee={selectedEmployee} 
         isOpen={isDetailOpen} 
         onClose={() => setIsDetailOpen(false)} 

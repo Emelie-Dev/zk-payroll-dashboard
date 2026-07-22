@@ -44,3 +44,28 @@ vi.mock('next/navigation', () => ({
   useParams: () => ({}),
   useSearchParams: () => new URLSearchParams(),
 }));
+
+// Standardize host machine locale variation to en-US in testing environment
+const originalToLocaleDateString = Date.prototype.toLocaleDateString;
+Date.prototype.toLocaleDateString = function (
+  locales?: string | string[],
+  options?: Intl.DateTimeFormatOptions
+) {
+  return originalToLocaleDateString.call(this, locales === undefined ? 'en-US' : locales, options);
+};
+
+const originalToLocaleTimeString = Date.prototype.toLocaleTimeString;
+Date.prototype.toLocaleTimeString = function (
+  locales?: string | string[],
+  options?: Intl.DateTimeFormatOptions
+) {
+  return originalToLocaleTimeString.call(this, locales === undefined ? 'en-US' : locales, options);
+};
+
+const originalToLocaleString = Date.prototype.toLocaleString;
+Date.prototype.toLocaleString = function (
+  locales?: string | string[],
+  options?: Intl.DateTimeFormatOptions
+) {
+  return originalToLocaleString.call(this, locales === undefined ? 'en-US' : locales, options);
+};
