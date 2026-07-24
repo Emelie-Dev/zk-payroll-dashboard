@@ -111,6 +111,8 @@ export interface PayrollWizardState {
   submissionStatus: "idle" | "submitting" | "success" | "error";
   submissionError: string | null;
   transactionHash: string | null;
+  isProofNearingExpiration?: boolean;
+  treasuryBalanceOverride?: number | null;
 }
 
 export interface AuditAccessRequest {

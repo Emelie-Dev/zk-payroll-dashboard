@@ -18,6 +18,8 @@ interface PayrollWizardStore extends PayrollWizardState {
   ) => void;
   setSubmissionError: (error: string | null) => void;
   setTransactionHash: (hash: string | null) => void;
+  setIsProofNearingExpiration: (val: boolean) => void;
+  setTreasuryBalanceOverride: (balance: number | null) => void;
   reset: () => void;
   hasDraft: () => boolean;
   restoreDraft: () => void;
@@ -34,6 +36,8 @@ const initialState: PayrollWizardState = {
   submissionStatus: "idle",
   submissionError: null,
   transactionHash: null,
+  isProofNearingExpiration: false,
+  treasuryBalanceOverride: null,
 };
 
 export const usePayrollWizardStore = create<PayrollWizardStore>()(
@@ -65,6 +69,8 @@ export const usePayrollWizardStore = create<PayrollWizardStore>()(
       setSubmissionStatus: (submissionStatus) => set({ submissionStatus }),
       setSubmissionError: (submissionError) => set({ submissionError }),
       setTransactionHash: (transactionHash) => set({ transactionHash }),
+      setIsProofNearingExpiration: (isProofNearingExpiration) => set({ isProofNearingExpiration }),
+      setTreasuryBalanceOverride: (treasuryBalanceOverride) => set({ treasuryBalanceOverride }),
       reset: () => set({ ...initialState }),
       hasDraft: () => {
         const state = get();
@@ -90,6 +96,8 @@ export const usePayrollWizardStore = create<PayrollWizardStore>()(
         submissionStatus: "idle",
         submissionError: null,
         proof: null,
+        isProofNearingExpiration: false,
+        treasuryBalanceOverride: null,
       }),
     },
   ),
