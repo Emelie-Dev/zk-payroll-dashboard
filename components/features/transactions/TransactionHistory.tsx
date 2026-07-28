@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useCallback, useRef, Suspense } from "react";
+import { searchPayrollRuns } from "@/lib/payrollSearch";
 import {
   ArrowUpRight,
   ArrowDownLeft,
@@ -26,6 +27,8 @@ import StatusBadge from "@/components/ui/StatusBadge";
 type StatusFilter = "all" | "verified" | "pending" | "failed" | "cancelled";
 
 interface Filters {
+  /** Free-text search across run id, period, tx hash and status (#167). */
+  search: string;
   status: StatusFilter;
   employee: string;
   dateFrom: string;
@@ -41,6 +44,7 @@ interface SavedView {
 }
 
 const initialFilters: Filters = {
+  search: "",
   status: "all",
   employee: "",
   dateFrom: "",
@@ -187,6 +191,11 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
       mode === "archived" ? t.isArchived : !t.isArchived
     );
 
+    // #167: applied first so the structured filters below narrow the search
+    // result rather than the other way round — the counts shown next to each
+    // filter then describe what the user is actually looking at.
+    results = searchPayrollRuns(results, filters.search);
+
     if (filters.status !== "all") {
       results = results.filter((t) => t.status === filters.status);
     }
@@ -218,6 +227,7 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
   }, [filters, mode]);
 
   const activeFilterCount = [
+    !!filters.search.trim(),
     filters.status !== "all",
     !!filters.employee,
     !!filters.dateFrom,
@@ -401,6 +411,35 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
                     ))
                   )}
                 </div>
+              )}
+            </div>
+
+            {/* #167: always-visible search, separate from the collapsible
+                filter panel — finding a known run should not require opening
+                a panel first. */}
+            <div className="relative flex-1 min-w-[12rem] max-w-sm">
+              <label htmlFor="payroll-run-search" className="sr-only">
+                Search payroll runs
+              </label>
+              <input
+                id="payroll-run-search"
+                type="search"
+                value={filters.search}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, search: e.target.value }))
+                }
+                placeholder="Search run id, period, tx hash, status..."
+                className="w-full pl-3 pr-8 py-1.5 rounded-md border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
+              />
+              {filters.search && (
+                <button
+                  type="button"
+                  aria-label="Clear search"
+                  onClick={() => setFilters((prev) => ({ ...prev, search: "" }))}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                >
+                  ×
+                </button>
               )}
             </div>
 
