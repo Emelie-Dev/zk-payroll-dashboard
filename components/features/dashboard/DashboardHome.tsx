@@ -10,6 +10,7 @@ import SystemStatus from "@/components/features/dashboard/SystemStatus";
 import QuickActions from "@/components/features/dashboard/QuickActions";
 import OnboardingChecklistPanel from "@/components/features/dashboard/OnboardingChecklistPanel";
 import PinnedAlertsPanel from "@/components/features/dashboard/PinnedAlertsPanel";
+import { SessionTimeoutBanner } from "@/components/features/dashboard/SessionTimeoutBanner";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
 function DashboardHome() {
@@ -121,6 +122,9 @@ function DashboardHome() {
         </div>
         <WalletConnect />
       </div>
+      <ErrorBoundary>
+        <SessionTimeoutBanner />
+      </ErrorBoundary>
       <ErrorBoundary>
         <PinnedAlertsPanel alerts={sampleAlerts} tasks={sampleTasks} />
       </ErrorBoundary>

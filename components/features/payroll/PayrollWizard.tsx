@@ -26,7 +26,9 @@ import { usePayrollWizardStore } from "@/stores/payrollWizard";
 import { useWalletStore } from "@/stores/walletStore";
 import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { IncidentBanner } from "@/components/ui/IncidentBanner";
-import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS, MOCK_TREASURY_BALANCE } from "@/lib/api/mockData";
+import { SessionTimeoutBanner } from "@/components/features/dashboard/SessionTimeoutBanner";
+import { useSession } from "@/hooks/useSession";
+import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS, MOCK_TREASURY_BALANCE, MOCK_COMPANIES } from "@/lib/api/mockData";
 import PayrollReceipt from "./PayrollReceipt";
 import type { PayrollWizardStep } from "@/types";
 import { trackEvent, mapErrorToType, bucketEmployeeCount } from "@/lib/telemetry";
@@ -75,8 +77,10 @@ function PayrollWizard() {
     }
   }, [employeeIds.length, hasDraft, submissionStatus]);
 
+  const { sessionState } = useSession();
   const network = useWalletStore((s) => s.network);
   const isWrongNetwork = network !== EXPECTED_NETWORK;
+  const isSessionExpired = sessionState === "expired";
 
   const selectedEmployees = useMemo(
     () => MOCK_EMPLOYEES.filter((e) => employeeIds.includes(e.id)),
@@ -176,6 +180,10 @@ function PayrollWizard() {
           variant="warning"
           message={`Wallet network mismatch: your wallet is connected to ${network}, but this app requires ${EXPECTED_NETWORK}. Switch networks in your wallet to resume payroll actions.`}
         />
+      )}
+
+      {isSessionExpired && (
+        <SessionTimeoutBanner dismissible={false} />
       )}
 
       {showDraftBanner && (
@@ -477,6 +485,8 @@ function ConfirmStep({
 }) {
   const [confirmed, setConfirmed] = useState(false);
   const store = usePayrollWizardStore();
+  const { sessionState } = useSession();
+  const isSessionExpired = sessionState === "expired";
   
   const { isProofNearingExpiration, treasuryBalanceOverride } = store;
   const treasuryBalance = treasuryBalanceOverride !== null && treasuryBalanceOverride !== undefined 
@@ -525,8 +535,13 @@ function ConfirmStep({
       list.push("No employees selected for this payroll run.");
     }
 
+    // 5. Stale session check
+    if (isSessionExpired) {
+      list.push("Your session has expired. Wallet signing cannot proceed with stale authentication. Please re-authenticate before submitting.");
+    }
+
     return list;
-  }, [treasuryBalance, totalAmount, store.proofStatus, selectedEmployees]);
+  }, [treasuryBalance, totalAmount, store.proofStatus, selectedEmployees, isSessionExpired]);
 
   const warnings = useMemo(() => {
     const list: string[] = [];
@@ -819,10 +834,12 @@ function ConfirmStep({
         <button
           type="button"
           onClick={onSubmit}
-          disabled={!confirmed || state === "blocked" || isWrongNetwork}
+          disabled={!confirmed || state === "blocked" || isWrongNetwork || isSessionExpired}
           title={
             isWrongNetwork 
               ? 'Switch to Testnet in Freighter' 
+              : isSessionExpired
+              ? 'Your session has expired. Re-authenticate to continue.'
               : state === "blocked"
               ? 'Resolve blocking errors to proceed'
               : !confirmed
