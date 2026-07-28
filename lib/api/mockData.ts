@@ -54,6 +54,9 @@ export const MOCK_EMPLOYEES: Employee[] = [
     isActive: true,
     status: "pending",
     onboardingStatus: "in_progress",
+    onboardingRetryCount: 1,
+    onboardingError: "Commitment generation failed during import review",
+    lastOnboardingAttemptAt: "2025-03-01T08:45:00Z",
     startDate: "2025-03-01T00:00:00Z",
   },
   {
@@ -67,6 +70,9 @@ export const MOCK_EMPLOYEES: Employee[] = [
     isActive: true,
     status: "pending",
     onboardingStatus: "not_started",
+    onboardingRetryCount: 2,
+    onboardingError: "Wallet connection timed out during submission",
+    lastOnboardingAttemptAt: "2025-04-01T09:15:00Z",
     startDate: "2025-04-01T00:00:00Z",
   },
 ];
@@ -116,6 +122,7 @@ export const MOCK_TRANSACTIONS: PayrollTransaction[] = [
     employeeCount: 2,
     proof: "",
     status: "pending",
+    txHash: "pending123def456",
     isArchived: false,
   },
   {
