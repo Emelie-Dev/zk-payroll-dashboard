@@ -3,6 +3,9 @@
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { Button } from "./ui/button";
 import { AlertCircle, RefreshCcw, Github } from "lucide-react";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("error-boundary");
 
 interface Props {
   children?: ReactNode;
@@ -26,7 +29,11 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error:", error, errorInfo);
+    log.error("Uncaught error", {
+      error: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+    });
     if (this.props.onLog) {
       this.props.onLog(error, errorInfo);
     }

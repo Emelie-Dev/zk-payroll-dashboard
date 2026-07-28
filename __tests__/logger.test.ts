@@ -71,6 +71,37 @@ describe('logger', () => {
     spy.mockRestore();
   });
 
+  it('sanitizes sensitive data in log messages', async () => {
+    const { createLogger } = await getLoggerModule();
+    vi.stubEnv('NODE_ENV', 'production');
+    const spy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const log = createLogger('test');
+    log.warn('Employee SSN is 123-45-6789');
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    const parsed = JSON.parse(spy.mock.calls[0][0]);
+    expect(parsed.message).toBe('Employee SSN is [REDACTED]');
+
+    spy.mockRestore();
+  });
+
+  it('sanitizes sensitive metadata in log entries', async () => {
+    const { createLogger } = await getLoggerModule();
+    vi.stubEnv('NODE_ENV', 'production');
+    const spy = vi.spyOn(console, 'info').mockImplementation(() => {});
+
+    const log = createLogger('test');
+    log.info('payroll event', { salary: 50000, employeeSsn: '123-45-6789' });
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    const parsed = JSON.parse(spy.mock.calls[0][0]);
+    expect(parsed.salary).toBe('[REDACTED]');
+    expect(parsed.employeeSsn).toBe('[REDACTED]');
+
+    spy.mockRestore();
+  });
+
   it('respects LOG_LEVEL and suppresses lower levels', async () => {
     vi.stubEnv('LOG_LEVEL', 'warn');
     const { createLogger } = await getLoggerModule();
