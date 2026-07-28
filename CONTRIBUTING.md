@@ -41,6 +41,10 @@ Run them with `pnpm test:smoke`. CI runs these automatically on every push and P
 - **Styling** — Tailwind, accessibility
 - **Tests** — Component and E2E tests
 
+## Pull Requests
+
+Before opening a pull request, please review our [Issue Validation Checklist](docs/contributing/ISSUE_VALIDATION_CHECKLIST.md) to ensure your changes are ready for review.
+
 ## Issue Labels
 
 | Label | Points |
