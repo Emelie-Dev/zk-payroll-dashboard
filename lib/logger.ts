@@ -98,7 +98,7 @@ export function createLogger(context: string): Logger {
       timestamp: new Date().toISOString(),
       level,
       context,
-      message,
+      message: sanitize(message),
       ...(metadata ? sanitize(metadata) : {}),
     };
 

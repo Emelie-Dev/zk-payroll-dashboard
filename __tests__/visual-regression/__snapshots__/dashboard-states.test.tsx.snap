@@ -1,0 +1,1815 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Visual Regression - Alert Panel Edge Cases > renders mixed severity alerts 1`] = `
+<div>
+  <section
+    aria-labelledby="pinned-alerts-heading"
+    class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+  >
+    <div
+      class="px-6 py-4 border-b border-gray-200"
+    >
+      <h2
+        class="text-base font-semibold text-gray-900"
+        id="pinned-alerts-heading"
+      >
+        Attention Required
+      </h2>
+      <p
+        class="text-sm text-gray-600 mt-1"
+      >
+        High-priority alerts and pending admin tasks
+      </p>
+    </div>
+    <div
+      class="divide-y divide-gray-200"
+    >
+      <div
+        class="p-6 space-y-4"
+      >
+        <h3
+          class="text-sm font-medium text-gray-700"
+        >
+          Active Alerts
+        </h3>
+        <div
+          class="space-y-3"
+        >
+          <div
+            class="bg-gray-50 rounded-lg p-4 border-l-4 border-l-red-500"
+          >
+            <div
+              class="flex items-start gap-3"
+            >
+              <div
+                class="mt-0.5"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-alert-circle w-5 h-5 text-red-600"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                  />
+                  <line
+                    x1="12"
+                    x2="12"
+                    y1="8"
+                    y2="12"
+                  />
+                  <line
+                    x1="12"
+                    x2="12.01"
+                    y1="16"
+                    y2="16"
+                  />
+                </svg>
+              </div>
+              <div
+                class="flex-1 min-w-0"
+              >
+                <div
+                  class="flex items-start justify-between gap-2"
+                >
+                  <h4
+                    class="text-sm font-medium text-gray-900"
+                  >
+                    Critical Alert
+                  </h4>
+                  <button
+                    aria-label="Dismiss alert"
+                    class="shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <svg
+                      class="lucide lucide-x w-4 h-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 6 6 18"
+                      />
+                      <path
+                        d="m6 6 12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <p
+                  class="text-sm text-gray-600 mt-1"
+                >
+                  Critical issue
+                </p>
+                <div
+                  class="flex items-center gap-4 mt-3"
+                >
+                  <span
+                    class="text-xs text-gray-500"
+                  >
+                    just now
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="bg-gray-50 rounded-lg p-4 border-l-4 border-l-amber-500"
+          >
+            <div
+              class="flex items-start gap-3"
+            >
+              <div
+                class="mt-0.5"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-alert-triangle w-5 h-5 text-amber-600"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+                  />
+                  <path
+                    d="M12 9v4"
+                  />
+                  <path
+                    d="M12 17h.01"
+                  />
+                </svg>
+              </div>
+              <div
+                class="flex-1 min-w-0"
+              >
+                <div
+                  class="flex items-start justify-between gap-2"
+                >
+                  <h4
+                    class="text-sm font-medium text-gray-900"
+                  >
+                    Warning Alert
+                  </h4>
+                  <button
+                    aria-label="Dismiss alert"
+                    class="shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <svg
+                      class="lucide lucide-x w-4 h-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 6 6 18"
+                      />
+                      <path
+                        d="m6 6 12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <p
+                  class="text-sm text-gray-600 mt-1"
+                >
+                  Warning issue
+                </p>
+                <div
+                  class="flex items-center gap-4 mt-3"
+                >
+                  <span
+                    class="text-xs text-gray-500"
+                  >
+                    just now
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="bg-gray-50 rounded-lg p-4 border-l-4 border-l-blue-500"
+          >
+            <div
+              class="flex items-start gap-3"
+            >
+              <div
+                class="mt-0.5"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-check-circle w-5 h-5 text-blue-600"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                  />
+                  <path
+                    d="m9 11 3 3L22 4"
+                  />
+                </svg>
+              </div>
+              <div
+                class="flex-1 min-w-0"
+              >
+                <div
+                  class="flex items-start justify-between gap-2"
+                >
+                  <h4
+                    class="text-sm font-medium text-gray-900"
+                  >
+                    Info Alert
+                  </h4>
+                  <button
+                    aria-label="Dismiss alert"
+                    class="shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <svg
+                      class="lucide lucide-x w-4 h-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 6 6 18"
+                      />
+                      <path
+                        d="m6 6 12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <p
+                  class="text-sm text-gray-600 mt-1"
+                >
+                  Info message
+                </p>
+                <div
+                  class="flex items-center gap-4 mt-3"
+                >
+                  <span
+                    class="text-xs text-gray-500"
+                  >
+                    just now
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+`;
+
+exports[`Visual Regression - Dashboard States > Dashboard Home - Loading State > renders loading spinner during wallet connection 1`] = `
+<div>
+  <div
+    class="flex flex-col items-center justify-center py-24 gap-3"
+  >
+    <svg
+      aria-hidden="true"
+      class="lucide lucide-loader2 w-8 h-8 text-indigo-600 animate-spin"
+      fill="none"
+      height="24"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M21 12a9 9 0 1 1-6.219-8.56"
+      />
+    </svg>
+    <p
+      class="text-sm text-gray-500"
+    >
+      Connecting to wallet…
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Visual Regression - Dashboard States > Dashboard Home - No Wallet State > renders wallet connection prompt 1`] = `
+<div>
+  <div
+    class="flex flex-col items-center justify-center py-24 gap-4"
+  >
+    <div
+      class="w-14 h-14 rounded-full bg-indigo-50 flex items-center justify-center"
+    >
+      <svg
+        aria-hidden="true"
+        class="lucide lucide-wallet w-7 h-7 text-indigo-600"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M21 12V7H5a2 2 0 0 1 0-4h14v4"
+        />
+        <path
+          d="M3 5v14a2 2 0 0 0 2 2h16v-5"
+        />
+        <path
+          d="M18 12a2 2 0 0 0 0 4h4v-4Z"
+        />
+      </svg>
+    </div>
+    <div
+      class="text-center max-w-sm"
+    >
+      <h2
+        class="text-base font-semibold text-gray-900 mb-1"
+      >
+        Connect your wallet to get started
+      </h2>
+      <p
+        class="text-sm text-gray-500 mb-4"
+      >
+        ZK Payroll requires a Freighter wallet on Stellar Testnet. Connect to access the dashboard.
+      </p>
+      <div
+        class="relative inline-flex flex-col items-end"
+      >
+        <button
+          aria-label="Connect Freighter wallet"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none shadow-sm"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-wallet w-4 h-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M21 12V7H5a2 2 0 0 1 0-4h14v4"
+            />
+            <path
+              d="M3 5v14a2 2 0 0 0 2 2h16v-5"
+            />
+            <path
+              d="M18 12a2 2 0 0 0 0 4h4v-4Z"
+            />
+          </svg>
+          Connect Freighter
+        </button>
+        <span
+          aria-live="polite"
+          class="sr-only"
+          role="status"
+        >
+          Wallet disconnected
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Visual Regression - Dashboard States > Onboarding Checklist - Partial Completion > renders checklist with some items completed 1`] = `
+<div>
+  <section
+    aria-labelledby="onboarding-checklist-heading"
+  >
+    <div
+      class="flex items-center justify-between mb-4"
+    >
+      <div>
+        <h2
+          class="text-lg font-semibold text-gray-900"
+          id="onboarding-checklist-heading"
+        >
+          Action Required: Onboarding Setup
+        </h2>
+        <p
+          class="text-sm text-gray-600 mt-1"
+        >
+          Resolve missing setup steps before next payroll run
+        </p>
+      </div>
+    </div>
+    <div
+      class="bg-white border rounded-lg shadow-sm overflow-hidden"
+    >
+      <ul
+        class="divide-y divide-gray-100"
+      >
+        <li
+          class="p-4 sm:p-5 hover:bg-gray-50 transition-colors"
+        >
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          >
+            <div
+              class="flex items-start gap-3"
+            >
+              <div
+                class="mt-1"
+              >
+                <div
+                  class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide lucide-alert-triangle w-4 h-4 text-amber-600"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+                    />
+                    <path
+                      d="M12 9v4"
+                    />
+                    <path
+                      d="M12 17h.01"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3
+                  class="text-sm font-medium text-gray-900"
+                >
+                  Kwame Asante
+                </h3>
+                <div
+                  class="mt-2 flex flex-wrap gap-2"
+                >
+                  <span
+                    class="inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="lucide lucide-wallet w-3.5 h-3.5"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M21 12V7H5a2 2 0 0 1 0-4h14v4"
+                      />
+                      <path
+                        d="M3 5v14a2 2 0 0 0 2 2h16v-5"
+                      />
+                      <path
+                        d="M18 12a2 2 0 0 0 0 4h4v-4Z"
+                      />
+                    </svg>
+                    Missing Wallet Address
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex shrink-0 sm:ml-4 mt-2 sm:mt-0"
+            >
+              <a
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-300 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                href="/employees"
+              >
+                Resolve in Directory
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-arrow-right w-3.5 h-3.5"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12h14"
+                  />
+                  <path
+                    d="m12 5 7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </li>
+        <li
+          class="p-4 sm:p-5 hover:bg-gray-50 transition-colors"
+        >
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          >
+            <div
+              class="flex items-start gap-3"
+            >
+              <div
+                class="mt-1"
+              >
+                <div
+                  class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide lucide-alert-triangle w-4 h-4 text-amber-600"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+                    />
+                    <path
+                      d="M12 9v4"
+                    />
+                    <path
+                      d="M12 17h.01"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3
+                  class="text-sm font-medium text-gray-900"
+                >
+                  Kofi Boateng
+                </h3>
+                <div
+                  class="mt-2 flex flex-wrap gap-2"
+                >
+                  <span
+                    class="inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="lucide lucide-wallet w-3.5 h-3.5"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M21 12V7H5a2 2 0 0 1 0-4h14v4"
+                      />
+                      <path
+                        d="M3 5v14a2 2 0 0 0 2 2h16v-5"
+                      />
+                      <path
+                        d="M18 12a2 2 0 0 0 0 4h4v-4Z"
+                      />
+                    </svg>
+                    Missing Wallet Address
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex shrink-0 sm:ml-4 mt-2 sm:mt-0"
+            >
+              <a
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-300 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                href="/employees"
+              >
+                Resolve in Directory
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-arrow-right w-3.5 h-3.5"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12h14"
+                  />
+                  <path
+                    d="m12 5 7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+</div>
+`;
+
+exports[`Visual Regression - Dashboard States > Pinned Alerts Panel - Critical Alert > renders critical alert with proper styling 1`] = `
+<div>
+  <section
+    aria-labelledby="pinned-alerts-heading"
+    class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+  >
+    <div
+      class="px-6 py-4 border-b border-gray-200"
+    >
+      <h2
+        class="text-base font-semibold text-gray-900"
+        id="pinned-alerts-heading"
+      >
+        Attention Required
+      </h2>
+      <p
+        class="text-sm text-gray-600 mt-1"
+      >
+        High-priority alerts and pending admin tasks
+      </p>
+    </div>
+    <div
+      class="divide-y divide-gray-200"
+    >
+      <div
+        class="p-6 space-y-4"
+      >
+        <h3
+          class="text-sm font-medium text-gray-700"
+        >
+          Active Alerts
+        </h3>
+        <div
+          class="space-y-3"
+        >
+          <div
+            class="bg-gray-50 rounded-lg p-4 border-l-4 border-l-red-500"
+          >
+            <div
+              class="flex items-start gap-3"
+            >
+              <div
+                class="mt-0.5"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-alert-circle w-5 h-5 text-red-600"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                  />
+                  <line
+                    x1="12"
+                    x2="12"
+                    y1="8"
+                    y2="12"
+                  />
+                  <line
+                    x1="12"
+                    x2="12.01"
+                    y1="16"
+                    y2="16"
+                  />
+                </svg>
+              </div>
+              <div
+                class="flex-1 min-w-0"
+              >
+                <div
+                  class="flex items-start justify-between gap-2"
+                >
+                  <h4
+                    class="text-sm font-medium text-gray-900"
+                  >
+                    Critical: Payroll Processing Delayed
+                  </h4>
+                  <button
+                    aria-label="Dismiss alert"
+                    class="shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <svg
+                      class="lucide lucide-x w-4 h-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 6 6 18"
+                      />
+                      <path
+                        d="m6 6 12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <p
+                  class="text-sm text-gray-600 mt-1"
+                >
+                  RPC connection experiencing high latency
+                </p>
+                <div
+                  class="flex items-center gap-4 mt-3"
+                >
+                  <span
+                    class="text-xs text-gray-500"
+                  >
+                    just now
+                  </span>
+                  <a
+                    class="inline-flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-700"
+                    href="/incidents"
+                  >
+                    View incident
+                    <svg
+                      class="lucide lucide-chevron-right w-3 h-3"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="m9 18 6-6-6-6"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+`;
+
+exports[`Visual Regression - Dashboard States > Pinned Alerts Panel - Multiple Tasks > renders multiple pending tasks with priorities 1`] = `
+<div>
+  <section
+    aria-labelledby="pinned-alerts-heading"
+    class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+  >
+    <div
+      class="px-6 py-4 border-b border-gray-200"
+    >
+      <h2
+        class="text-base font-semibold text-gray-900"
+        id="pinned-alerts-heading"
+      >
+        Attention Required
+      </h2>
+      <p
+        class="text-sm text-gray-600 mt-1"
+      >
+        High-priority alerts and pending admin tasks
+      </p>
+    </div>
+    <div
+      class="divide-y divide-gray-200"
+    >
+      <div
+        class="p-6 space-y-4"
+      >
+        <h3
+          class="text-sm font-medium text-gray-700"
+        >
+          Pending Tasks
+        </h3>
+        <div
+          class="space-y-3"
+        >
+          <div
+            class="bg-gray-50 rounded-lg p-4 border-l-4 border-l-indigo-500"
+          >
+            <div
+              class="flex items-start gap-3"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-clock w-5 h-5 text-indigo-600 mt-0.5"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                />
+                <polyline
+                  points="12 6 12 12 16 14"
+                />
+              </svg>
+              <div
+                class="flex-1 min-w-0"
+              >
+                <div
+                  class="flex items-start justify-between gap-2"
+                >
+                  <div
+                    class="flex-1"
+                  >
+                    <div
+                      class="flex items-center gap-2"
+                    >
+                      <h4
+                        class="text-sm font-medium text-gray-900"
+                      >
+                        Review pending audit request
+                      </h4>
+                      <span
+                        class="px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800"
+                      >
+                        high
+                      </span>
+                    </div>
+                    <p
+                      class="text-sm text-gray-600 mt-1"
+                    >
+                      New audit access request from External Auditor Inc
+                    </p>
+                  </div>
+                  <button
+                    aria-label="Dismiss task"
+                    class="shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <svg
+                      class="lucide lucide-x w-4 h-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 6 6 18"
+                      />
+                      <path
+                        d="m6 6 12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div
+                  class="flex items-center gap-4 mt-3"
+                >
+                  <a
+                    class="inline-flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-700"
+                    href="/compliance"
+                  >
+                    Take action
+                    <svg
+                      class="lucide lucide-chevron-right w-3 h-3"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="m9 18 6-6-6-6"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="bg-gray-50 rounded-lg p-4 border-l-4 border-l-indigo-500"
+          >
+            <div
+              class="flex items-start gap-3"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-clock w-5 h-5 text-indigo-600 mt-0.5"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                />
+                <polyline
+                  points="12 6 12 12 16 14"
+                />
+              </svg>
+              <div
+                class="flex-1 min-w-0"
+              >
+                <div
+                  class="flex items-start justify-between gap-2"
+                >
+                  <div
+                    class="flex-1"
+                  >
+                    <div
+                      class="flex items-center gap-2"
+                    >
+                      <h4
+                        class="text-sm font-medium text-gray-900"
+                      >
+                        Fund treasury wallet
+                      </h4>
+                      <span
+                        class="px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800"
+                      >
+                        medium
+                      </span>
+                    </div>
+                    <p
+                      class="text-sm text-gray-600 mt-1"
+                    >
+                      Treasury balance below threshold for next payroll
+                    </p>
+                  </div>
+                  <button
+                    aria-label="Dismiss task"
+                    class="shrink-0 text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <svg
+                      class="lucide lucide-x w-4 h-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18 6 6 18"
+                      />
+                      <path
+                        d="m6 6 12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <div
+                  class="flex items-center gap-4 mt-3"
+                >
+                  <a
+                    class="inline-flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-700"
+                    href="/treasury"
+                  >
+                    Take action
+                    <svg
+                      class="lucide lucide-chevron-right w-3 h-3"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="m9 18 6-6-6-6"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+`;
+
+exports[`Visual Regression - Dashboard States > System Status - All Operational > renders all systems operational state 1`] = `
+<div>
+  <section
+    aria-labelledby="system-status-heading"
+    class="space-y-6 mb-6"
+  >
+    <div
+      class="flex items-center justify-between"
+    >
+      <div>
+        <h2
+          class="text-lg font-semibold text-gray-900"
+          id="system-status-heading"
+        >
+          System Status
+        </h2>
+        <p
+          class="text-sm text-gray-600 mt-1"
+        >
+          Health status of systems affecting payroll workflows
+        </p>
+      </div>
+      <button
+        aria-label="Refresh status"
+        class="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+      >
+        <svg
+          class="lucide lucide-refresh-cw w-4 h-4 "
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+          />
+          <path
+            d="M21 3v5h-5"
+          />
+          <path
+            d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+          />
+          <path
+            d="M8 16H3v5"
+          />
+        </svg>
+        Refresh
+      </button>
+    </div>
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 gap-4"
+    >
+      <div
+        class="border rounded-lg p-5 bg-green-50 border-green-200"
+      >
+        <div
+          class="flex items-start justify-between mb-3"
+        >
+          <div
+            class="flex items-center gap-3 flex-1"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-check-circle w-5 h-5 text-green-600"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+              />
+              <path
+                d="m9 11 3 3L22 4"
+              />
+            </svg>
+            <h3
+              class="font-semibold text-gray-900"
+            >
+              CI/CD Pipeline
+            </h3>
+          </div>
+          <span
+            class="px-2 py-1 rounded text-xs font-medium shrink-0 bg-green-100 text-green-800"
+          >
+            Operational
+          </span>
+        </div>
+        <p
+          class="text-sm text-gray-700 mb-3"
+        >
+          GitHub Actions running normally. All deployment workflows completing successfully.
+        </p>
+        <div
+          class="space-y-2"
+        >
+          <p
+            class="text-xs text-gray-600"
+          >
+            <strong>
+              Impact:
+            </strong>
+             
+            Enables new deployments and feature releases
+          </p>
+          <div
+            class="flex items-center gap-1 text-xs text-gray-500"
+          >
+            <svg
+              class="lucide lucide-clock w-3 h-3"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <polyline
+                points="12 6 12 12 16 14"
+              />
+            </svg>
+            Updated 
+            now
+          </div>
+        </div>
+      </div>
+      <div
+        class="border rounded-lg p-5 bg-green-50 border-green-200"
+      >
+        <div
+          class="flex items-start justify-between mb-3"
+        >
+          <div
+            class="flex items-center gap-3 flex-1"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-check-circle w-5 h-5 text-green-600"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+              />
+              <path
+                d="m9 11 3 3L22 4"
+              />
+            </svg>
+            <h3
+              class="font-semibold text-gray-900"
+            >
+              Stellar RPC
+            </h3>
+          </div>
+          <span
+            class="px-2 py-1 rounded text-xs font-medium shrink-0 bg-green-100 text-green-800"
+          >
+            Operational
+          </span>
+        </div>
+        <p
+          class="text-sm text-gray-700 mb-3"
+        >
+          Soroban RPC responding normally with &lt; 1s latency. Transaction confirmation times nominal.
+        </p>
+        <div
+          class="space-y-2"
+        >
+          <p
+            class="text-xs text-gray-600"
+          >
+            <strong>
+              Impact:
+            </strong>
+             
+            Required for all on-chain payroll operations
+          </p>
+          <div
+            class="flex items-center gap-1 text-xs text-gray-500"
+          >
+            <svg
+              class="lucide lucide-clock w-3 h-3"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <polyline
+                points="12 6 12 12 16 14"
+              />
+            </svg>
+            Updated 
+            5 minutes ago
+          </div>
+        </div>
+      </div>
+      <div
+        class="border rounded-lg p-5 bg-green-50 border-green-200"
+      >
+        <div
+          class="flex items-start justify-between mb-3"
+        >
+          <div
+            class="flex items-center gap-3 flex-1"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-check-circle w-5 h-5 text-green-600"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+              />
+              <path
+                d="m9 11 3 3L22 4"
+              />
+            </svg>
+            <h3
+              class="font-semibold text-gray-900"
+            >
+              Dashboard Services
+            </h3>
+          </div>
+          <span
+            class="px-2 py-1 rounded text-xs font-medium shrink-0 bg-green-100 text-green-800"
+          >
+            Operational
+          </span>
+        </div>
+        <p
+          class="text-sm text-gray-700 mb-3"
+        >
+          All API endpoints responding normally. Database connections stable.
+        </p>
+        <div
+          class="space-y-2"
+        >
+          <p
+            class="text-xs text-gray-600"
+          >
+            <strong>
+              Impact:
+            </strong>
+             
+            Affects user dashboard access and data loading
+          </p>
+          <div
+            class="flex items-center gap-1 text-xs text-gray-500"
+          >
+            <svg
+              class="lucide lucide-clock w-3 h-3"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <polyline
+                points="12 6 12 12 16 14"
+              />
+            </svg>
+            Updated 
+            1 minute ago
+          </div>
+        </div>
+      </div>
+      <div
+        class="border rounded-lg p-5 bg-green-50 border-green-200"
+      >
+        <div
+          class="flex items-start justify-between mb-3"
+        >
+          <div
+            class="flex items-center gap-3 flex-1"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-check-circle w-5 h-5 text-green-600"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+              />
+              <path
+                d="m9 11 3 3L22 4"
+              />
+            </svg>
+            <h3
+              class="font-semibold text-gray-900"
+            >
+              ZK Proof Service
+            </h3>
+          </div>
+          <span
+            class="px-2 py-1 rounded text-xs font-medium shrink-0 bg-green-100 text-green-800"
+          >
+            Operational
+          </span>
+        </div>
+        <p
+          class="text-sm text-gray-700 mb-3"
+        >
+          Proof generation completing within expected time windows. No queuing.
+        </p>
+        <div
+          class="space-y-2"
+        >
+          <p
+            class="text-xs text-gray-600"
+          >
+            <strong>
+              Impact:
+            </strong>
+             
+            Required for payroll proof generation
+          </p>
+          <div
+            class="flex items-center gap-1 text-xs text-gray-500"
+          >
+            <svg
+              class="lucide lucide-clock w-3 h-3"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <polyline
+                points="12 6 12 12 16 14"
+              />
+            </svg>
+            Updated 
+            2 minutes ago
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="bg-gray-50 border border-gray-200 rounded-lg p-4"
+    >
+      <p
+        class="text-sm text-gray-600 mb-2"
+      >
+        <strong>
+          Need help?
+        </strong>
+         Check the incident page or contact support for detailed status updates and incident information.
+      </p>
+      <a
+        class="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+        href="/incidents"
+      >
+        View Incidents
+        <svg
+          class="lucide lucide-external-link w-3 h-3"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M15 3h6v6"
+          />
+          <path
+            d="M10 14 21 3"
+          />
+          <path
+            d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+          />
+        </svg>
+      </a>
+    </div>
+  </section>
+</div>
+`;
+
+exports[`Visual Regression - Onboarding Flow States > captures onboarding checklist empty state 1`] = `
+<div>
+  <section
+    aria-labelledby="onboarding-checklist-heading"
+  >
+    <div
+      class="flex items-center justify-between mb-4"
+    >
+      <div>
+        <h2
+          class="text-lg font-semibold text-gray-900"
+          id="onboarding-checklist-heading"
+        >
+          Action Required: Onboarding Setup
+        </h2>
+        <p
+          class="text-sm text-gray-600 mt-1"
+        >
+          Resolve missing setup steps before next payroll run
+        </p>
+      </div>
+    </div>
+    <div
+      class="bg-white border rounded-lg shadow-sm overflow-hidden"
+    >
+      <ul
+        class="divide-y divide-gray-100"
+      >
+        <li
+          class="p-4 sm:p-5 hover:bg-gray-50 transition-colors"
+        >
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          >
+            <div
+              class="flex items-start gap-3"
+            >
+              <div
+                class="mt-1"
+              >
+                <div
+                  class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide lucide-alert-triangle w-4 h-4 text-amber-600"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+                    />
+                    <path
+                      d="M12 9v4"
+                    />
+                    <path
+                      d="M12 17h.01"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3
+                  class="text-sm font-medium text-gray-900"
+                >
+                  Kwame Asante
+                </h3>
+                <div
+                  class="mt-2 flex flex-wrap gap-2"
+                >
+                  <span
+                    class="inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="lucide lucide-wallet w-3.5 h-3.5"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M21 12V7H5a2 2 0 0 1 0-4h14v4"
+                      />
+                      <path
+                        d="M3 5v14a2 2 0 0 0 2 2h16v-5"
+                      />
+                      <path
+                        d="M18 12a2 2 0 0 0 0 4h4v-4Z"
+                      />
+                    </svg>
+                    Missing Wallet Address
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex shrink-0 sm:ml-4 mt-2 sm:mt-0"
+            >
+              <a
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-300 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                href="/employees"
+              >
+                Resolve in Directory
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-arrow-right w-3.5 h-3.5"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12h14"
+                  />
+                  <path
+                    d="m12 5 7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </li>
+        <li
+          class="p-4 sm:p-5 hover:bg-gray-50 transition-colors"
+        >
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+          >
+            <div
+              class="flex items-start gap-3"
+            >
+              <div
+                class="mt-1"
+              >
+                <div
+                  class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide lucide-alert-triangle w-4 h-4 text-amber-600"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+                    />
+                    <path
+                      d="M12 9v4"
+                    />
+                    <path
+                      d="M12 17h.01"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <h3
+                  class="text-sm font-medium text-gray-900"
+                >
+                  Kofi Boateng
+                </h3>
+                <div
+                  class="mt-2 flex flex-wrap gap-2"
+                >
+                  <span
+                    class="inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="lucide lucide-wallet w-3.5 h-3.5"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M21 12V7H5a2 2 0 0 1 0-4h14v4"
+                      />
+                      <path
+                        d="M3 5v14a2 2 0 0 0 2 2h16v-5"
+                      />
+                      <path
+                        d="M18 12a2 2 0 0 0 0 4h4v-4Z"
+                      />
+                    </svg>
+                    Missing Wallet Address
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex shrink-0 sm:ml-4 mt-2 sm:mt-0"
+            >
+              <a
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-gray-300 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                href="/employees"
+              >
+                Resolve in Directory
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-arrow-right w-3.5 h-3.5"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12h14"
+                  />
+                  <path
+                    d="m12 5 7 7-7 7"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+</div>
+`;

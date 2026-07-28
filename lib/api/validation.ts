@@ -39,7 +39,7 @@ export const createPayrollSchema = z.object({
 });
 
 export const updatePayrollStatusSchema = z.object({
-  status: z.enum(["pending", "verified", "failed"]),
+  status: z.enum(["pending", "verified", "failed", "cancelled"]),
   txHash: z.string().optional(),
 });
 
@@ -51,7 +51,7 @@ export type UpdatePayrollStatusInput = z.infer<
 // ─── Transaction Query Schema ─────────────────────────────────────────────────
 
 export const transactionQuerySchema = paginationSchema.extend({
-  status: z.enum(["pending", "verified", "failed"]).optional(),
+  status: z.enum(["pending", "verified", "failed", "cancelled"]).optional(),
   companyId: z.string().optional(),
   from: z.string().optional(),
   to: z.string().optional(),

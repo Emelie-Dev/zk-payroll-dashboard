@@ -2,6 +2,9 @@
 
 import { useEffect } from "react";
 import { AlertCircle, RefreshCw } from "lucide-react";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("global-error");
 
 export default function GlobalError({
   error,
@@ -11,7 +14,11 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("Critical root error caught by GlobalError boundary:", error);
+    log.error("Critical root error caught by GlobalError boundary", {
+      error: error.message,
+      digest: error.digest,
+      stack: error.stack,
+    });
   }, [error]);
 
   return (

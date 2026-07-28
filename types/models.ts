@@ -1,3 +1,5 @@
+export type OnboardingStatus = "not_started" | "in_progress" | "completed";
+
 export interface Employee {
   id: string;
   address: string;
@@ -7,6 +9,8 @@ export interface Employee {
   salary: number;
   salaryCommitment: string;
   isActive: boolean;
+  status?: "active" | "inactive" | "pending";
+  onboardingStatus: OnboardingStatus;
   startDate: string;
   lastPayment?: string;
 }
@@ -20,7 +24,7 @@ export interface Company {
   isActive: boolean;
 }
 
-export type UserRole = "admin" | "employee";
+export type UserRole = "admin" | "operator" | "auditor";
 
 export interface SessionPayload {
   publicKey: string;
@@ -36,14 +40,22 @@ export interface PayrollTransaction {
   totalAmount: number;
   employeeCount: number;
   proof: string;
-  status: "pending" | "verified" | "failed";
+  status: "pending" | "verified" | "failed" | "cancelled";
   txHash?: string;
+  isArchived?: boolean;
 }
 
 export interface PayrollRun extends PayrollTransaction {
   employeeIds: string[];
   executedAt?: string | null;
   transactionHash?: string | null;
+  reconciliationStatus?: "pending" | "partial" | "complete" | "failed";
+  reconciliationDetails?: {
+    processedCount: number;
+    totalCount: number;
+    discrepancies?: string[];
+    lastReconciliedAt?: string;
+  };
 }
 
 export interface ViewKey {
@@ -57,6 +69,34 @@ export interface ViewKey {
   expiresAt: string;
   isActive: boolean;
   revokedAt?: string | null;
+  revokedBy?: string;
+  revocationReason?: string;
+}
+
+export interface RevocationHistory {
+  id: string;
+  viewKeyId: string;
+  revokedAt: string;
+  revokedBy: string;
+  reason: string;
+  auditorName: string;
+  auditorOrg: string;
+}
+
+export interface FundingForecast {
+  cycleStart: string;
+  cycleEnd: string;
+  estimatedTotal: number;
+  employeeCount: number;
+  breakdown: {
+    payrollTotal: number;
+    bufferReserve: number;
+    miscellaneous: number;
+  };
+  currentBalance: number;
+  fundingGap: number;
+  confidence: "high" | "medium" | "low";
+  uncertaintyFactors: string[];
 }
 
 export type PayrollWizardStep = "review" | "proof" | "confirm" | "submit";
@@ -71,4 +111,19 @@ export interface PayrollWizardState {
   submissionStatus: "idle" | "submitting" | "success" | "error";
   submissionError: string | null;
   transactionHash: string | null;
+  isProofNearingExpiration?: boolean;
+  treasuryBalanceOverride?: number | null;
+}
+
+export interface AuditAccessRequest {
+  id: string;
+  requesterName: string;
+  requesterOrg: string;
+  requesterEmail: string;
+  scope: "read-only" | "full-audit";
+  rationale: string;
+  status: "pending" | "approved" | "rejected";
+  createdAt: string;
+  updatedAt?: string;
+  viewKeyId?: string;
 }
