@@ -3,6 +3,9 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, RefreshCw } from "lucide-react";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("error-page");
 
 export default function Error({
   error,
@@ -13,7 +16,11 @@ export default function Error({
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    console.error("Runtime error caught by boundary:", error);
+    log.error("Runtime error caught by boundary", {
+      error: error.message,
+      digest: error.digest,
+      stack: error.stack,
+    });
   }, [error]);
 
   return (
