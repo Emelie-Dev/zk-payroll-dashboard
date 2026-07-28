@@ -26,7 +26,7 @@ import { usePayrollWizardStore } from "@/stores/payrollWizard";
 import { useWalletStore } from "@/stores/walletStore";
 import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { IncidentBanner } from "@/components/ui/IncidentBanner";
-import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS, MOCK_TREASURY_BALANCE } from "@/lib/api/mockData";
+import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS, MOCK_TREASURY_BALANCE, MOCK_COMPANIES } from "@/lib/api/mockData";
 import PayrollReceipt from "./PayrollReceipt";
 import type { PayrollWizardStep } from "@/types";
 import { trackEvent, mapErrorToType, bucketEmployeeCount } from "@/lib/telemetry";
@@ -786,7 +786,8 @@ function ConfirmStep({
 
       {/* Explicit Confirmation Checkbox */}
       <div className="bg-indigo-50/50 border border-indigo-150 rounded-lg p-4">
-        <label className="flex items-start gap-3 cursor-pointer select-none">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label htmlFor="confirm-checkbox" className="flex items-start gap-3 cursor-pointer select-none">
           <input
             id="confirm-checkbox"
             type="checkbox"
