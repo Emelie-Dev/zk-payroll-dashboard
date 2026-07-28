@@ -50,6 +50,7 @@ const icons: Record<NavigationItem["icon"], React.ComponentType<{ className?: st
 const NAV_LINKS = [
   { href: "/", icon: Home, label: "Dashboard" },
   { href: "/employees", icon: Users, label: "Employees" },
+  { href: "/employees/bulk-exceptions", icon: AlertTriangle, label: "Bulk Exceptions" },
   { href: "/payroll/schedule", icon: CalendarDays, label: "Payroll Schedule" },
   { href: "/payroll/execute", icon: Play, label: "Execute Payroll" },
   { href: "/history", icon: History, label: "History" },
