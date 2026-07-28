@@ -1048,12 +1048,14 @@ exports[`Visual Regression - Payroll Flow States > Payroll Run Detail - Failed S
               >
                 Failed
               </span>
-              <span
-                class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"
+              <div
+                aria-label="Status: Failed"
+                class="focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-red-100 text-red-800 inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium rounded-full border transition-colors"
+                role="status"
               >
                 <svg
                   aria-hidden="true"
-                  class="lucide lucide-xcircle w-3.5 h-3.5"
+                  class="lucide lucide-xcircle w-3.5 h-3.5 shrink-0"
                   fill="none"
                   height="24"
                   stroke="currentColor"
@@ -1076,8 +1078,10 @@ exports[`Visual Regression - Payroll Flow States > Payroll Run Detail - Failed S
                     d="m9 9 6 6"
                   />
                 </svg>
-                Failed
-              </span>
+                <span>
+                  Failed
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -1534,12 +1538,14 @@ exports[`Visual Regression - Payroll Flow States > Payroll Run Detail - Pending 
               >
                 Scheduled
               </span>
-              <span
-                class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
+              <div
+                aria-label="Status: Pending"
+                class="focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-yellow-100 text-yellow-800 inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium rounded-full border transition-colors"
+                role="status"
               >
                 <svg
                   aria-hidden="true"
-                  class="lucide lucide-clock w-3.5 h-3.5"
+                  class="lucide lucide-clock w-3.5 h-3.5 shrink-0"
                   fill="none"
                   height="24"
                   stroke="currentColor"
@@ -1559,8 +1565,10 @@ exports[`Visual Regression - Payroll Flow States > Payroll Run Detail - Pending 
                     points="12 6 12 12 16 14"
                   />
                 </svg>
-                Pending
-              </span>
+                <span>
+                  Pending
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -2021,12 +2029,14 @@ exports[`Visual Regression - Payroll Flow States > Payroll Run Detail - Verified
               >
                 Completed
               </span>
-              <span
-                class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+              <div
+                aria-label="Status: Verified"
+                class="focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-green-100 text-green-800 inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-medium rounded-full border transition-colors"
+                role="status"
               >
                 <svg
                   aria-hidden="true"
-                  class="lucide lucide-check-circle w-3.5 h-3.5"
+                  class="lucide lucide-check-circle2 w-3.5 h-3.5 shrink-0"
                   fill="none"
                   height="24"
                   stroke="currentColor"
@@ -2037,15 +2047,19 @@ exports[`Visual Regression - Payroll Flow States > Payroll Run Detail - Verified
                   width="24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path
-                    d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
                   />
                   <path
-                    d="m9 11 3 3L22 4"
+                    d="m9 12 2 2 4-4"
                   />
                 </svg>
-                Verified
-              </span>
+                <span>
+                  Verified
+                </span>
+              </div>
             </div>
           </div>
         </div>
