@@ -128,6 +128,25 @@ describe("categorizeSigningError", () => {
       categorizeSigningError({ message: "User rejected transaction" }).category
     ).toBe("rejected");
   });
+
+  it("classifies 'access denied' and 'permission denied' as 'expired-session', not 'rejected' (#181)", () => {
+    // Regression guard: bare "denied" was removed from the user-rejection
+    // pattern so auth-layer denials route to session-expired instead of
+    // being misclassified as user rejections.
+    expect(
+      categorizeSigningError("Access denied: please re-authorize wallet").category
+    ).toBe("expired-session");
+    expect(
+      categorizeSigningError("Permission denied for signing operation").category
+    ).toBe("expired-session");
+    // user-anchored phrases still match the rejection pattern.
+    expect(
+      categorizeSigningError("User denied the transaction").category
+    ).toBe("rejected");
+    expect(
+      categorizeSigningError("User denied access to the wallet").category
+    ).toBe("rejected");
+  });
 });
 
 // ── WalletErrorOverlay: new signing variants ────────────────────────────────
@@ -217,6 +236,8 @@ describe("StellarProvider: signTx categorizes signing errors (#181)", () => {
     ["Wallet session expired", /session expired/i],
     ["xdr decode error: not valid base64", /invalid transaction data/i],
     ["invalid network passphrase", /wrong network/i],
+    ["Access denied: please re-authorize", /session expired/i],
+    ["Permission denied for signing operation", /session expired/i],
   ])(
     "shows the matching overlay for '%s'",
     async (freighterMessage, expectedOverlayRegex) => {

@@ -41,13 +41,18 @@ const PATTERNS: Array<{
     label: 'wallet_rejected',
     // Freighter surfaces user rejections with phrases like
     // "User declined to sign", "rejected by user", "cancelled by user".
-    matcher: /\b(reject|rejecte?d|declin(?:e|ed)|cancel(?:led)?|denied|user\s+denied)\b/i,
+    // We deliberately do NOT match bare `\bdenied\b` here: phrases like
+    // "access denied" or "permission denied" are auth-layer failures,
+    // not user-rejection failures, and should fall through to the
+    // expired-session pattern below.
+    matcher: /\b(reject|rejecte?d|declin(?:e|ed)|cancel(?:led)?|user\s+denied)\b/i,
   },
   {
     category: 'expired-session',
     label: 'session_expired',
     // Includes Freighter lock / timeout / authorization prompts.
-    matcher: /\b(locked|lock\s*screen|not\s+allowed|allow\s+access|unauthorized|unauthorised|session\s+expired|expired|permission\s+denied|reauth|re-authorize)\b/i,
+    matcher:
+      /\b(locked|lock\s*screen|not\s+allowed|allow\s+access|unauthorized|unauthorised|session\s+expired|expired|permission\s+denied|access\s+denied|reauth|re-authorize)\b/i,
   },
   {
     category: 'malformed-transaction',
