@@ -6,6 +6,7 @@ import {
   Circle,
   Loader2,
   AlertCircle,
+  AlertTriangle,
   ArrowLeft,
   ArrowRight,
   RotateCcw,
@@ -102,9 +103,9 @@ function PayrollWizard() {
         Execute Payroll
       </h2>
 
-      <nav aria-label="Payroll execution progress" className="flex items-center">
+      <nav aria-label="Payroll execution progress" className="flex items-center overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0" style={{ scrollbarWidth: 'none' }}>
         {STEPS.map((step, i) => (
-          <div key={step.key} className="flex items-center">
+          <div key={step.key} className="flex items-center shrink-0">
             <div className="flex items-center gap-2">
               {i < idx ? (
                 <CheckCircle className="w-5 h-5 text-green-600" />
@@ -122,14 +123,14 @@ function PayrollWizard() {
               <span
                 className={`text-sm font-medium ${
                   i <= idx ? "text-gray-900" : "text-gray-400"
-                }`}
+                } ${i !== idx ? "hidden sm:block" : "block"}`}
               >
                 {step.label}
               </span>
             </div>
             {i < STEPS.length - 1 && (
               <div
-                className={`w-12 h-px mx-3 ${
+                className={`w-8 sm:w-12 h-px mx-2 sm:mx-3 ${
                   i < idx ? "bg-green-400" : "bg-gray-200"
                 }`}
               />
@@ -138,7 +139,7 @@ function PayrollWizard() {
         ))}
       </nav>
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
         {currentStep === "review" && (
           <ReviewStep
             employeeIds={employeeIds}
@@ -227,14 +228,14 @@ function ReviewStep({
           </div>
         ))}
       </div>
-      <div className="flex justify-between items-center pt-2 border-t">
-        <span className="text-sm font-semibold text-gray-900">
+      <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-3 sm:gap-0 pt-4 border-t">
+        <span className="text-sm font-semibold text-gray-900 w-full sm:w-auto text-center sm:text-left">
           Total: ${totalAmount.toLocaleString()}
         </span>
         <button
           type="button"
           onClick={onNext}
-          className="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center gap-1"
+          className="w-full sm:w-auto px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center justify-center gap-1"
         >
           Continue
           <ArrowRight className="w-4 h-4" />
@@ -271,7 +272,7 @@ function ProofStep({
           <button
             type="button"
             onClick={onGenerate}
-            className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+            className="w-full sm:w-auto px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors inline-flex justify-center"
           >
             Generate Proof
           </button>
@@ -297,7 +298,7 @@ function ProofStep({
           <button
             type="button"
             onClick={onRetry}
-            className="px-4 py-2 rounded-md bg-red-50 text-red-700 text-sm font-medium hover:bg-red-100 border border-red-200 transition-colors inline-flex items-center gap-1"
+            className="w-full sm:w-auto px-4 py-2 rounded-md bg-red-50 text-red-700 text-sm font-medium hover:bg-red-100 border border-red-200 transition-colors inline-flex justify-center items-center gap-1"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Retry
@@ -305,11 +306,11 @@ function ProofStep({
         </div>
       )}
 
-      <div className="flex justify-between pt-4 border-t">
+      <div className="flex pt-4 border-t">
         <button
           type="button"
           onClick={onBack}
-          className="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-1"
+          className="w-full sm:w-auto px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-1"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -366,11 +367,23 @@ function ConfirmStep({
         </div>
       </div>
 
-      <div className="flex justify-between pt-4 border-t">
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
+        <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+        <div>
+          <p className="text-sm font-medium text-amber-800">
+            Irreversible Action
+          </p>
+          <p className="text-sm text-amber-700 mt-1">
+            Once submitted, this payroll transaction cannot be reversed. Please ensure all details are correct.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-between pt-4 border-t gap-3 sm:gap-0">
         <button
           type="button"
           onClick={onBack}
-          className="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-1"
+          className="w-full sm:w-auto px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-1"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -378,7 +391,7 @@ function ConfirmStep({
         <button
           type="button"
           onClick={onSubmit}
-          className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+          className="w-full sm:w-auto px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center justify-center"
         >
           Submit Payroll
         </button>
@@ -430,7 +443,7 @@ function SubmitStep({
           <button
             type="button"
             onClick={onReset}
-            className="mt-4 px-6 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+            className="mt-4 w-full sm:w-auto px-6 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors inline-flex justify-center"
           >
             Start New Payroll
           </button>
@@ -442,11 +455,11 @@ function SubmitStep({
           <AlertCircle className="w-8 h-8 text-red-500 mx-auto" />
           <h4 className="text-lg font-semibold text-red-700">Submission Failed</h4>
           <p className="text-sm text-red-600">{error}</p>
-          <div className="flex justify-center gap-3 mt-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
             <button
               type="button"
               onClick={onRetry}
-              className="px-4 py-2 rounded-md bg-red-50 text-red-700 text-sm font-medium hover:bg-red-100 border border-red-200 transition-colors inline-flex items-center gap-1"
+              className="w-full sm:w-auto px-4 py-2 rounded-md bg-red-50 text-red-700 text-sm font-medium hover:bg-red-100 border border-red-200 transition-colors inline-flex items-center justify-center gap-1"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               Retry Submission
@@ -454,7 +467,7 @@ function SubmitStep({
             <button
               type="button"
               onClick={onReset}
-              className="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+              className="w-full sm:w-auto px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors inline-flex justify-center"
             >
               Start Over
             </button>
