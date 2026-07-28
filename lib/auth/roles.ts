@@ -118,3 +118,56 @@ export function resolveRole(publicKey: string): UserRole {
   if (publicKey === process.env.AUDITOR_PUBLIC_KEY) return 'auditor';
   return 'operator';
 }
+
+// ─── Export permissions ─────────────────────────────────────────────────────
+
+/**
+ * Defines which roles can access each export type.
+ * Map keys are permission keys referenced by ExportCenter export definitions.
+ */
+export const EXPORT_PERMISSIONS: Record<string, { roles: UserRole[]; restrictedReason: Partial<Record<UserRole, string>> }> = {
+  'payroll-history': {
+    roles: ['admin', 'operator'],
+    restrictedReason: {
+      auditor: 'Auditor access is limited to compliance and audit-ledger exports only.',
+    },
+  },
+  'employee-directory': {
+    roles: ['admin', 'operator'],
+    restrictedReason: {
+      auditor: 'Auditor access is limited to compliance and audit-ledger exports only.',
+    },
+  },
+  'audit-requests': {
+    roles: ['admin', 'auditor'],
+    restrictedReason: {
+      operator: 'Operator access is limited to operational payroll and employee exports.',
+    },
+  },
+  'audit-report': {
+    roles: ['admin', 'auditor'],
+    restrictedReason: {
+      operator: 'Operator access is limited to operational payroll and employee exports.',
+    },
+  },
+  'treasury-snapshot': {
+    roles: ['admin'],
+    restrictedReason: {
+      operator: 'Treasury operations are admin-only. Please contact an administrator.',
+      auditor: 'Treasury operations are admin-only. Please contact an administrator.',
+    },
+  },
+};
+
+export function canExport(role: UserRole, permissionKey: string): boolean {
+  const permission = EXPORT_PERMISSIONS[permissionKey];
+  if (!permission) return false;
+  return permission.roles.includes(role);
+}
+
+export function getExportRestrictionReason(role: UserRole, permissionKey: string): string | null {
+  const permission = EXPORT_PERMISSIONS[permissionKey];
+  if (!permission) return 'Export not available for your role.';
+  if (permission.roles.includes(role)) return null;
+  return permission.restrictedReason[role] ?? 'You do not have permission to access this export.';
+}
