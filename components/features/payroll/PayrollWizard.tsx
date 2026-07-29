@@ -26,12 +26,21 @@ import { usePayrollWizardStore } from "@/stores/payrollWizard";
 import { useWalletStore } from "@/stores/walletStore";
 import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { IncidentBanner } from "@/components/ui/IncidentBanner";
-import { SessionTimeoutBanner } from "@/components/features/dashboard/SessionTimeoutBanner";
-import { useSession } from "@/hooks/useSession";
-import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS, MOCK_TREASURY_BALANCE, MOCK_COMPANIES } from "@/lib/api/mockData";
+import {
+  MOCK_EMPLOYEES,
+  MOCK_PAYROLL_RUNS,
+  MOCK_TREASURY_BALANCE,
+  MOCK_COMPANIES,
+} from "@/lib/api/mockData";
 import PayrollReceipt from "./PayrollReceipt";
+import { PayrollRiskWarnings } from "./PayrollRiskWarnings";
+import { WalletReconnectRecoveryBanner } from "@/components/features/wallet/WalletReconnectRecoveryBanner";
 import type { PayrollWizardStep } from "@/types";
-import { trackEvent, mapErrorToType, bucketEmployeeCount } from "@/lib/telemetry";
+import {
+  trackEvent,
+  mapErrorToType,
+  bucketEmployeeCount,
+} from "@/lib/telemetry";
 
 const STEPS: { key: PayrollWizardStep; label: string }[] = [
   { key: "review", label: "Review" },
@@ -72,7 +81,12 @@ function PayrollWizard() {
   const draftResolvedRef = useRef(false);
 
   useEffect(() => {
-    if (!draftResolvedRef.current && hasDraft() && employeeIds.length > 0 && submissionStatus !== "success") {
+    if (
+      !draftResolvedRef.current &&
+      hasDraft() &&
+      employeeIds.length > 0 &&
+      submissionStatus !== "success"
+    ) {
       setShowDraftBanner(true);
     }
   }, [employeeIds.length, hasDraft, submissionStatus]);
@@ -93,8 +107,8 @@ function PayrollWizard() {
     setTotalAmount(MOCK_EMPLOYEES.reduce((sum, e) => sum + e.salary, 0));
     draftResolvedRef.current = true;
 
-    trackEvent('payroll_wizard_started', {
-      employeeCountBucket: bucketEmployeeCount(selected.length)
+    trackEvent("payroll_wizard_started", {
+      employeeCountBucket: bucketEmployeeCount(selected.length),
     });
   }, [setEmployeeIds, setTotalAmount]);
 
@@ -114,16 +128,17 @@ function PayrollWizard() {
     const success = Math.random() > 0.2;
     if (success) {
       setProofStatus("success");
-      trackEvent('payroll_proof_generation_completed', { success: true });
+      trackEvent("payroll_proof_generation_completed", { success: true });
       toast.success("Proof generated successfully");
       nextStep();
     } else {
       setProofStatus("error");
-      const errMsg = "Proof generation failed: circuit constraint mismatch. Please retry.";
+      const errMsg =
+        "Proof generation failed: circuit constraint mismatch. Please retry.";
       setProofError(errMsg);
-      trackEvent('payroll_proof_generation_completed', {
+      trackEvent("payroll_proof_generation_completed", {
         success: false,
-        error_type: mapErrorToType(errMsg)
+        error_type: mapErrorToType(errMsg),
       });
       toast.error("Proof generation failed", {
         description: "Circuit constraint mismatch.",
@@ -149,29 +164,40 @@ function PayrollWizard() {
     if (success) {
       setSubmissionStatus("success");
       setTransactionHash(`0x${Date.now().toString(16)}abc`);
-      trackEvent('payroll_submission_completed', { success: true });
+      trackEvent("payroll_submission_completed", { success: true });
       toast.success("Payroll submitted successfully", {
         description: "Transaction submitted to the Stellar network.",
       });
     } else {
       setSubmissionStatus("error");
-      const errMsg = "Submission failed: network timeout. The transaction may still be processing.";
+      const errMsg =
+        "Submission failed: network timeout. The transaction may still be processing.";
       setSubmissionError(errMsg);
-      trackEvent('payroll_submission_completed', {
+      trackEvent("payroll_submission_completed", {
         success: false,
-        error_type: mapErrorToType(errMsg)
+        error_type: mapErrorToType(errMsg),
       });
       toast.error("Submission failed", {
-        description: "Network timeout. The transaction may still be processing.",
+        description:
+          "Network timeout. The transaction may still be processing.",
       });
     }
-  }, [setSubmissionStatus, setSubmissionError, setTransactionHash, nextStep, isWrongNetwork]);
+  }, [
+    setSubmissionStatus,
+    setSubmissionError,
+    setTransactionHash,
+    nextStep,
+    isWrongNetwork,
+  ]);
 
   const idx = stepIndex(currentStep);
 
   return (
     <section aria-labelledby="payroll-wizard-heading" className="space-y-6">
-      <h2 id="payroll-wizard-heading" className="text-lg font-semibold text-gray-900">
+      <h2
+        id="payroll-wizard-heading"
+        className="text-lg font-semibold text-gray-900"
+      >
         Execute Payroll
       </h2>
 
@@ -182,22 +208,26 @@ function PayrollWizard() {
         />
       )}
 
-      {isSessionExpired && (
-        <SessionTimeoutBanner dismissible={false} />
-      )}
+      {/* Wallet Reconnect Recovery Banner */}
+      <WalletReconnectRecoveryBanner />
 
       {showDraftBanner && (
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
           <Save className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
           <div className="flex-1">
-            <h3 className="text-sm font-medium text-amber-800">Draft Payroll Recovered</h3>
+            <h3 className="text-sm font-medium text-amber-800">
+              Draft Payroll Recovered
+            </h3>
             <p className="text-sm text-amber-700 mt-1">
-              An in-progress payroll draft was found. {employeeIds.length} employee
+              An in-progress payroll draft was found. {employeeIds.length}{" "}
+              employee
               {employeeIds.length !== 1 ? "s" : ""} selected, total amount: $
-              {totalAmount.toLocaleString()}. Your progress was automatically saved.
+              {totalAmount.toLocaleString()}. Your progress was automatically
+              saved.
             </p>
             <p className="text-xs text-amber-600 mt-2">
-              Sensitive fields (proof artifacts, transaction hashes) are never persisted in drafts.
+              Sensitive fields (proof artifacts, transaction hashes) are never
+              persisted in drafts.
             </p>
             <div className="flex items-center gap-2 mt-3">
               <button
@@ -238,7 +268,10 @@ function PayrollWizard() {
         </div>
       )}
 
-      <nav aria-label="Payroll execution progress" className="flex items-center">
+      <nav
+        aria-label="Payroll execution progress"
+        className="flex items-center"
+      >
         {STEPS.map((step, i) => (
           <div key={step.key} className="flex items-center">
             <div className="flex items-center gap-2">
@@ -347,7 +380,7 @@ function ReviewStep({
           type="button"
           onClick={onStart}
           disabled={isWrongNetwork}
-          title={isWrongNetwork ? 'Switch to Testnet in Freighter' : undefined}
+          title={isWrongNetwork ? "Switch to Testnet in Freighter" : undefined}
           className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Start Payroll Run
@@ -407,11 +440,13 @@ function ProofStep({
 }) {
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-semibold text-gray-900">ZK Proof Generation</h3>
+      <h3 className="text-sm font-semibold text-gray-900">
+        ZK Proof Generation
+      </h3>
       <p className="text-sm text-gray-600">
-        A zero-knowledge proof will be generated locally in the browser to
-        prove the validity of this payroll run without revealing individual
-        salary details.
+        A zero-knowledge proof will be generated locally in the browser to prove
+        the validity of this payroll run without revealing individual salary
+        details.
       </p>
 
       {status === "idle" && (
@@ -420,7 +455,9 @@ function ProofStep({
             type="button"
             onClick={onGenerate}
             disabled={isWrongNetwork}
-            title={isWrongNetwork ? 'Switch to Testnet in Freighter' : undefined}
+            title={
+              isWrongNetwork ? "Switch to Testnet in Freighter" : undefined
+            }
             className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Generate Proof
@@ -435,7 +472,10 @@ function ProofStep({
             Generating ZK proof... This may take a few moments.
           </p>
           <div className="w-48 h-1.5 bg-gray-200 rounded-full mx-auto overflow-hidden">
-            <div className="h-full bg-indigo-600 rounded-full animate-pulse" style={{ width: "60%" }} />
+            <div
+              className="h-full bg-indigo-600 rounded-full animate-pulse"
+              style={{ width: "60%" }}
+            />
           </div>
         </div>
       )}
@@ -485,24 +525,35 @@ function ConfirmStep({
 }) {
   const [confirmed, setConfirmed] = useState(false);
   const store = usePayrollWizardStore();
-  const { sessionState } = useSession();
-  const isSessionExpired = sessionState === "expired";
-  
+
   const { isProofNearingExpiration, treasuryBalanceOverride } = store;
-  const treasuryBalance = treasuryBalanceOverride !== null && treasuryBalanceOverride !== undefined 
-    ? treasuryBalanceOverride 
-    : MOCK_TREASURY_BALANCE.balance;
+  const treasuryBalance =
+    treasuryBalanceOverride !== null && treasuryBalanceOverride !== undefined
+      ? treasuryBalanceOverride
+      : MOCK_TREASURY_BALANCE.balance;
 
   const currentPeriod = useMemo(() => {
     const d = new Date();
     const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
     return `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
   }, []);
 
-  const company = MOCK_COMPANIES[0] || { treasury: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN" };
+  const company = MOCK_COMPANIES[0] || {
+    treasury: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN",
+  };
 
   // Compute Blockers & Warnings
   const blockers = useMemo(() => {
@@ -510,26 +561,34 @@ function ConfirmStep({
 
     // 1. Treasury balance check
     if (treasuryBalance < totalAmount) {
-      list.push(`Treasury balance is insufficient: $${treasuryBalance.toLocaleString()} available, $${totalAmount.toLocaleString()} required.`);
+      list.push(
+        `Treasury balance is insufficient: $${treasuryBalance.toLocaleString()} available, $${totalAmount.toLocaleString()} required.`,
+      );
     }
 
     // 2. Proof status check
     if (store.proofStatus !== "success") {
-      list.push("Zero-Knowledge proof is missing or invalid. Please go back and generate a proof.");
+      list.push(
+        "Zero-Knowledge proof is missing or invalid. Please go back and generate a proof.",
+      );
     }
 
     // 3. Employee validation check
-    const hasInvalidEmployees = selectedEmployees.some(emp => {
-      const fullEmp = MOCK_EMPLOYEES.find(e => e.id === emp.id);
+    const hasInvalidEmployees = selectedEmployees.some((emp) => {
+      const fullEmp = MOCK_EMPLOYEES.find((e) => e.id === emp.id);
       return !fullEmp || fullEmp.status === "inactive" || !fullEmp.address;
     });
     if (hasInvalidEmployees) {
-      list.push("Payroll contains inactive or invalid employee data. Wallet signing cannot proceed.");
+      list.push(
+        "Payroll contains inactive or invalid employee data. Wallet signing cannot proceed.",
+      );
     }
 
     // 4. Missing required assets check
     if (totalAmount <= 0) {
-      list.push("Required assets missing: Total run amount must be greater than 0.");
+      list.push(
+        "Required assets missing: Total run amount must be greater than 0.",
+      );
     }
     if (selectedEmployees.length === 0) {
       list.push("No employees selected for this payroll run.");
@@ -547,26 +606,44 @@ function ConfirmStep({
     const list: string[] = [];
 
     // 1. Treasury buffer warning
-    if (treasuryBalance >= totalAmount && treasuryBalance - totalAmount < 25000) {
-      list.push(`Treasury balance ($${treasuryBalance.toLocaleString()}) is approaching the minimum safety buffer threshold (less than $25,000 remaining after run).`);
+    if (
+      treasuryBalance >= totalAmount &&
+      treasuryBalance - totalAmount < 25000
+    ) {
+      list.push(
+        `Treasury balance ($${treasuryBalance.toLocaleString()}) is approaching the minimum safety buffer threshold (less than $25,000 remaining after run).`,
+      );
     }
 
     // 2. Proof expiration warning
     if (store.proofStatus === "success" && isProofNearingExpiration) {
-      list.push("The generated ZK proof is nearing its expiration. Submit now or re-generate if delayed.");
+      list.push(
+        "The generated ZK proof is nearing its expiration. Submit now or re-generate if delayed.",
+      );
     }
 
     // 3. Optional metadata warning
-    const hasMissingOptionalMetadata = selectedEmployees.some(emp => {
-      const fullEmp = MOCK_EMPLOYEES.find(e => e.id === emp.id);
-      return fullEmp && (!fullEmp.email || !fullEmp.startDate || fullEmp.status === "pending");
+    const hasMissingOptionalMetadata = selectedEmployees.some((emp) => {
+      const fullEmp = MOCK_EMPLOYEES.find((e) => e.id === emp.id);
+      return (
+        fullEmp &&
+        (!fullEmp.email || !fullEmp.startDate || fullEmp.status === "pending")
+      );
     });
     if (hasMissingOptionalMetadata) {
-      list.push("Some selected employees are missing optional payroll metadata (email or start date) or are in pending status.");
+      list.push(
+        "Some selected employees are missing optional payroll metadata (email or start date) or are in pending status.",
+      );
     }
 
     return list;
-  }, [treasuryBalance, totalAmount, store.proofStatus, isProofNearingExpiration, selectedEmployees]);
+  }, [
+    treasuryBalance,
+    totalAmount,
+    store.proofStatus,
+    isProofNearingExpiration,
+    selectedEmployees,
+  ]);
 
   const state: "ready" | "warning" | "blocked" = useMemo(() => {
     if (blockers.length > 0) return "blocked";
@@ -579,9 +656,12 @@ function ConfirmStep({
       {/* Header and status */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b pb-4">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">Review &amp; Confirm Payroll</h3>
+          <h3 className="text-lg font-bold text-gray-900">
+            Review &amp; Confirm Payroll
+          </h3>
           <p className="text-sm text-gray-600">
-            Review the final breakdown and verification checks before signing the transaction.
+            Review the final breakdown and verification checks before signing
+            the transaction.
           </p>
         </div>
         <div className="shrink-0 flex items-center">
@@ -611,9 +691,12 @@ function ConfirmStep({
         <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3">
           <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
           <div>
-            <h4 className="text-sm font-semibold text-green-800">All Checks Passed</h4>
+            <h4 className="text-sm font-semibold text-green-800">
+              All Checks Passed
+            </h4>
             <p className="text-sm text-green-700 mt-0.5">
-              Treasury is funded, proof is verified, and all employee records are validated. Ready for submission.
+              Treasury is funded, proof is verified, and all employee records
+              are validated. Ready for submission.
             </p>
           </div>
         </div>
@@ -623,9 +706,12 @@ function ConfirmStep({
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3">
           <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
           <div className="flex-1">
-            <h4 className="text-sm font-semibold text-amber-800">Payroll Warnings Detected</h4>
+            <h4 className="text-sm font-semibold text-amber-800">
+              Payroll Warnings Detected
+            </h4>
             <p className="text-sm text-amber-700 mt-0.5">
-              Please review the following non-blocking issues before proceeding. You can still submit this payroll.
+              Please review the following non-blocking issues before proceeding.
+              You can still submit this payroll.
             </p>
             <ul className="list-disc list-inside text-xs text-amber-700 mt-2 space-y-1">
               {warnings.map((warn, i) => (
@@ -640,9 +726,12 @@ function ConfirmStep({
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
           <ShieldAlert className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
           <div className="flex-1">
-            <h4 className="text-sm font-semibold text-red-800">Submission Blocked</h4>
+            <h4 className="text-sm font-semibold text-red-800">
+              Submission Blocked
+            </h4>
             <p className="text-sm text-red-700 mt-0.5">
-              Critical validation failures must be resolved before this payroll can be executed. Wallet signing is disabled.
+              Critical validation failures must be resolved before this payroll
+              can be executed. Wallet signing is disabled.
             </p>
             <ul className="list-disc list-inside text-xs text-red-700 mt-2 space-y-1">
               {blockers.map((block, i) => (
@@ -652,6 +741,14 @@ function ConfirmStep({
           </div>
         </div>
       )}
+
+      {/* Operational Risk Warnings */}
+      <PayrollRiskWarnings
+        treasuryBalance={treasuryBalance}
+        totalAmount={totalAmount}
+        selectedEmployees={selectedEmployees}
+        allEmployees={MOCK_EMPLOYEES}
+      />
 
       {/* Grid: Payroll Info & Asset summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -663,13 +760,19 @@ function ConfirmStep({
           </h4>
           <div className="grid grid-cols-2 gap-y-2 text-sm pt-1">
             <span className="text-gray-500">Payroll Period</span>
-            <span className="font-semibold text-gray-800 text-right">{currentPeriod}</span>
+            <span className="font-semibold text-gray-800 text-right">
+              {currentPeriod}
+            </span>
 
             <span className="text-gray-500">Total Employees</span>
-            <span className="font-semibold text-gray-800 text-right">{selectedEmployees.length}</span>
+            <span className="font-semibold text-gray-800 text-right">
+              {selectedEmployees.length}
+            </span>
 
             <span className="text-gray-500">Target Asset</span>
-            <span className="font-semibold text-gray-800 text-right">USDC (Stellar Classic)</span>
+            <span className="font-semibold text-gray-800 text-right">
+              USDC (Stellar Classic)
+            </span>
           </div>
         </div>
 
@@ -681,13 +784,19 @@ function ConfirmStep({
           </h4>
           <div className="grid grid-cols-2 gap-y-2 text-sm pt-1">
             <span className="text-gray-500">Net Salary Transfer</span>
-            <span className="font-semibold text-gray-800 text-right">${totalAmount.toLocaleString()} USDC</span>
+            <span className="font-semibold text-gray-800 text-right">
+              ${totalAmount.toLocaleString()} USDC
+            </span>
 
             <span className="text-gray-500">Network Transaction Fee</span>
-            <span className="font-semibold text-gray-800 text-right">~0.0001 XLM (Free)</span>
+            <span className="font-semibold text-gray-800 text-right">
+              ~0.0001 XLM (Free)
+            </span>
 
             <span className="text-gray-500">Total Authorized Amount</span>
-            <span className="font-bold text-indigo-700 text-right">${totalAmount.toLocaleString()} USDC</span>
+            <span className="font-bold text-indigo-700 text-right">
+              ${totalAmount.toLocaleString()} USDC
+            </span>
           </div>
         </div>
       </div>
@@ -695,21 +804,35 @@ function ConfirmStep({
       {/* Employees mini-directory review */}
       <div className="border border-gray-250 rounded-lg overflow-hidden">
         <div className="bg-gray-50 px-4 py-2 border-b">
-          <h4 className="text-sm font-semibold text-gray-700">Employee Summary</h4>
+          <h4 className="text-sm font-semibold text-gray-700">
+            Employee Summary
+          </h4>
         </div>
         <div className="divide-y max-h-48 overflow-y-auto">
           {selectedEmployees.map((emp) => {
-            const fullEmp = MOCK_EMPLOYEES.find(e => e.id === emp.id);
+            const fullEmp = MOCK_EMPLOYEES.find((e) => e.id === emp.id);
             return (
-              <div key={emp.id} className="px-4 py-2.5 flex justify-between items-center text-sm">
+              <div
+                key={emp.id}
+                className="px-4 py-2.5 flex justify-between items-center text-sm"
+              >
                 <div>
                   <p className="font-medium text-gray-800">{emp.name}</p>
-                  <p className="text-xs text-gray-500">{fullEmp?.department || "N/A"} • {fullEmp?.address ? `${fullEmp.address.substring(0, 6)}...${fullEmp.address.substring(50)}` : "No Address"}</p>
+                  <p className="text-xs text-gray-500">
+                    {fullEmp?.department || "N/A"} •{" "}
+                    {fullEmp?.address
+                      ? `${fullEmp.address.substring(0, 6)}...${fullEmp.address.substring(50)}`
+                      : "No Address"}
+                  </p>
                 </div>
                 <div className="text-right">
-                  <span className="font-semibold text-gray-900">${emp.salary.toLocaleString()} USDC</span>
+                  <span className="font-semibold text-gray-900">
+                    ${emp.salary.toLocaleString()} USDC
+                  </span>
                   {fullEmp?.status === "pending" && (
-                    <span className="block text-[10px] text-amber-600 font-medium">Pending Onboarding</span>
+                    <span className="block text-[10px] text-amber-600 font-medium">
+                      Pending Onboarding
+                    </span>
                   )}
                 </div>
               </div>
@@ -723,29 +846,46 @@ function ConfirmStep({
         {/* Treasury wallet details */}
         <div className="border border-gray-200 rounded-lg p-4 space-y-3">
           <div className="flex justify-between items-center">
-            <h4 className="text-sm font-semibold text-gray-800">Treasury Readiness</h4>
-            <span className={`text-xs font-semibold px-2 py-0.5 rounded ${
-              treasuryBalance < totalAmount
-                ? "bg-red-100 text-red-800"
+            <h4 className="text-sm font-semibold text-gray-800">
+              Treasury Readiness
+            </h4>
+            <span
+              className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                treasuryBalance < totalAmount
+                  ? "bg-red-100 text-red-800"
+                  : treasuryBalance - totalAmount < 25000
+                    ? "bg-amber-100 text-amber-800"
+                    : "bg-green-100 text-green-800"
+              }`}
+            >
+              {treasuryBalance < totalAmount
+                ? "Insufficient"
                 : treasuryBalance - totalAmount < 25000
-                ? "bg-amber-100 text-amber-800"
-                : "bg-green-100 text-green-800"
-            }`}>
-              {treasuryBalance < totalAmount ? "Insufficient" : treasuryBalance - totalAmount < 25000 ? "Low Buffer" : "Funded"}
+                  ? "Low Buffer"
+                  : "Funded"}
             </span>
           </div>
           <div className="text-sm space-y-1.5">
             <div className="flex justify-between">
               <span className="text-gray-500">Wallet Balance:</span>
-              <span className="font-semibold text-gray-900">${treasuryBalance.toLocaleString()} USDC</span>
+              <span className="font-semibold text-gray-900">
+                ${treasuryBalance.toLocaleString()} USDC
+              </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Run Requirement:</span>
-              <span className="font-semibold text-red-600">-${totalAmount.toLocaleString()} USDC</span>
+              <span className="font-semibold text-red-600">
+                -${totalAmount.toLocaleString()} USDC
+              </span>
             </div>
             <div className="flex justify-between border-t pt-1.5">
-              <span className="text-gray-600 font-medium">Projected Balance:</span>
-              <span className="font-bold text-gray-900">${Math.max(0, treasuryBalance - totalAmount).toLocaleString()} USDC</span>
+              <span className="text-gray-600 font-medium">
+                Projected Balance:
+              </span>
+              <span className="font-bold text-gray-900">
+                ${Math.max(0, treasuryBalance - totalAmount).toLocaleString()}{" "}
+                USDC
+              </span>
             </div>
             <p className="text-[10px] text-gray-500 font-mono break-all mt-2 bg-gray-50 p-1.5 rounded">
               Treasury Address: {company.treasury}
@@ -756,14 +896,22 @@ function ConfirmStep({
         {/* ZK Proof Status details */}
         <div className="border border-gray-200 rounded-lg p-4 space-y-3">
           <div className="flex justify-between items-center">
-            <h4 className="text-sm font-semibold text-gray-800">Zero-Knowledge Proof Status</h4>
-            <span className={`text-xs font-semibold px-2 py-0.5 rounded ${
-              store.proofStatus === "success" 
-                ? isProofNearingExpiration ? "bg-amber-100 text-amber-800" : "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
-            }`}>
-              {store.proofStatus === "success" 
-                ? isProofNearingExpiration ? "Nearing Expiry" : "Verified"
+            <h4 className="text-sm font-semibold text-gray-800">
+              Zero-Knowledge Proof Status
+            </h4>
+            <span
+              className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                store.proofStatus === "success"
+                  ? isProofNearingExpiration
+                    ? "bg-amber-100 text-amber-800"
+                    : "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+              }`}
+            >
+              {store.proofStatus === "success"
+                ? isProofNearingExpiration
+                  ? "Nearing Expiry"
+                  : "Verified"
                 : "Missing"}
             </span>
           </div>
@@ -778,7 +926,11 @@ function ConfirmStep({
             </div>
             <div className="mt-2 text-[10px] text-gray-500 font-mono bg-gray-50 p-1.5 rounded">
               <p className="font-semibold text-gray-600">Verification Hash:</p>
-              <p className="truncate">{store.proofStatus === "success" ? "0xzkproof_verified_hash_9f4082ba" : "No active proof commitment"}</p>
+              <p className="truncate">
+                {store.proofStatus === "success"
+                  ? "0xzkproof_verified_hash_9f4082ba"
+                  : "No active proof commitment"}
+              </p>
             </div>
           </div>
         </div>
@@ -786,15 +938,24 @@ function ConfirmStep({
 
       {/* Expected Blockchain Actions */}
       <div className="border border-gray-200 rounded-lg p-4 bg-gray-50/50 space-y-2">
-        <h4 className="text-sm font-semibold text-gray-800">Expected Blockchain Transaction Actions</h4>
+        <h4 className="text-sm font-semibold text-gray-800">
+          Expected Blockchain Transaction Actions
+        </h4>
         <div className="space-y-1 text-xs text-gray-600 font-mono">
           <div className="flex items-start gap-1.5">
             <span className="text-indigo-600 shrink-0">1.</span>
-            <span>Verify the on-chain ZK Proof commitment on the Stellar contract address.</span>
+            <span>
+              Verify the on-chain ZK Proof commitment on the Stellar contract
+              address.
+            </span>
           </div>
           <div className="flex items-start gap-1.5">
             <span className="text-indigo-600 shrink-0">2.</span>
-            <span>Execute batch payment of ${totalAmount.toLocaleString()} USDC to zk-payroll escrow from treasury {company.treasury.substring(0, 6)}...{company.treasury.substring(50)}.</span>
+            <span>
+              Execute batch payment of ${totalAmount.toLocaleString()} USDC to
+              zk-payroll escrow from treasury {company.treasury.substring(0, 6)}
+              ...{company.treasury.substring(50)}.
+            </span>
           </div>
         </div>
       </div>
@@ -815,7 +976,10 @@ function ConfirmStep({
               Confirm Payroll Execution Summary
             </span>
             <p className="text-xs text-gray-600 mt-0.5">
-              I acknowledge that I have reviewed the employees listed, validated the required treasury balance, and verify that the Zero-Knowledge commitment represents the exact batch payouts. This action triggers wallet signing.
+              I acknowledge that I have reviewed the employees listed, validated
+              the required treasury balance, and verify that the Zero-Knowledge
+              commitment represents the exact batch payouts. This action
+              triggers wallet signing.
             </p>
           </div>
         </label>
@@ -836,15 +1000,13 @@ function ConfirmStep({
           onClick={onSubmit}
           disabled={!confirmed || state === "blocked" || isWrongNetwork || isSessionExpired}
           title={
-            isWrongNetwork 
-              ? 'Switch to Testnet in Freighter' 
-              : isSessionExpired
-              ? 'Your session has expired. Re-authenticate to continue.'
+            isWrongNetwork
+              ? "Switch to Testnet in Freighter"
               : state === "blocked"
-              ? 'Resolve blocking errors to proceed'
-              : !confirmed
-              ? 'Check the confirmation box to submit'
-              : undefined
+                ? "Resolve blocking errors to proceed"
+                : !confirmed
+                  ? "Check the confirmation box to submit"
+                  : undefined
           }
           className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 animate-pulse"
         >
@@ -889,7 +1051,7 @@ function SubmitStep({
       )}
 
       {status === "success" && (
-        <PayrollReceipt 
+        <PayrollReceipt
           totalAmount={totalAmount}
           employeeCount={employeeCount}
           transactionHash={transactionHash}
@@ -900,14 +1062,20 @@ function SubmitStep({
       {status === "error" && (
         <div className="text-center py-8 space-y-3">
           <AlertCircle className="w-8 h-8 text-red-500 mx-auto" />
-          <h4 className="text-lg font-semibold text-red-700">Submission Failed</h4>
+          <h4 className="text-lg font-semibold text-red-700">
+            Submission Failed
+          </h4>
           <p className="text-sm text-red-600">{error}</p>
           <div className="flex justify-center gap-3 mt-4">
             <button
               type="button"
               onClick={onRetry}
               disabled={isWrongNetwork}
-              title={isWrongNetwork ? `Switch to ${EXPECTED_NETWORK} in your wallet` : undefined}
+              title={
+                isWrongNetwork
+                  ? `Switch to ${EXPECTED_NETWORK} in your wallet`
+                  : undefined
+              }
               className="px-4 py-2 rounded-md bg-red-50 text-red-700 text-sm font-medium hover:bg-red-100 border border-red-200 transition-colors inline-flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <RotateCcw className="w-3.5 h-3.5" />
