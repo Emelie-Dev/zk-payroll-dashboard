@@ -41,6 +41,13 @@ export interface PayrollTransaction {
   employeeCount: number;
   proof: string;
   status: "pending" | "verified" | "failed" | "cancelled";
+  approvalStatus?: "draft" | "pending_executive_approval" | "approved" | "rejected";
+  approvalHistory?: Array<{
+    approvedBy: string;
+    approvedAt: string;
+    role: string;
+    comment?: string;
+  }>;
   txHash?: string;
   isArchived?: boolean;
 }

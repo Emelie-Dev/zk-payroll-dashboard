@@ -33,6 +33,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     disabledReason: { operator: 'Employee roster changes require admin approval.' },
   },
   {
+    label: 'Approval Queue',
+    href: '/payroll/approvals',
+    icon: 'clipboard',
+    roles: ['admin', 'operator'],
+  },
+  {
     label: 'Execute Payroll',
     href: '/payroll/execute',
     icon: 'play',
@@ -87,6 +93,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
 export const ROUTE_ROLE_RULES: Array<{ prefix: string; roles: UserRole[] }> = [
   { prefix: '/employees/add', roles: ['admin'] },
   { prefix: '/employees', roles: ['admin', 'operator'] },
+  { prefix: '/payroll/approvals', roles: ['admin', 'operator'] },
   { prefix: '/payroll/execute', roles: ['admin', 'operator'] },
   { prefix: '/payroll/run', roles: ['admin'] },
   { prefix: '/payroll/exceptions', roles: ['admin', 'operator', 'auditor'] },
