@@ -127,3 +127,98 @@ export interface AuditAccessRequest {
   updatedAt?: string;
   viewKeyId?: string;
 }
+
+// ── Multi-asset payroll orchestration ────────────────────────────────────────
+
+export type StellarAsset = {
+  code: string;
+  issuer?: string; // undefined for native XLM
+};
+
+export type AssetGroupStatus =
+  | "pending"
+  | "funded"
+  | "underfunded"
+  | "executing"
+  | "succeeded"
+  | "failed"
+  | "partial";
+
+export interface AssetGroupEmployee {
+  employeeId: string;
+  name: string;
+  address: string;
+  amount: number;
+  /** SHA-256 commitment of the salary — never expose the raw amount to unauthorized viewers */
+  salaryCommitment: string;
+}
+
+export interface TreasuryReadiness {
+  asset: StellarAsset;
+  requiredAmount: number;
+  availableBalance: number;
+  isFunded: boolean;
+  shortfall: number;
+}
+
+export interface AssetGroup {
+  asset: StellarAsset;
+  employees: AssetGroupEmployee[];
+  totalAmount: number;
+  transactionCount: number;
+  status: AssetGroupStatus;
+  txHash?: string;
+  errorMessage?: string;
+  executedAt?: string;
+  treasuryReadiness: TreasuryReadiness;
+}
+
+export type MultiAssetRunStatus =
+  | "draft"
+  | "ready"
+  | "underfunded"
+  | "executing"
+  | "succeeded"
+  | "partial"
+  | "failed";
+
+export interface MultiAssetPayrollRun {
+  id: string;
+  companyId: string;
+  label: string;
+  createdAt: string;
+  executedAt?: string;
+  status: MultiAssetRunStatus;
+  assetGroups: AssetGroup[];
+  totalEmployees: number;
+  /** Opaque ZK proof covering all groups */
+  proof?: string;
+  proofStatus: "none" | "generating" | "ready" | "expired";
+}
+
+export type ReconciliationGroupStatus = "complete" | "partial" | "failed" | "pending";
+
+export interface ReconciliationEntry {
+  employeeId: string;
+  name: string;
+  assetCode: string;
+  expectedAmount: number;
+  confirmedAmount: number;
+  status: "confirmed" | "discrepancy" | "missing";
+  txHash?: string;
+  confirmedAt?: string;
+}
+
+export interface MultiAssetReconciliation {
+  runId: string;
+  generatedAt: string;
+  groups: Array<{
+    asset: StellarAsset;
+    status: ReconciliationGroupStatus;
+    entries: ReconciliationEntry[];
+    totalExpected: number;
+    totalConfirmed: number;
+    discrepancyCount: number;
+  }>;
+  canExportAudit: boolean;
+}
