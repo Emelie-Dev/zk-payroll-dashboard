@@ -26,6 +26,8 @@ import {
 import { getNavigationForRole, ROLE_LABELS } from "@/lib/auth/roles";
 import type { NavigationItem } from "@/lib/auth/roles";
 import type { UserRole } from "@/types";
+import { useSidebarBadges } from "@/hooks/useSidebarBadges";
+import type { SidebarBadges } from "@/hooks/useSidebarBadges";
 
 // Icons map for role-based navigation layout strings
 const icons: Record<NavigationItem["icon"], React.ComponentType<{ className?: string }>> = {
@@ -46,6 +48,24 @@ const icons: Record<NavigationItem["icon"], React.ComponentType<{ className?: st
   download: FileDown,
 };
 
+const BADGE_HREF_MAP: Partial<Record<keyof SidebarBadges, string>> = {
+  executePayroll: "/payroll/execute",
+  compliance: "/compliance",
+  employees: "/employees",
+};
+
+function SidebarBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <span
+      className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[18px] text-center leading-none"
+      aria-label={`${count} item${count === 1 ? "" : "s"} require attention`}
+    >
+      {count > 99 ? "99+" : count}
+    </span>
+  );
+}
+
 // Global static layout links array including both branches' additions
 const NAV_LINKS = [
   { href: "/", icon: Home, label: "Dashboard" },
@@ -62,12 +82,14 @@ const NAV_LINKS = [
   { href: "/settings", icon: Settings, label: "Settings" },
 ];
 
-function NavLinks({ onClick }: { onClick?: () => void }) {
+function NavLinks({ onClick, badges }: { onClick?: () => void; badges?: SidebarBadges }) {
   const pathname = usePathname() ?? "/";
   return (
     <nav aria-label="Main navigation" className="mt-6">
       {NAV_LINKS.map(({ href, icon: Icon, label }) => {
         const active = pathname === href || (href !== "/" && pathname.startsWith(href));
+        const badgeKey = Object.entries(BADGE_HREF_MAP).find(([, h]) => h === href)?.[0] as keyof SidebarBadges | undefined;
+        const count = badgeKey && badges ? badges[badgeKey] : 0;
         return (
           <a
             key={href}
@@ -80,6 +102,7 @@ function NavLinks({ onClick }: { onClick?: () => void }) {
           >
             <Icon className="w-5 h-5 mr-3" aria-hidden="true" />
             {label}
+            <SidebarBadge count={count} />
           </a>
         );
       })}
@@ -90,6 +113,7 @@ function NavLinks({ onClick }: { onClick?: () => void }) {
 export function DesktopRoleSidebar({ role }: { role: UserRole }) {
   const pathname = usePathname();
   const items = getNavigationForRole(role);
+  const badges = useSidebarBadges();
 
   return (
     <div className="hidden md:block w-64 bg-white shadow-md flex-shrink-0">
@@ -104,6 +128,8 @@ export function DesktopRoleSidebar({ role }: { role: UserRole }) {
           const Icon = icons[item.icon] || Home;
           const disabled = item.access?.[role] === "disabled";
           const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+          const badgeKey = Object.entries(BADGE_HREF_MAP).find(([, h]) => h === item.href)?.[0] as keyof SidebarBadges | undefined;
+          const count = badgeKey ? badges[badgeKey] : 0;
 
           if (disabled) {
             return (
@@ -132,6 +158,7 @@ export function DesktopRoleSidebar({ role }: { role: UserRole }) {
             >
               <Icon className="w-5 h-5 mr-3" aria-hidden="true" />
               {item.label}
+              <SidebarBadge count={count} />
             </Link>
           );
         })}
@@ -144,6 +171,7 @@ export default function Sidebar({ role }: { role?: UserRole } = {}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const badges = useSidebarBadges();
 
   useEffect(() => {
     if (open) {
@@ -190,7 +218,7 @@ export default function Sidebar({ role }: { role?: UserRole } = {}) {
                 <X className="w-5 h-5" aria-hidden="true" />
               </button>
             </div>
-            <NavLinks onClick={() => setOpen(false)} />
+            <NavLinks onClick={() => setOpen(false)} badges={badges} />
           </div>
         </>
       )}
@@ -203,7 +231,7 @@ export default function Sidebar({ role }: { role?: UserRole } = {}) {
           <div className="p-6">
             <h1 className="text-2xl font-bold text-gray-800">ZK Payroll</h1>
           </div>
-          <NavLinks />
+          <NavLinks badges={badges} />
         </div>
       )}
     </>
