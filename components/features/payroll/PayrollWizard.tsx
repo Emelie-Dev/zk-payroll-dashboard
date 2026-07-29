@@ -20,10 +20,12 @@ import {
   AlertTriangle,
   Info,
   Lock,
+  History,
 } from "lucide-react";
 import { toast } from "sonner";
 import { usePayrollWizardStore } from "@/stores/payrollWizard";
 import { useWalletStore } from "@/stores/walletStore";
+import { useApprovalHistory } from "@/stores/approvalHistory";
 import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { IncidentBanner } from "@/components/ui/IncidentBanner";
 import {
@@ -33,6 +35,7 @@ import {
   MOCK_COMPANIES,
 } from "@/lib/api/mockData";
 import PayrollReceipt from "./PayrollReceipt";
+import ApprovalHistoryDrawer from "./ApprovalHistoryDrawer";
 import { PayrollRiskWarnings } from "./PayrollRiskWarnings";
 import { WalletReconnectRecoveryBanner } from "@/components/features/wallet/WalletReconnectRecoveryBanner";
 import type { PayrollWizardStep } from "@/types";
@@ -79,6 +82,12 @@ function PayrollWizard() {
   } = usePayrollWizardStore();
   const [showDraftBanner, setShowDraftBanner] = useState(false);
   const draftResolvedRef = useRef(false);
+  const initialEventRecordedRef = useRef(false);
+  const [historyDrawerOpen, setHistoryDrawerOpen] = useState(false);
+
+  const walletPublicKey = useWalletStore((s) => s.publicKey) ?? "unknown";
+  const addApprovalEvent = useApprovalHistory((s) => s.addEvent);
+  const clearApprovalHistory = useApprovalHistory((s) => s.clearHistory);
 
   useEffect(() => {
     if (
@@ -104,11 +113,19 @@ function PayrollWizard() {
     setEmployeeIds(selected);
     setTotalAmount(MOCK_EMPLOYEES.reduce((sum, e) => sum + e.salary, 0));
     draftResolvedRef.current = true;
+    initialEventRecordedRef.current = true;
+
+    addApprovalEvent(
+      "draft_created",
+      walletPublicKey,
+      `Payroll draft created with ${selected.length} employees totaling $${MOCK_EMPLOYEES.reduce((sum, e) => sum + e.salary, 0).toLocaleString()}`,
+      { employeeCount: selected.length },
+    );
 
     trackEvent("payroll_wizard_started", {
       employeeCountBucket: bucketEmployeeCount(selected.length),
     });
-  }, [setEmployeeIds, setTotalAmount]);
+  }, [setEmployeeIds, setTotalAmount, addApprovalEvent, walletPublicKey]);
 
   const handleGenerateProof = useCallback(async () => {
     if (isWrongNetwork) {
@@ -121,11 +138,22 @@ function PayrollWizard() {
     setProofStatus("generating");
     setProofError(null);
 
+    addApprovalEvent(
+      "proof_generation_started",
+      walletPublicKey,
+      "Zero-knowledge proof generation initiated",
+    );
+
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const success = Math.random() > 0.2;
     if (success) {
       setProofStatus("success");
+      addApprovalEvent(
+        "proof_generation_completed",
+        walletPublicKey,
+        "Zero-knowledge proof generated and verified successfully",
+      );
       trackEvent("payroll_proof_generation_completed", { success: true });
       toast.success("Proof generated successfully");
       nextStep();
@@ -134,6 +162,11 @@ function PayrollWizard() {
       const errMsg =
         "Proof generation failed: circuit constraint mismatch. Please retry.";
       setProofError(errMsg);
+      addApprovalEvent(
+        "proof_generation_failed",
+        walletPublicKey,
+        errMsg,
+      );
       trackEvent("payroll_proof_generation_completed", {
         success: false,
         error_type: mapErrorToType(errMsg),
@@ -142,7 +175,7 @@ function PayrollWizard() {
         description: "Circuit constraint mismatch.",
       });
     }
-  }, [setProofStatus, setProofError, nextStep, isWrongNetwork]);
+  }, [setProofStatus, setProofError, nextStep, isWrongNetwork, addApprovalEvent, walletPublicKey]);
 
   const handleSubmit = useCallback(async () => {
     if (isWrongNetwork) {
@@ -156,12 +189,30 @@ function PayrollWizard() {
     setSubmissionError(null);
     nextStep();
 
+    addApprovalEvent(
+      "payroll_confirmed",
+      walletPublicKey,
+      `Payroll confirmed for ${employeeIds.length} employees totaling $${totalAmount.toLocaleString()}`,
+    );
+
+    addApprovalEvent(
+      "submission_started",
+      walletPublicKey,
+      `Payroll submission initiated for ${employeeIds.length} employees totaling $${totalAmount.toLocaleString()}`,
+    );
+
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     const success = Math.random() > 0.15;
     if (success) {
       setSubmissionStatus("success");
-      setTransactionHash(`0x${Date.now().toString(16)}abc`);
+      const txHash = `0x${Date.now().toString(16)}abc`;
+      setTransactionHash(txHash);
+      addApprovalEvent(
+        "submission_completed",
+        walletPublicKey,
+        `Payroll submitted successfully with transaction ${txHash}`,
+      );
       trackEvent("payroll_submission_completed", { success: true });
       toast.success("Payroll submitted successfully", {
         description: "Transaction submitted to the Stellar network.",
@@ -171,6 +222,11 @@ function PayrollWizard() {
       const errMsg =
         "Submission failed: network timeout. The transaction may still be processing.";
       setSubmissionError(errMsg);
+      addApprovalEvent(
+        "submission_failed",
+        walletPublicKey,
+        "Payroll submission failed due to network timeout",
+      );
       trackEvent("payroll_submission_completed", {
         success: false,
         error_type: mapErrorToType(errMsg),
@@ -180,24 +236,30 @@ function PayrollWizard() {
           "Network timeout. The transaction may still be processing.",
       });
     }
-  }, [
-    setSubmissionStatus,
-    setSubmissionError,
-    setTransactionHash,
-    nextStep,
-    isWrongNetwork,
-  ]);
+  }, [setSubmissionStatus, setSubmissionError, setTransactionHash, nextStep, isWrongNetwork, addApprovalEvent, walletPublicKey, employeeIds, totalAmount]);
+
+  const handleReset = useCallback(() => {
+    reset();
+    clearApprovalHistory();
+  }, [reset, clearApprovalHistory]);
 
   const idx = stepIndex(currentStep);
 
   return (
     <section aria-labelledby="payroll-wizard-heading" className="space-y-6">
-      <h2
-        id="payroll-wizard-heading"
-        className="text-lg font-semibold text-gray-900"
-      >
-        Execute Payroll
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 id="payroll-wizard-heading" className="text-lg font-semibold text-gray-900">
+          Execute Payroll
+        </h2>
+        <button
+          type="button"
+          onClick={() => setHistoryDrawerOpen(true)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
+          <History className="w-4 h-4" />
+          Approval History
+        </button>
+      </div>
 
       {isWrongNetwork && (
         <IncidentBanner
@@ -233,6 +295,15 @@ function PayrollWizard() {
                 onClick={() => {
                   setShowDraftBanner(false);
                   draftResolvedRef.current = true;
+                  if (!initialEventRecordedRef.current) {
+                    initialEventRecordedRef.current = true;
+                    addApprovalEvent(
+                      "draft_created",
+                      walletPublicKey,
+                      `Payroll draft restored with ${employeeIds.length} employees totaling $${totalAmount.toLocaleString()}`,
+                      { employeeCount: employeeIds.length, restored: true },
+                    );
+                  }
                 }}
                 className="px-3 py-1.5 rounded-md text-xs font-medium bg-amber-600 text-white hover:bg-amber-700 transition-colors"
               >
@@ -242,6 +313,7 @@ function PayrollWizard() {
                 type="button"
                 onClick={() => {
                   clearDraft();
+                  clearApprovalHistory();
                   setShowDraftBanner(false);
                   draftResolvedRef.current = true;
                 }}
@@ -344,11 +416,16 @@ function PayrollWizard() {
             totalAmount={totalAmount}
             employeeCount={employeeIds.length}
             onRetry={handleSubmit}
-            onReset={reset}
+            onReset={handleReset}
             isWrongNetwork={isWrongNetwork}
           />
         )}
       </div>
+
+      <ApprovalHistoryDrawer
+        open={historyDrawerOpen}
+        onOpenChange={setHistoryDrawerOpen}
+      />
     </section>
   );
 }

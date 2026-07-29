@@ -122,6 +122,26 @@ export interface PayrollWizardState {
   treasuryBalanceOverride?: number | null;
 }
 
+export type ApprovalEventType =
+  | "draft_created"
+  | "draft_edited"
+  | "proof_generation_started"
+  | "proof_generation_completed"
+  | "proof_generation_failed"
+  | "payroll_confirmed"
+  | "submission_started"
+  | "submission_completed"
+  | "submission_failed";
+
+export interface ApprovalEvent {
+  id: string;
+  type: ApprovalEventType;
+  timestamp: string;
+  actor: string;
+  details: string;
+  metadata?: Record<string, unknown>;
+}
+
 export interface AuditAccessRequest {
   id: string;
   requesterName: string;
