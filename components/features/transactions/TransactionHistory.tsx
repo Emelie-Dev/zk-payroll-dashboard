@@ -1,6 +1,14 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback, useRef, Suspense } from "react";
+import {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+  Suspense,
+} from "react";
+import { searchPayrollRuns } from "@/lib/payrollSearch";
 import {
   ArrowUpRight,
   ArrowDownLeft,
@@ -22,10 +30,33 @@ import type { PayrollTransaction } from "@/types";
 import TransactionDetailDrawer from "./TransactionDetailDrawer";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import StatusBadge from "@/components/ui/StatusBadge";
+import { PayrollLockIndicator } from "@/components/ui/PayrollLockIndicator";
 
 type StatusFilter = "all" | "verified" | "pending" | "failed" | "cancelled";
 
+// Helper to determine lock state based on transaction
+function getLockState(
+  tx: PayrollTransaction,
+): "signing" | "submission" | "confirmation" | "reconciliation" | null {
+  // Mock: In real app, would check tx flags/metadata
+  // For now, use status and simulate lock states
+  if (tx.status === "pending") {
+    // Simulate rotating lock states for pending transactions
+    const hash = tx.id.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+    const states: (
+      | "signing"
+      | "submission"
+      | "confirmation"
+      | "reconciliation"
+    )[] = ["signing", "submission", "confirmation", "reconciliation"];
+    return states[hash % states.length];
+  }
+  return null;
+}
+
 interface Filters {
+  /** Free-text search across run id, period, tx hash and status (#167). */
+  search: string;
   status: StatusFilter;
   employee: string;
   dateFrom: string;
@@ -41,6 +72,7 @@ interface SavedView {
 }
 
 const initialFilters: Filters = {
+  search: "",
   status: "all",
   employee: "",
   dateFrom: "",
@@ -96,13 +128,13 @@ function downloadCsv(csv: string, filename: string) {
   URL.revokeObjectURL(url);
 }
 
-
-
 interface TransactionHistoryProps {
   mode?: "history" | "archived";
 }
 
-function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) {
+function TransactionHistoryInner({
+  mode = "history",
+}: TransactionHistoryProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -134,7 +166,9 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
       if (params.has("tx")) {
         params.delete("tx");
         const query = params.toString();
-        router.replace(`${pathname}${query ? `?${query}` : ""}`, { scroll: false });
+        router.replace(`${pathname}${query ? `?${query}` : ""}`, {
+          scroll: false,
+        });
       }
     }
   };
@@ -164,7 +198,7 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
   }, [searchParams]);
 
   const [isLoading, setIsLoading] = useState(
-    process.env.NODE_ENV === 'test' ? false : true
+    process.env.NODE_ENV === "test" ? false : true,
   );
 
   useEffect(() => {
@@ -183,9 +217,14 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
   const [renameValue, setRenameValue] = useState("");
 
   const filtered = useMemo(() => {
-    let results = MOCK_TRANSACTIONS.filter((t) => 
-      mode === "archived" ? t.isArchived : !t.isArchived
+    let results = MOCK_TRANSACTIONS.filter((t) =>
+      mode === "archived" ? t.isArchived : !t.isArchived,
     );
+
+    // #167: applied first so the structured filters below narrow the search
+    // result rather than the other way round — the counts shown next to each
+    // filter then describe what the user is actually looking at.
+    results = searchPayrollRuns(results, filters.search);
 
     if (filters.status !== "all") {
       results = results.filter((t) => t.status === filters.status);
@@ -218,6 +257,7 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
   }, [filters, mode]);
 
   const activeFilterCount = [
+    !!filters.search.trim(),
     filters.status !== "all",
     !!filters.employee,
     !!filters.dateFrom,
@@ -248,13 +288,10 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
     setShowSaveDialog(false);
   }, [savingName, filters, savedViews.length, setSavedViews]);
 
-  const handleApplyView = useCallback(
-    (view: SavedView) => {
-      setFilters({ ...view.filters });
-      setShowSavedViews(false);
-    },
-    [],
-  );
+  const handleApplyView = useCallback((view: SavedView) => {
+    setFilters({ ...view.filters });
+    setShowSavedViews(false);
+  }, []);
 
   const handleDeleteView = useCallback(
     (id: string) => {
@@ -263,13 +300,10 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
     [setSavedViews],
   );
 
-  const handleStartRename = useCallback(
-    (view: SavedView) => {
-      setEditingViewId(view.id);
-      setRenameValue(view.name);
-    },
-    [],
-  );
+  const handleStartRename = useCallback((view: SavedView) => {
+    setEditingViewId(view.id);
+    setRenameValue(view.name);
+  }, []);
 
   const handleFinishRename = useCallback(
     (id: string) => {
@@ -351,12 +385,13 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
                               type="text"
                               value={renameValue}
                               onChange={(e) => setRenameValue(e.target.value)}
-                                                              onKeyDown={(e) => {
-                                                                if (e.key === "Enter") handleFinishRename(view.id);
-                                                                if (e.key === "Escape") setEditingViewId(null);
-                                                              }}
-                                                              className="flex-1 min-w-0 rounded border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                                                            />
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter")
+                                  handleFinishRename(view.id);
+                                if (e.key === "Escape") setEditingViewId(null);
+                              }}
+                              className="flex-1 min-w-0 rounded border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                            />
                             <button
                               type="button"
                               onClick={() => handleFinishRename(view.id)}
@@ -404,6 +439,37 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
               )}
             </div>
 
+            {/* #167: always-visible search, separate from the collapsible
+                filter panel — finding a known run should not require opening
+                a panel first. */}
+            <div className="relative flex-1 min-w-[12rem] max-w-sm">
+              <label htmlFor="payroll-run-search" className="sr-only">
+                Search payroll runs
+              </label>
+              <input
+                id="payroll-run-search"
+                type="search"
+                value={filters.search}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, search: e.target.value }))
+                }
+                placeholder="Search run id, period, tx hash, status..."
+                className="w-full pl-3 pr-8 py-1.5 rounded-md border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
+              />
+              {filters.search && (
+                <button
+                  type="button"
+                  aria-label="Clear search"
+                  onClick={() =>
+                    setFilters((prev) => ({ ...prev, search: "" }))
+                  }
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+
             <button
               type="button"
               onClick={() => setShowFilters(!showFilters)}
@@ -445,14 +511,20 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
             className="px-4 sm:px-6 py-4 bg-gray-50 border-b grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3"
           >
             <div>
-              <label htmlFor="filter-status" className="block text-xs font-medium text-gray-600 mb-1">
+              <label
+                htmlFor="filter-status"
+                className="block text-xs font-medium text-gray-600 mb-1"
+              >
                 Status
               </label>
               <select
                 id="filter-status"
                 value={filters.status}
                 onChange={(e) =>
-                  setFilters((f) => ({ ...f, status: e.target.value as StatusFilter }))
+                  setFilters((f) => ({
+                    ...f,
+                    status: e.target.value as StatusFilter,
+                  }))
                 }
                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               >
@@ -464,7 +536,10 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
               </select>
             </div>
             <div>
-              <label htmlFor="filter-employee" className="block text-xs font-medium text-gray-600 mb-1">
+              <label
+                htmlFor="filter-employee"
+                className="block text-xs font-medium text-gray-600 mb-1"
+              >
                 Employee
               </label>
               <input
@@ -472,37 +547,52 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
                 type="text"
                 placeholder="Search name..."
                 value={filters.employee}
-                onChange={(e) => setFilters((f) => ({ ...f, employee: e.target.value }))}
+                onChange={(e) =>
+                  setFilters((f) => ({ ...f, employee: e.target.value }))
+                }
                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
             </div>
             <div>
-              <label htmlFor="filter-date-from" className="block text-xs font-medium text-gray-600 mb-1">
+              <label
+                htmlFor="filter-date-from"
+                className="block text-xs font-medium text-gray-600 mb-1"
+              >
                 From
               </label>
               <input
                 id="filter-date-from"
                 type="date"
                 value={filters.dateFrom}
-                onChange={(e) => setFilters((f) => ({ ...f, dateFrom: e.target.value }))}
+                onChange={(e) =>
+                  setFilters((f) => ({ ...f, dateFrom: e.target.value }))
+                }
                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
             </div>
             <div>
-              <label htmlFor="filter-date-to" className="block text-xs font-medium text-gray-600 mb-1">
+              <label
+                htmlFor="filter-date-to"
+                className="block text-xs font-medium text-gray-600 mb-1"
+              >
                 To
               </label>
               <input
                 id="filter-date-to"
                 type="date"
                 value={filters.dateTo}
-                onChange={(e) => setFilters((f) => ({ ...f, dateTo: e.target.value }))}
+                onChange={(e) =>
+                  setFilters((f) => ({ ...f, dateTo: e.target.value }))
+                }
                 className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
             </div>
             <div className="flex items-end gap-2">
               <div className="flex-1">
-                <label htmlFor="filter-payroll-run" className="block text-xs font-medium text-gray-600 mb-1">
+                <label
+                  htmlFor="filter-payroll-run"
+                  className="block text-xs font-medium text-gray-600 mb-1"
+                >
                   Payroll Run
                 </label>
                 <input
@@ -510,7 +600,9 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
                   type="text"
                   placeholder="Run ID..."
                   value={filters.payrollRun}
-                  onChange={(e) => setFilters((f) => ({ ...f, payrollRun: e.target.value }))}
+                  onChange={(e) =>
+                    setFilters((f) => ({ ...f, payrollRun: e.target.value }))
+                  }
                   className="w-full rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                 />
               </div>
@@ -532,7 +624,8 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
         {hasFiltersApplied && (
           <div className="px-6 py-2 bg-indigo-50 border-b flex items-center justify-between">
             <p className="text-xs text-indigo-700">
-              {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""} active
+              {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""}{" "}
+              active
               {currentView && (
                 <span className="ml-1">
                   — matching view: <strong>{currentView.name}</strong>
@@ -599,16 +692,48 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
         )}
 
         {isLoading ? (
-          <div className="animate-pulse" role="status" aria-label="Loading transactions">
+          <div
+            className="animate-pulse"
+            role="status"
+            aria-label="Loading transactions"
+          >
             <table className="w-full text-left border-collapse">
               <thead className="bg-gray-50">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Type</th>
-                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Recipient</th>
-                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Amount</th>
-                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Status</th>
-                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">Date</th>
-                  <th scope="col" className="px-6 py-3 text-xs font-medium text-gray-400 uppercase">
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-xs font-medium text-gray-400 uppercase"
+                  >
+                    Type
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-xs font-medium text-gray-400 uppercase"
+                  >
+                    Recipient
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-xs font-medium text-gray-400 uppercase"
+                  >
+                    Amount
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-xs font-medium text-gray-400 uppercase"
+                  >
+                    Status
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-xs font-medium text-gray-400 uppercase"
+                  >
+                    Date
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-xs font-medium text-gray-400 uppercase"
+                  >
                     <span className="sr-only">Actions</span>
                   </th>
                 </tr>
@@ -650,8 +775,8 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
                   {hasFiltersApplied
                     ? "No transactions match the current filters. Try broadening your filter criteria."
                     : mode === "archived"
-                    ? "No archived payroll runs found. Payroll runs are archived after they are completed and superseded."
-                    : "No transactions yet. Process a payroll run to populate the transaction history."}
+                      ? "No archived payroll runs found. Payroll runs are archived after they are completed and superseded."
+                      : "No transactions yet. Process a payroll run to populate the transaction history."}
                 </li>
               ) : (
                 filtered.map((tx) => (
@@ -671,9 +796,17 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
                             />
                           )}
                           Payout · {tx.employeeCount} employees
+                          {getLockState(tx) && (
+                            <PayrollLockIndicator
+                              lockState={getLockState(tx)}
+                              showLabel={false}
+                              size="sm"
+                            />
+                          )}
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
-                          ${tx.totalAmount.toLocaleString()} · {new Date(tx.createdAt).toLocaleDateString()}
+                          ${tx.totalAmount.toLocaleString()} ·{" "}
+                          {new Date(tx.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                       <StatusBadge status={tx.status} />
@@ -758,8 +891,8 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
                       {hasFiltersApplied
                         ? "No transactions match the current filters. Try broadening your filter criteria."
                         : mode === "archived"
-                        ? "No archived payroll runs found. Payroll runs are archived after they are completed and superseded."
-                        : "No transactions yet. Process a payroll run to populate the transaction history."}
+                          ? "No archived payroll runs found. Payroll runs are archived after they are completed and superseded."
+                          : "No transactions yet. Process a payroll run to populate the transaction history."}
                     </td>
                   </tr>
                 ) : (
@@ -787,6 +920,15 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
                       </td>
                       <td className="px-6 py-4">
                         <StatusBadge status={tx.status} />
+                        {getLockState(tx) && (
+                          <div className="mt-2">
+                            <PayrollLockIndicator
+                              lockState={getLockState(tx)}
+                              showLabel={true}
+                              size="sm"
+                            />
+                          </div>
+                        )}
                       </td>
                       <td className="px-6 py-4 text-gray-600">
                         {new Date(tx.createdAt).toLocaleDateString()}
@@ -824,7 +966,7 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
             <div className="px-4 sm:px-6 py-3 border-t text-xs text-gray-500">
               {(() => {
                 const poolSize = MOCK_TRANSACTIONS.filter((t) =>
-                  mode === "archived" ? t.isArchived : !t.isArchived
+                  mode === "archived" ? t.isArchived : !t.isArchived,
                 ).length;
                 return `Showing ${filtered.length} of ${poolSize} ${
                   mode === "archived" ? "archived payrolls" : "transactions"
@@ -847,7 +989,11 @@ function TransactionHistoryInner({ mode = "history" }: TransactionHistoryProps) 
 
 function TransactionHistory(props: TransactionHistoryProps) {
   return (
-    <Suspense fallback={<div className="animate-pulse h-96 bg-gray-100 rounded-lg"></div>}>
+    <Suspense
+      fallback={
+        <div className="animate-pulse h-96 bg-gray-100 rounded-lg"></div>
+      }
+    >
       <TransactionHistoryInner {...props} />
     </Suspense>
   );
