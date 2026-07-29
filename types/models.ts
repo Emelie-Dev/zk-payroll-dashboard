@@ -1,3 +1,5 @@
+import type { StellarNetwork } from "./stellar";
+
 export type OnboardingStatus = "not_started" | "in_progress" | "completed";
 
 export interface Employee {
@@ -22,6 +24,31 @@ export interface Company {
   treasury: string;
   employeeCount: number;
   isActive: boolean;
+}
+
+/**
+ * Soroban contract IDs backing a company's on-chain payroll deployment.
+ * Each value is expected to be a Soroban contract address (starts with `C`,
+ * 56 characters).
+ */
+export interface CompanyContractConfig {
+  registry: string;
+  commitment: string;
+  verifier: string;
+  executor: string;
+  audit: string;
+}
+
+/**
+ * A company's full operational configuration: the base {@link Company} profile
+ * plus the network selection and on-chain contract wiring required to run
+ * payroll. Used by the configuration sanity check.
+ */
+export interface CompanyConfig extends Company {
+  network: StellarNetwork;
+  contracts: CompanyContractConfig;
+  /** Optional token (SAC/asset) contract used for disbursements. */
+  tokenContractId?: string;
 }
 
 export type UserRole = "admin" | "operator" | "auditor";
