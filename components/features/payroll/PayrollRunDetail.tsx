@@ -26,6 +26,7 @@ import {
   getRunDate,
   RUN_KIND_STYLES,
 } from "@/lib/payroll/scheduleUtils";
+import ReconciliationDiffPanel from "@/components/features/payroll/ReconciliationDiffPanel";
 
 
 
@@ -351,6 +352,7 @@ export default function PayrollRunDetail({ run: propRun }: PayrollRunDetailProps
 
       {/* Approval Audit Trail */}
       <PayrollApprovalAuditTrail payrollRunId={run.id} compact />
+      <ReconciliationDiffPanel run={run} employees={employeesInRun} />
 
       <div className="flex flex-wrap gap-3">
         <Link
