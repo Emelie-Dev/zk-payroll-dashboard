@@ -18,8 +18,17 @@ type SessionState = "idle" | "stale" | "reconnecting" | "recovered";
  * - Comparing wallet polling intervals
  */
 export function WalletReconnectRecoveryBanner() {
-  const { isConnected, publicKey } = useWalletStore();
-  const { connect } = useStellar();
+  const walletState = useWalletStore((s: any) => s);
+  const isConnected = walletState?.isConnected;
+  const publicKey = walletState?.publicKey;
+
+  let connect: (() => Promise<void>) | undefined;
+  try {
+    const stellar = useStellar();
+    connect = stellar?.connect;
+  } catch {
+    // Component rendered outside StellarProvider or mock
+  }
 
   const [sessionState, setSessionState] = useState<SessionState>("idle");
   const [lastConnectedTime, setLastConnectedTime] = useState<number>(
@@ -66,7 +75,7 @@ export function WalletReconnectRecoveryBanner() {
     setSessionState("reconnecting");
 
     try {
-      await connect();
+      await connect?.();
       // Connection update is handled by the useEffect above
     } catch (error) {
       toast.error("Reconnection failed", {

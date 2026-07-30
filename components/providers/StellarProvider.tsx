@@ -508,3 +508,7 @@ export const useStellar = (): StellarContextValue => {
     }
     return context;
 };
+
+export const useOptionalStellar = (): StellarContextValue | null => {
+    return useContext(StellarContext);
+};
