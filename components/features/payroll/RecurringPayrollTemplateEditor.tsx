@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import {
   Plus,
   Pencil,
@@ -12,7 +12,6 @@ import {
   XCircle,
   Save,
   X,
-  AlertCircle,
 } from "lucide-react";
 import { MOCK_PAYROLL_TEMPLATES, MOCK_EMPLOYEES } from "@/lib/api/mockData";
 import type { PayrollTemplate, PayrollFrequency } from "@/types";

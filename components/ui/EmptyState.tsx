@@ -165,4 +165,3 @@ function EmptyState({
 }
 
 export default EmptyState;
-export { EMPTY_STATE_COPY };

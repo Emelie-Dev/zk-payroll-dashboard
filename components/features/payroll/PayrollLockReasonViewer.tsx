@@ -12,7 +12,6 @@ import {
   Network,
   Hand,
   FileSearch,
-  XCircle,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
@@ -136,7 +135,7 @@ function PayrollLockReasonViewer() {
         </div>
       )}
 
-      <ul className="space-y-3" role="list">
+      <ul className="space-y-3">
         {locks.map((lock) => {
           const meta = LOCK_REASON_META[lock.reasonType];
           const ReasonIcon = meta.icon;

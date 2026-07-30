@@ -1,4 +1,4 @@
-import { Home, Users, Settings, History, Shield, Play, Building2, Landmark, Lock, Clock, MessageSquare, FileText } from "lucide-react";
+import { Home, Users, Settings, History, Shield, Play, Building2, Landmark, Lock, MessageSquare, FileText } from "lucide-react";
 
 function Sidebar() {
     return (

@@ -10,9 +10,6 @@ import {
   Paperclip,
   Clock,
   User,
-  ChevronDown,
-  ChevronUp,
-  Filter,
 } from "lucide-react";
 import { MOCK_APPROVAL_COMMENTS, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
 import type { ApprovalAction } from "@/types";
@@ -107,9 +104,6 @@ function ApprovalCommentHistory() {
     );
   }, [selectedPayrollId, actionFilter]);
 
-  const selectedPayroll = MOCK_PAYROLL_RUNS.find(
-    (r) => r.id === selectedPayrollId,
-  );
 
   return (
     <section aria-labelledby="approval-comments-heading" className="space-y-4">
@@ -189,7 +183,7 @@ function ApprovalCommentHistory() {
           />
         )}
 
-        <ul className="space-y-4" role="list">
+        <ul className="space-y-4">
           {filteredComments.map((comment) => {
             const meta = ACTION_META[comment.action];
             const ActionIcon = meta.icon;

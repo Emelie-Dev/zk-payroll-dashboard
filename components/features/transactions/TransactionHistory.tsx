@@ -266,7 +266,7 @@ function TransactionHistory() {
                                 if (e.key === "Escape") setEditingViewId(null);
                               }}
                               className="flex-1 min-w-0 rounded border border-gray-300 px-2 py-1 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                              autoFocus
+                              
                             />
                             <button
                               type="button"
@@ -318,6 +318,22 @@ function TransactionHistory() {
             <button
               type="button"
               onClick={() => setShowFilters(!showFilters)}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                showFilters
+                  ? "bg-indigo-50 text-indigo-700"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+              aria-expanded={showFilters}
+              aria-controls="filter-panel"
+            >
+              <Filter className="w-3.5 h-3.5" />
+              Filters
+              {activeFilterCount > 0 && (
+                <span className="ml-1 px-1.5 py-0.5 text-xs bg-indigo-600 text-white rounded-full">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
             <button
               type="button"
               onClick={handleExport}
@@ -472,7 +488,7 @@ function TransactionHistory() {
                     }}
                     placeholder="View name..."
                     className="w-40 rounded border border-indigo-300 px-2 py-1 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                    autoFocus
+                    
                   />
                   <button
                     type="button"
