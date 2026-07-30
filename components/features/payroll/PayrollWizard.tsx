@@ -95,8 +95,10 @@ function PayrollWizard() {
     }
   }, [employeeIds.length, hasDraft, submissionStatus]);
 
+  const { sessionState } = useSession();
   const network = useWalletStore((s) => s.network);
   const isWrongNetwork = network !== EXPECTED_NETWORK;
+  const isSessionExpired = sessionState === "expired";
 
   const selectedEmployees = useMemo(
     () => MOCK_EMPLOYEES.filter((e) => employeeIds.includes(e.id)),
@@ -664,8 +666,13 @@ function ConfirmStep({
       list.push("No employees selected for this payroll run.");
     }
 
+    // 5. Stale session check
+    if (isSessionExpired) {
+      list.push("Your session has expired. Wallet signing cannot proceed with stale authentication. Please re-authenticate before submitting.");
+    }
+
     return list;
-  }, [treasuryBalance, totalAmount, store.proofStatus, selectedEmployees]);
+  }, [treasuryBalance, totalAmount, store.proofStatus, selectedEmployees, isSessionExpired]);
 
   const warnings = useMemo(() => {
     const list: string[] = [];
@@ -1077,7 +1084,7 @@ function ConfirmStep({
         <button
           type="button"
           onClick={onSubmit}
-          disabled={!confirmed || state === "blocked" || isWrongNetwork}
+          disabled={!confirmed || state === "blocked" || isWrongNetwork || isSessionExpired}
           title={
             isWrongNetwork
               ? "Switch to Testnet in Freighter"
