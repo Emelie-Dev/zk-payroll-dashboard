@@ -144,10 +144,12 @@ export default function PayrollExceptionsQueue({
   const [severityFilter, setSeverityFilter] = useState<ExceptionSeverity | "all">("all");
   const [sourceFilter, setSourceFilter] = useState<ExceptionSource | "all">("all");
   const [statusFilter, setStatusFilter] = useState<ExceptionStatus | "all">("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filtered = useMemo(
     () =>
       exceptions.filter((item) => {
+        const query = searchQuery.trim().toLowerCase();
         if (severityFilter !== "all" && item.severity !== severityFilter) {
           return false;
         }
@@ -157,9 +159,25 @@ export default function PayrollExceptionsQueue({
         if (statusFilter !== "all" && item.status !== statusFilter) {
           return false;
         }
+        if (query) {
+          const haystack = [
+            item.title,
+            item.summary,
+            item.runId,
+            item.nextAction,
+            item.redactedValueLabel,
+            SOURCE_LABELS[item.source],
+          ]
+            .join(" ")
+            .toLowerCase();
+
+          if (!haystack.includes(query)) {
+            return false;
+          }
+        }
         return true;
       }),
-    [exceptions, severityFilter, sourceFilter, statusFilter],
+    [exceptions, severityFilter, sourceFilter, statusFilter, searchQuery],
   );
 
   const grouped = useMemo(
@@ -237,6 +255,25 @@ export default function PayrollExceptionsQueue({
         </div>
 
         <div className="grid gap-3 md:grid-cols-3">
+          <label className="space-y-1 text-sm md:col-span-3">
+            <span className="block text-xs font-medium uppercase tracking-wide text-gray-500">
+              Search
+            </span>
+            <div className="relative">
+              <Search
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+                aria-hidden
+              />
+              <input
+                aria-label="Search exceptions"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search by run, source, action, or redacted label"
+                className="w-full rounded-md border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm"
+              />
+            </div>
+          </label>
+
           <label className="space-y-1 text-sm">
             <span className="block text-xs font-medium uppercase tracking-wide text-gray-500">
               Severity
