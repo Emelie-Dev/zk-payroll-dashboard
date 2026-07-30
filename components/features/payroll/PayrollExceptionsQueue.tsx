@@ -41,21 +41,53 @@ const REASON_CODES: Record<PayrollTransaction["status"], string> = {
   cancelled: "Transaction was cancelled by user",
 };
 
-const NEXT_STEPS: Record<PayrollTransaction["status"], string> = {
-  pending: "Trigger proof generation or check wallet connectivity",
-  failed: "Review transaction hash and retry via payroll wizard",
-  verified: "",
-  cancelled: "No further action needed",
+export interface PayrollExceptionItem {
+  id: string;
+  runId: string;
+  title: string;
+  summary: string;
+  source: ExceptionSource;
+  severity: ExceptionSeverity;
+  status: ExceptionStatus;
+  nextAction: string;
+  redactedValueLabel: string;
+  createdAt: string;
+}
+
+interface PayrollExceptionsQueueProps {
+  exceptions?: PayrollExceptionItem[];
+}
+
+const SEVERITY_ORDER: ExceptionSeverity[] = ["blocking", "warning", "info"];
+
+const SEVERITY_META: Record<
+  ExceptionSeverity,
+  { label: string; description: string; icon: ElementType; className: string }
+> = {
+  blocking: {
+    label: "Blocking",
+    description: "Issues that stop payroll from continuing safely.",
+    icon: AlertTriangle,
+    className: "border-red-200 bg-red-50 text-red-700",
+  },
+  warning: {
+    label: "Warning",
+    description: "Issues that need review before the next payroll step.",
+    icon: ShieldAlert,
+    className: "border-amber-200 bg-amber-50 text-amber-700",
+  },
+  info: {
+    label: "Info",
+    description: "Informational notices that do not require immediate action.",
+    icon: Info,
+    className: "border-sky-200 bg-sky-50 text-sky-700",
+  },
 };
 
-const STATUS_ICONS: Record<string, React.ElementType> = {
-  pending: Clock,
-  failed: XCircle,
-};
-
-const STATUS_CLASSES: Record<string, string> = {
-  pending: "text-yellow-600",
-  failed: "text-red-600",
+const SOURCE_LABELS: Record<ExceptionSource, string> = {
+  "payroll-engine": "Payroll engine",
+  reconciliation: "Reconciliation",
+  compliance: "Compliance",
 };
 
 const MOCK_EMPLOYEE_EXCEPTIONS: EmployeeException[] = [
