@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { createSessionToken, SESSION_COOKIE_NAME } from '@/lib/auth/session';
-import type { UserRole } from '@/types';
+import type { NextRequest } from 'next/server';
+import { createSessionToken, verifySessionToken, SESSION_COOKIE_NAME } from '@/lib/auth/session';
+import { resolveRole } from '@/lib/auth/roles';
 
 export async function POST(request: Request) {
   try {
@@ -13,8 +14,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const adminKey = process.env.ADMIN_PUBLIC_KEY;
-    const role: UserRole = publicKey === adminKey ? 'admin' : 'employee';
+    const role = resolveRole(publicKey);
 
     const token = await createSessionToken(publicKey, role);
 
@@ -32,6 +32,39 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       { error: 'Failed to create session' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+
+    if (!token) {
+      return NextResponse.json(
+        { error: 'No session' },
+        { status: 401 }
+      );
+    }
+
+    const session = await verifySessionToken(token);
+
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Invalid or expired session' },
+        { status: 401 }
+      );
+    }
+
+    return NextResponse.json({
+      publicKey: session.publicKey,
+      role: session.role,
+      expiresAt: session.expiresAt,
+    });
+  } catch {
+    return NextResponse.json(
+      { error: 'Failed to retrieve session' },
       { status: 500 }
     );
   }

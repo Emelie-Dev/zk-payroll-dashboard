@@ -9,8 +9,9 @@ import {
   ExternalLink,
   LogOut,
   Check,
+  AlertTriangle,
 } from "lucide-react";
-import { useStellar } from "@/components/providers/StellarProvider";
+import { useStellar, EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { useWalletStore } from "@/stores/walletStore";
 
 // Truncates a Stellar public key for display: GBXT...J29M
@@ -103,8 +104,10 @@ function WalletConnect() {
 
   // ── Stellar Expert URL ──────────────────────────────────────────────────────
   const network = useWalletStore((s) => s.network);
+  const networkStr = typeof network === "string" ? network.toLowerCase() : "testnet";
+  const isWrongNetwork = isConnected && network !== EXPECTED_NETWORK;
   const stellarExpertUrl = publicKey
-    ? `https://stellar.expert/explorer/${network.toLowerCase()}/account/${publicKey}`
+    ? `https://stellar.expert/explorer/${networkStr}/account/${publicKey}`
     : "#";
 
   return (
@@ -140,18 +143,35 @@ function WalletConnect() {
           <button
             ref={triggerRef}
             onClick={() => setDropdownOpen((prev) => !prev)}
-            className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-lg font-medium text-gray-900 bg-white border border-gray-200 hover:bg-gray-50 active:bg-gray-100 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:outline-none shadow-sm"
+            className={`inline-flex items-center gap-2.5 px-4 py-2.5 rounded-lg font-medium bg-white border transition-colors focus-visible:ring-2 focus-visible:outline-none shadow-sm ${
+              isWrongNetwork
+                ? "text-amber-900 border-amber-300 hover:bg-amber-50 active:bg-amber-100 focus-visible:ring-amber-500"
+                : "text-gray-900 border-gray-200 hover:bg-gray-50 active:bg-gray-100 focus-visible:ring-indigo-500"
+            }`}
             aria-haspopup="true"
             aria-expanded={dropdownOpen}
             aria-controls="wallet-dropdown"
-            aria-label={`Wallet menu for ${truncateKey(publicKey)}`}
+            aria-label={
+              isWrongNetwork
+                ? `Wallet menu for ${truncateKey(publicKey)}, connected to the wrong network`
+                : `Wallet menu for ${truncateKey(publicKey)}`
+            }
           >
-            {/* Green status dot */}
-            <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
-            </span>
+            {isWrongNetwork ? (
+              <AlertTriangle className="h-3.5 w-3.5 text-amber-600 shrink-0" aria-hidden="true" />
+            ) : (
+              /* Green status dot */
+              <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
+              </span>
+            )}
             <span className="font-mono text-sm">{truncateKey(publicKey)}</span>
+            {isWrongNetwork && (
+              <span className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                Wrong Network
+              </span>
+            )}
             <ChevronDown
               className={`w-4 h-4 text-gray-400 transition-transform ${
                 dropdownOpen ? "rotate-180" : ""
@@ -217,7 +237,9 @@ function WalletConnect() {
         {isLoading
           ? "Connecting wallet"
           : isConnected && publicKey
-            ? `Wallet connected: ${truncateKey(publicKey)}`
+            ? isWrongNetwork
+              ? `Wallet connected: ${truncateKey(publicKey)}, but on the wrong network. Switch to ${EXPECTED_NETWORK} to continue.`
+              : `Wallet connected: ${truncateKey(publicKey)}`
             : "Wallet disconnected"}
       </span>
 

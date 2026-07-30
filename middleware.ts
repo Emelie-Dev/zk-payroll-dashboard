@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifySessionToken, SESSION_COOKIE_NAME } from '@/lib/auth/session';
+import { canAccessPath } from '@/lib/auth/roles';
 
 // ─── CSP ─────────────────────────────────────────────────────────────────────
 
@@ -58,8 +59,8 @@ function applySecurityHeaders(response: NextResponse): void {
 
 const PUBLIC_PATHS = ['/', '/login', '/api/health', '/api/csp-report'];
 const PUBLIC_PREFIXES = ['/api/auth/'];
-const PROTECTED_PREFIXES = ['/dashboard', '/payroll', '/employees', '/settings'];
-const ADMIN_PATHS = ['/payroll/run', '/employees/add'];
+const PROTECTED_PREFIXES = ['/dashboard', '/payroll', '/employees', '/settings', '/history', '/treasury', '/compliance', '/setup', '/incidents', '/admin'];
+const ADMIN_ONLY_PREFIXES = ['/payroll/cancel', '/compliance/revoke', '/treasury/update', '/employees/deactivate', '/api/payroll/\:\s*\d+', '/api/compliance/\:\s*\d+', '/api/treasury/\:\s*\d+', '/api/employees/\:\s*\d+'];
 
 function isPublicRoute(pathname: string): boolean {
   if (PUBLIC_PATHS.includes(pathname)) return true;
@@ -70,9 +71,13 @@ function isProtectedRoute(pathname: string): boolean {
   return PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 }
 
-function isAdminRoute(pathname: string): boolean {
-  return ADMIN_PATHS.some((path) => pathname.startsWith(path));
+function isAdminOnlyRoute(pathname: string): boolean {
+  return ADMIN_ONLY_PREFIXES.some(pattern => {
+    const regex = new RegExp(pattern.replace(/:/g, '\\:'));
+    return regex.test(pathname);
+  });
 }
+
 
 function isApiRoute(pathname: string): boolean {
   return pathname.startsWith('/api/');
@@ -128,8 +133,8 @@ export async function middleware(request: NextRequest) {
       return response;
     }
 
-    // Admin route guard
-    if (isAdminRoute(pathname) && session.role !== 'admin') {
+    // Role-aware route guard
+    if (!canAccessPath(session.role, pathname)) {
       if (isApiRoute(pathname)) {
         const response = NextResponse.json(
           { error: 'Forbidden' },
@@ -138,7 +143,7 @@ export async function middleware(request: NextRequest) {
         applySecurityHeaders(response);
         return response;
       }
-      const dashboardUrl = new URL('/dashboard', request.url);
+      const dashboardUrl = new URL('/', request.url);
       const response = NextResponse.redirect(dashboardUrl);
       applySecurityHeaders(response);
       return response;

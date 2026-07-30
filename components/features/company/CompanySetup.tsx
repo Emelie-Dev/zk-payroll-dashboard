@@ -1,16 +1,24 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Wallet, AlertCircle, CheckCircle } from "lucide-react";
 import { useWalletStore } from "@/stores/walletStore";
 import { useCompanyStore } from "@/stores/company";
 import WalletConnect from "@/components/features/wallet/WalletConnect";
+import { CompanyConfigChecker } from "@/components/features/settings/CompanyConfigChecker";
+import { trackEvent } from "@/lib/telemetry";
+import type { CompanyConfig } from "@/types";
+import type { StellarNetwork } from "@/types/stellar";
 
 function isStellarAddress(address: string): boolean {
   return /^G[A-Z2-7]{55}$/.test(address);
 }
 
-function CompanySetup() {
+interface CompanySetupProps {
+  onNext?: () => void;
+}
+
+function CompanySetup({ onNext }: CompanySetupProps = {}) {
   const { isConnected, publicKey } = useWalletStore();
   const setCompany = useCompanyStore((s) => s.setCompany);
 
@@ -18,6 +26,23 @@ function CompanySetup() {
   const [treasury, setTreasury] = useState("");
   const [errors, setErrors] = useState<{ name?: string; treasury?: string }>({});
   const [submitted, setSubmitted] = useState(false);
+
+  const previewConfig: CompanyConfig = useMemo(() => ({
+    id: "",
+    name: name.trim(),
+    admin: publicKey ?? "",
+    treasury: treasury.trim(),
+    employeeCount: 0,
+    isActive: true,
+    network: (process.env.NEXT_PUBLIC_STELLAR_NETWORK ?? "TESTNET") as StellarNetwork,
+    contracts: {
+      registry: "",
+      commitment: "",
+      verifier: "",
+      executor: "",
+      audit: "",
+    },
+  }), [name, publicKey, treasury]);
 
   const validate = useCallback(() => {
     const next: typeof errors = {};
@@ -45,12 +70,18 @@ function CompanySetup() {
         isActive: true,
       });
 
+      trackEvent('onboarding_completed', { success: true });
+
       setSubmitted(true);
       setTimeout(() => {
-        window.location.href = "/";
+        if (onNext) {
+          onNext();
+        } else {
+          window.location.href = "/";
+        }
       }, 1200);
     },
-    [validate, publicKey, name, treasury, setCompany],
+    [validate, publicKey, name, treasury, setCompany, onNext],
   );
 
   if (!isConnected) {
@@ -83,6 +114,7 @@ function CompanySetup() {
   }
 
   return (
+    <>
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
       <div>
         <label
@@ -159,6 +191,11 @@ function CompanySetup() {
         Complete Setup
       </button>
     </form>
+
+    <div className="mt-6 pt-6 border-t border-gray-100">
+      <CompanyConfigChecker config={previewConfig} />
+    </div>
+    </>
   );
 }
 

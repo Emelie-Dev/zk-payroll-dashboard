@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { AlertTriangle, CheckCircle, ArrowDownLeft, Plus } from "lucide-react";
 import { MOCK_TREASURY_BALANCE, MOCK_TRANSACTIONS, MOCK_COMPANIES } from "@/lib/api/mockData";
+import FundingForecast from "./FundingForecast";
+import StatusBadge from "@/components/ui/StatusBadge";
+import TreasuryReadinessChecklist from "./TreasuryReadinessChecklist";
 
 function TreasuryView() {
   const [toastVisible, setToastVisible] = useState(false);
@@ -82,6 +85,10 @@ function TreasuryView() {
         </article>
       </div>
 
+      <TreasuryReadinessChecklist />
+
+      <FundingForecast />
+
       {company && (
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h3 className="text-sm font-medium text-gray-700 mb-1">Treasury address</h3>
@@ -147,9 +154,7 @@ function TreasuryView() {
                     ${tx.totalAmount.toLocaleString()}
                   </td>
                   <td className="px-6 py-4">
-                    <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-                      {tx.status}
-                    </span>
+                    <StatusBadge status={tx.status} />
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
                     {new Date(tx.createdAt).toLocaleDateString()}
