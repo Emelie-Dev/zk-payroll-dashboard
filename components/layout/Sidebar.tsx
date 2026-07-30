@@ -1,4 +1,4 @@
-import { Home, Users, Settings, History, Shield, Play, Building2, Landmark } from "lucide-react";
+import { Home, Users, Settings, History, Shield, Play, Building2, Landmark, Lock, Clock, MessageSquare, FileText } from "lucide-react";
 
 function Sidebar() {
     return (
@@ -18,6 +18,18 @@ function Sidebar() {
                 <a className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900" href="/payroll/execute">
                     <Play className="w-5 h-5 mr-3" />
                     Execute Payroll
+                </a>
+                <a className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900" href="/payroll/templates">
+                    <FileText className="w-5 h-5 mr-3" />
+                    Payroll Templates
+                </a>
+                <a className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900" href="/payroll/locks">
+                    <Lock className="w-5 h-5 mr-3" />
+                    Lock Reasons
+                </a>
+                <a className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900" href="/payroll/comments">
+                    <MessageSquare className="w-5 h-5 mr-3" />
+                    Approval Comments
                 </a>
                 <a className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900" href="/history">
                     <History className="w-5 h-5 mr-3" />

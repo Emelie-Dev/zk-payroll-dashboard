@@ -1,6 +1,7 @@
 "use client";
 
 import { Wallet, Building2, Loader2 } from "lucide-react";
+import OverduePayrollAlertBanner from "@/components/features/payroll/OverduePayrollAlertBanner";
 import { useStellar } from "@/components/providers/StellarProvider";
 import { useWalletStore } from "@/stores/walletStore";
 import { useCompanyStore } from "@/stores/company";
@@ -79,6 +80,9 @@ function DashboardHome() {
         </div>
         <WalletConnect />
       </div>
+      <ErrorBoundary>
+        <OverduePayrollAlertBanner />
+      </ErrorBoundary>
       <ErrorBoundary>
         <PayrollSummary />
       </ErrorBoundary>
