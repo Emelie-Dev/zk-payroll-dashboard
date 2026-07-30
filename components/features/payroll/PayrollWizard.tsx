@@ -26,7 +26,7 @@ import { usePayrollWizardStore } from "@/stores/payrollWizard";
 import { useWalletStore } from "@/stores/walletStore";
 import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { IncidentBanner } from "@/components/ui/IncidentBanner";
-import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS, MOCK_TREASURY_BALANCE } from "@/lib/api/mockData";
+import { MOCK_EMPLOYEES, MOCK_COMPANIES, MOCK_PAYROLL_RUNS, MOCK_TREASURY_BALANCE } from "@/lib/api/mockData";
 import PayrollReceipt from "./PayrollReceipt";
 import type { PayrollWizardStep } from "@/types";
 import { trackEvent, mapErrorToType, bucketEmployeeCount } from "@/lib/telemetry";
@@ -786,7 +786,7 @@ function ConfirmStep({
 
       {/* Explicit Confirmation Checkbox */}
       <div className="bg-indigo-50/50 border border-indigo-150 rounded-lg p-4">
-        <label className="flex items-start gap-3 cursor-pointer select-none">
+        <div className="flex items-start gap-3">
           <input
             id="confirm-checkbox"
             type="checkbox"
@@ -795,15 +795,15 @@ function ConfirmStep({
             disabled={state === "blocked"}
             className="w-4 h-4 text-indigo-600 border-gray-300 rounded mt-0.5 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
           />
-          <div>
-            <span className="text-sm font-medium text-gray-900">
+          <label htmlFor="confirm-checkbox" className="cursor-pointer select-none">
+            <span className="text-sm font-medium text-gray-900 block">
               Confirm Payroll Execution Summary
             </span>
             <p className="text-xs text-gray-600 mt-0.5">
               I acknowledge that I have reviewed the employees listed, validated the required treasury balance, and verify that the Zero-Knowledge commitment represents the exact batch payouts. This action triggers wallet signing.
             </p>
-          </div>
-        </label>
+          </label>
+        </div>
       </div>
 
       {/* Navigation Buttons */}
