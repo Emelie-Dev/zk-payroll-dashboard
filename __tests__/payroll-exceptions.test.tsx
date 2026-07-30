@@ -30,6 +30,9 @@ describe('PayrollExceptionsQueue', () => {
     expect(
       screen.getByRole("tab", { name: /employee exceptions/i }),
     ).toBeInTheDocument();
+    expect(screen.getByText(/sensitive payroll values stay redacted/i)).toBeInTheDocument();
+    expect(screen.getAllByRole("table").length).toBe(3);
+    expect(screen.getByText(/settlement amount redacted/i)).toBeInTheDocument();
   });
 
   it('renders exception items from mock data in run exceptions tab', () => {
@@ -43,15 +46,14 @@ describe('PayrollExceptionsQueue', () => {
     expect(screen.getAllByText(/reason:/i).length).toBeGreaterThan(0);
   });
 
-  it('shows next step for each exception', () => {
-    render(<PayrollExceptionsQueue />);
-    expect(screen.getAllByText(/payroll wizard/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("table")).toHaveLength(1);
+    expect(screen.getByText(/proof generation pending/i)).toBeInTheDocument();
+    expect(screen.queryByText(/settlement failed on trust line limit/i)).not.toBeInTheDocument();
   });
 
-  it('shows pending badge for pending transactions', () => {
-    render(<PayrollExceptionsQueue />);
-    expect(screen.getAllByText(/pending/i).length).toBeGreaterThan(0);
-  });
+  it("filters by search term", async () => {
+    const user = userEvent.setup();
+    render(<PayrollExceptionsQueue exceptions={TRIAGE_ITEMS} />);
 
   it('renders link to payroll wizard for each item', () => {
     render(<PayrollExceptionsQueue />);
