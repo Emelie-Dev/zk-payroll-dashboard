@@ -67,6 +67,17 @@ describe("PayrollExceptionsQueue", () => {
     expect(screen.queryByText(/settlement failed on trust line limit/i)).not.toBeInTheDocument();
   });
 
+  it("filters by search term", async () => {
+    const user = userEvent.setup();
+    render(<PayrollExceptionsQueue exceptions={TRIAGE_ITEMS} />);
+
+    await user.type(screen.getByLabelText(/search exceptions/i), "trust line");
+
+    expect(screen.getAllByRole("table")).toHaveLength(1);
+    expect(screen.getByText(/settlement failed on trust line limit/i)).toBeInTheDocument();
+    expect(screen.queryByText(/proof generation pending/i)).not.toBeInTheDocument();
+  });
+
   it("filters by source and status", async () => {
     const user = userEvent.setup();
     render(<PayrollExceptionsQueue exceptions={TRIAGE_ITEMS} />);
