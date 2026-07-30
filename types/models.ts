@@ -49,7 +49,40 @@ export interface CompanyConfig extends Company {
   contracts: CompanyContractConfig;
   /** Optional token (SAC/asset) contract used for disbursements. */
   tokenContractId?: string;
+  /** Optional audit/logging settings */
+  auditSettings?: {
+    enabled: boolean;
+    retentionDays?: number;
+    requireAuditorApproval?: boolean;
+  };
 }
+
+export type HealthCheckKey =
+  | "companySetup"
+  | "adminRole"
+  | "treasuryAccount"
+  | "contractIds"
+  | "networkConfig"
+  | "auditSettings";
+
+export type HealthCheckStatus = "pass" | "warning" | "fail";
+
+export interface CompanyHealthCheckItem {
+  key: HealthCheckKey;
+  label: string;
+  status: HealthCheckStatus;
+  message: string;
+  actionUrl?: string;
+}
+
+export interface CompanyHealthCheckResult {
+  companyId: string;
+  overallStatus: "healthy" | "warning" | "failing";
+  checks: CompanyHealthCheckItem[];
+  timestamp: string;
+}
+
+
 
 export type UserRole = "admin" | "operator" | "auditor";
 
