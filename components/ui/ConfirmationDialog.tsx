@@ -98,12 +98,12 @@ export function ConfirmationDialog({
           aria-describedby="confirmation-dialog-description"
         >
           <div className="flex items-start gap-3">
-            <div className={`${styles.icon} p-2 rounded-lg flex-shrink-0"}>
+            <div className={`${styles.icon} p-2 rounded-lg flex-shrink-0`}>
               <Icon className="w-6 h-6" aria-hidden="true" />
             </div>
             <div className="flex-1">
               <h2 id="confirmation-dialog-title" className={`font-semibold text-lg ${styles.title}`}>{title}</h2>
-              <p id="confirmation-dialog-description" className="text-sm mt-1 {styles.description}">{description}</p>
+              <p id="confirmation-dialog-description" className={`text-sm mt-1 ${styles.description}`}>{description}</p>
             </div>
             <button
               onClick={onCancel}

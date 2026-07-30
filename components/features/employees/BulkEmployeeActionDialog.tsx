@@ -27,6 +27,7 @@ export function BulkEmployeeActionDialog({
   );
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState<'select' | 'confirm' | 'success'>('select');
+  const storeEmployees = useEmployeeStore(state => state.employees);
 
   const actionConfig = {
     activate: {
@@ -34,6 +35,7 @@ export function BulkEmployeeActionDialog({
       description: 'Activate selected employees, restoring their access and payroll eligibility.',
       warning: 'This will restore access to all selected employees immediately. They will receive payroll allocations in the next run.',
       icon: UserCheck,
+      dialogIcon: "shield" as const,
       confirmText: 'Activate Employees',
       variant: 'info' as const,
     },
@@ -42,6 +44,7 @@ export function BulkEmployeeActionDialog({
       description: 'Deactivate selected employees, revoking their access and payroll eligibility.',
       warning: 'This will revoke access for all selected employees. They will not receive payroll in the next run and cannot be reactivated without admin approval.',
       icon: UserX,
+      dialogIcon: "warning" as const,
       confirmText: 'Deactivate Employees',
       variant: 'warning' as const,
     },
@@ -50,13 +53,14 @@ export function BulkEmployeeActionDialog({
       description: 'Permanently remove selected employees from the system.',
       warning: 'This will permanently delete employee records. All associated data, salary commitments, and audit trails will be retained for compliance but employee access will be revoked.',
       icon: UserX,
+      dialogIcon: "alert" as const,
       confirmText: 'Delete Employees',
       variant: 'danger' as const,
     },
   };
 
   const config = actionConfig[action];
-  const allEmployees = employees.length > 0 ? employees : useEmployeeStore(state => state.employees);
+  const allEmployees = employees.length > 0 ? employees : storeEmployees;
   const activeEmployees = allEmployees.filter(e => e.isActive && e.status !== 'inactive');
   const selectedEmployeesArray = allEmployees.filter(e => 
     employees.length > 0 ? selectedEmployees.has(e.id) : e.isActive && selectedEmployees.has(e.id)
@@ -109,24 +113,16 @@ export function BulkEmployeeActionDialog({
               return updateEmployee(id, {
                 isActive: true,
                 status: 'active',
-                lastPayment: null,
-                reactivatedAt: new Date().toISOString(),
-                reactivationReason: reason,
               });
             case 'deactivate':
               return updateEmployee(id, {
                 isActive: false,
                 status: 'inactive',
-                deactivatedAt: new Date().toISOString(),
-                deactivationReason: reason,
               });
             case 'delete':
               return updateEmployee(id, {
                 isActive: false,
-                status: 'deleted',
-                deletedAt: new Date().toISOString(),
-                deletionReason: reason,
-                deletedBy: 'Admin',
+                status: 'inactive',
               });
           }
         })
@@ -171,21 +167,20 @@ export function BulkEmployeeActionDialog({
           ? config.description
           : step === 'confirm'
           ? `Are you sure you want to ${action} ${selectedEmployeesArray.length} employee${selectedEmployeesArray.length !== 1 ? 's' : ''}? This action will affect multiple employees simultaneously.`
-          : `Employee action completed successfully for ${selectedEmployeesArray.length} employee${selectedEmployeesArray.length !== 1 ? 's' : 's'}."
+          : `Employee action completed successfully for ${selectedEmployeesArray.length} employee${selectedEmployeesArray.length !== 1 ? 's' : 's'}.`
       }
       warning={step === 'select' ? config.warning : undefined}
       confirmText={step === 'confirm' ? config.confirmText : 'Done'}
       cancelText={step === 'success' ? 'Close' : 'Cancel'}
       variant={config.variant}
-      icon={config.icon}
+      icon={config.dialogIcon}
       isOpen={isOpen}
-      onConfirm={step === 'confirm' ? (reason) => handleConfirm(reason) : () => {}}
+      onConfirm={step === 'confirm' ? (reason) => handleConfirm(reason) : async () => {}}
       onCancel={step === 'success' ? handleClose : handleClose}
       isLoading={isLoading}
       showReasonField={step === 'confirm'}
       reasonLabel="Action Reason"
       reasonPlaceholder="e.g., Promotional change, policy violation, termination, etc..."
-      disabled={step !== 'confirm'}
     >
       {step === 'select' && (
         <div className="space-y-4">
@@ -238,17 +233,18 @@ export function BulkEmployeeActionDialog({
           ) : (
             <div className="max-h-64 overflow-y-auto border rounded-lg divide-y">
               {activeEmployees.map((employee) => (
-                <label
+                <div
                   key={employee.id}
                   className="flex items-center p-4 hover:bg-gray-50 cursor-pointer select-none"
                 >
                   <input
+                    id={`employee-action-${employee.id}`}
                     type="checkbox"
                     checked={selectedEmployees.has(employee.id)}
                     onChange={() => handleEmployeeToggle(employee.id)}
                     className="w-4 h-4 text-indigo-600 border-gray-300 rounded mr-3"
                   />
-                  <div className="flex-1 min-w-0">
+                  <label htmlFor={`employee-action-${employee.id}`} className="flex-1 min-w-0 cursor-pointer">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium text-gray-900 truncate">
                         {employee.name}
@@ -263,8 +259,8 @@ export function BulkEmployeeActionDialog({
                     <p className="text-xs text-gray-400 mt-1">
                       Since {formatDate(employee.startDate)}
                     </p>
-                  </div>
-                </label>
+                  </label>
+                </div>
               ))}
             </div>
           )}
@@ -286,9 +282,7 @@ export function BulkEmployeeActionDialog({
         <div className={`rounded-lg p-4 border ${config.variant === 'danger' ? 'bg-red-50 border-red-200' :
           config.variant === 'warning' ? 'bg-amber-50 border-amber-200' :
           'bg-green-50 border-green-200'
-        }
-        }
-        >
+        }`}>
           <div className="flex items-start gap-3">
             <AlertTriangle className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
               config.variant === 'danger' ? 'text-red-600' :
@@ -321,8 +315,7 @@ export function BulkEmployeeActionDialog({
         <div className={`rounded-lg p-4 border ${config.variant === 'danger' ? 'bg-red-50 border-red-200' :
           config.variant === 'warning' ? 'bg-amber-50 border-amber-200' :
           'bg-green-50 border-green-200'
-        }
-        >
+        }`}>
           <div className="flex items-start gap-3">
             <config.icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${getActionIconColor()}`} />
             <div>

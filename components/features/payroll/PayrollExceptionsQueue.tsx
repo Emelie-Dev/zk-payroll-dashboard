@@ -14,6 +14,12 @@ import {
 import { MOCK_TRANSACTIONS, MOCK_EMPLOYEES } from "@/lib/api/mockData";
 import type { PayrollTransaction } from "@/types";
 import { toast } from "sonner";
+import { AlertTriangle, Info } from "lucide-react";
+import type { ElementType } from "react";
+
+type ExceptionSource = "payroll-engine" | "reconciliation" | "compliance";
+type ExceptionSeverity = "blocking" | "warning" | "info";
+type ExceptionStatus = "open" | "investigating" | "resolved";
 
 type ExceptionItem = {
   tx: PayrollTransaction;
@@ -39,6 +45,27 @@ const REASON_CODES: Record<PayrollTransaction["status"], string> = {
   failed: "Transaction submission failed",
   verified: "",
   cancelled: "Transaction was cancelled by user",
+};
+
+const NEXT_STEPS: Record<PayrollTransaction["status"], string> = {
+  pending: "Generate proof and reattempt submission",
+  failed: "Review failure details and retry",
+  verified: "No action required",
+  cancelled: "Create a new payroll run if needed",
+};
+
+const STATUS_ICONS: Record<PayrollTransaction["status"], ElementType> = {
+  pending: Clock,
+  failed: XCircle,
+  verified: UserCheck,
+  cancelled: Lock,
+};
+
+const STATUS_CLASSES: Record<PayrollTransaction["status"], string> = {
+  pending: "text-amber-600",
+  failed: "text-red-600",
+  verified: "text-green-600",
+  cancelled: "text-gray-500",
 };
 
 export interface PayrollExceptionItem {
