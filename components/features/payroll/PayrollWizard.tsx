@@ -6,6 +6,7 @@ import {
   Circle,
   Loader2,
   AlertCircle,
+  AlertTriangle,
   ArrowLeft,
   ArrowRight,
   RotateCcw,
@@ -17,24 +18,22 @@ import {
   Clock,
   ShieldAlert,
   ShieldCheck,
-  AlertTriangle,
   Info,
   Lock,
+  History,
 } from "lucide-react";
 import { toast } from "sonner";
 import { usePayrollWizardStore } from "@/stores/payrollWizard";
 import { useWalletStore } from "@/stores/walletStore";
+import { useApprovalHistory } from "@/stores/approvalHistory";
+import { useSession } from "@/hooks/useSession";
 import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { IncidentBanner } from "@/components/ui/IncidentBanner";
-import {
-  MOCK_EMPLOYEES,
-  MOCK_PAYROLL_RUNS,
-  MOCK_TREASURY_BALANCE,
-  MOCK_COMPANIES,
-} from "@/lib/api/mockData";
+import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS, MOCK_TREASURY_BALANCE, MOCK_COMPANIES } from "@/lib/api/mockData";
 import PayrollReceipt from "./PayrollReceipt";
 import PayrollApprovalAuditTrail from "./PayrollApprovalAuditTrail";
 import { usePayrollAuditTrailStore } from "@/stores/payrollAuditTrail";
+import ApprovalHistoryDrawer from "./ApprovalHistoryDrawer";
 import { PayrollRiskWarnings } from "./PayrollRiskWarnings";
 import { WalletReconnectRecoveryBanner } from "@/components/features/wallet/WalletReconnectRecoveryBanner";
 import type { PayrollWizardStep } from "@/types";
@@ -83,6 +82,12 @@ function PayrollWizard() {
   const [payrollRunId, setPayrollRunId] = useState<string | null>(null);
   const [showDraftBanner, setShowDraftBanner] = useState(false);
   const draftResolvedRef = useRef(false);
+  const initialEventRecordedRef = useRef(false);
+  const [historyDrawerOpen, setHistoryDrawerOpen] = useState(false);
+
+  const walletPublicKey = useWalletStore((s) => s.publicKey) ?? "unknown";
+  const addApprovalEvent = useApprovalHistory((s) => s.addEvent);
+  const clearApprovalHistory = useApprovalHistory((s) => s.clearHistory);
 
   useEffect(() => {
     if (
@@ -95,8 +100,10 @@ function PayrollWizard() {
     }
   }, [employeeIds.length, hasDraft, submissionStatus]);
 
+  const { sessionState } = useSession();
   const network = useWalletStore((s) => s.network);
   const isWrongNetwork = network !== EXPECTED_NETWORK;
+  const isSessionExpired = sessionState === "expired";
 
   const selectedEmployees = useMemo(
     () => MOCK_EMPLOYEES.filter((e) => employeeIds.includes(e.id)),
@@ -110,6 +117,14 @@ function PayrollWizard() {
     setEmployeeIds(selected);
     setTotalAmount(MOCK_EMPLOYEES.reduce((sum, e) => sum + e.salary, 0));
     draftResolvedRef.current = true;
+    initialEventRecordedRef.current = true;
+
+    addApprovalEvent(
+      "draft_created",
+      walletPublicKey,
+      `Payroll draft created with ${selected.length} employees totaling $${MOCK_EMPLOYEES.reduce((sum, e) => sum + e.salary, 0).toLocaleString()}`,
+      { employeeCount: selected.length },
+    );
 
     logEvent({
       payrollRunId: runId,
@@ -122,7 +137,7 @@ function PayrollWizard() {
     trackEvent("payroll_wizard_started", {
       employeeCountBucket: bucketEmployeeCount(selected.length),
     });
-  }, [setEmployeeIds, setTotalAmount, logEvent]);
+  }, [setEmployeeIds, setTotalAmount, addApprovalEvent, walletPublicKey, logEvent]);
 
   const handleGenerateProof = useCallback(async () => {
     if (isWrongNetwork) {
@@ -134,6 +149,12 @@ function PayrollWizard() {
 
     setProofStatus("generating");
     setProofError(null);
+
+    addApprovalEvent(
+      "proof_generation_started",
+      walletPublicKey,
+      "Zero-knowledge proof generation initiated",
+    );
 
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -149,7 +170,11 @@ function PayrollWizard() {
           details: `ZK proof generated successfully for ${selectedEmployees.length} employees totaling $${totalAmount.toLocaleString()}`,
         });
       }
-
+      addApprovalEvent(
+        "proof_generation_completed",
+        walletPublicKey,
+        "Zero-knowledge proof generated and verified successfully",
+      );
       trackEvent("payroll_proof_generation_completed", { success: true });
       toast.success("Proof generated successfully");
       nextStep();
@@ -167,7 +192,11 @@ function PayrollWizard() {
           details: errMsg,
         });
       }
-
+      addApprovalEvent(
+        "proof_generation_failed",
+        walletPublicKey,
+        errMsg,
+      );
       trackEvent("payroll_proof_generation_completed", {
         success: false,
         error_type: mapErrorToType(errMsg),
@@ -176,7 +205,7 @@ function PayrollWizard() {
         description: "Circuit constraint mismatch.",
       });
     }
-  }, [setProofStatus, setProofError, nextStep, isWrongNetwork, payrollRunId, logEvent, selectedEmployees.length, totalAmount]);
+  }, [setProofStatus, setProofError, nextStep, isWrongNetwork, addApprovalEvent, walletPublicKey, payrollRunId, logEvent, selectedEmployees.length, totalAmount]);
 
   const handleSubmit = useCallback(async () => {
     if (isWrongNetwork) {
@@ -201,22 +230,39 @@ function PayrollWizard() {
     setSubmissionError(null);
     nextStep();
 
+    addApprovalEvent(
+      "payroll_confirmed",
+      walletPublicKey,
+      `Payroll confirmed for ${employeeIds.length} employees totaling $${totalAmount.toLocaleString()}`,
+    );
+
+    addApprovalEvent(
+      "submission_started",
+      walletPublicKey,
+      `Payroll submission initiated for ${employeeIds.length} employees totaling $${totalAmount.toLocaleString()}`,
+    );
+
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     const success = Math.random() > 0.15;
     if (success) {
       setSubmissionStatus("success");
-      setTransactionHash(`0x${Date.now().toString(16)}abc`);
+      const txHash = `0x${Date.now().toString(16)}abc`;
+      setTransactionHash(txHash);
       if (payrollRunId) {
         logEvent({
           payrollRunId,
           action: "submitted",
           actor: "Current Admin",
           actorRole: "admin",
-          details: `Payroll submitted successfully. Transaction hash: 0x${Date.now().toString(16)}abc`,
+          details: `Payroll submitted successfully. Transaction hash: ${txHash}`,
         });
       }
-
+      addApprovalEvent(
+        "submission_completed",
+        walletPublicKey,
+        `Payroll submitted successfully with transaction ${txHash}`,
+      );
       trackEvent("payroll_submission_completed", { success: true });
       toast.success("Payroll submitted successfully", {
         description: "Transaction submitted to the Stellar network.",
@@ -235,7 +281,11 @@ function PayrollWizard() {
           details: errMsg,
         });
       }
-
+      addApprovalEvent(
+        "submission_failed",
+        walletPublicKey,
+        "Payroll submission failed due to network timeout",
+      );
       trackEvent("payroll_submission_completed", {
         success: false,
         error_type: mapErrorToType(errMsg),
@@ -245,7 +295,7 @@ function PayrollWizard() {
           "Network timeout. The transaction may still be processing.",
       });
     }
-  }, [setSubmissionStatus, setSubmissionError, setTransactionHash, nextStep, isWrongNetwork, payrollRunId, logEvent, selectedEmployees.length, totalAmount]);
+  }, [setSubmissionStatus, setSubmissionError, setTransactionHash, nextStep, isWrongNetwork, addApprovalEvent, walletPublicKey, employeeIds, totalAmount, payrollRunId, logEvent, selectedEmployees.length]);
 
   const handleReviewNext = useCallback(() => {
     if (payrollRunId) {
@@ -271,18 +321,26 @@ function PayrollWizard() {
       });
     }
     reset();
-  }, [payrollRunId, logEvent, reset, submissionStatus]);
+    clearApprovalHistory();
+  }, [payrollRunId, logEvent, reset, submissionStatus, clearApprovalHistory]);
 
   const idx = stepIndex(currentStep);
 
   return (
     <section aria-labelledby="payroll-wizard-heading" className="space-y-6">
-      <h2
-        id="payroll-wizard-heading"
-        className="text-lg font-semibold text-gray-900"
-      >
-        Execute Payroll
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 id="payroll-wizard-heading" className="text-lg font-semibold text-gray-900">
+          Execute Payroll
+        </h2>
+        <button
+          type="button"
+          onClick={() => setHistoryDrawerOpen(true)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
+          <History className="w-4 h-4" />
+          Approval History
+        </button>
+      </div>
 
       {isWrongNetwork && (
         <IncidentBanner
@@ -318,6 +376,15 @@ function PayrollWizard() {
                 onClick={() => {
                   setShowDraftBanner(false);
                   draftResolvedRef.current = true;
+                  if (!initialEventRecordedRef.current) {
+                    initialEventRecordedRef.current = true;
+                    addApprovalEvent(
+                      "draft_created",
+                      walletPublicKey,
+                      `Payroll draft restored with ${employeeIds.length} employees totaling $${totalAmount.toLocaleString()}`,
+                      { employeeCount: employeeIds.length, restored: true },
+                    );
+                  }
                 }}
                 className="px-3 py-1.5 rounded-md text-xs font-medium bg-amber-600 text-white hover:bg-amber-700 transition-colors"
               >
@@ -336,6 +403,7 @@ function PayrollWizard() {
                     });
                   }
                   clearDraft();
+                  clearApprovalHistory();
                   setShowDraftBanner(false);
                   draftResolvedRef.current = true;
                 }}
@@ -365,7 +433,7 @@ function PayrollWizard() {
         className="flex items-center"
       >
         {STEPS.map((step, i) => (
-          <div key={step.key} className="flex items-center">
+          <div key={step.key} className="flex items-center shrink-0">
             <div className="flex items-center gap-2">
               {i < idx ? (
                 <CheckCircle className="w-5 h-5 text-green-600" />
@@ -383,14 +451,14 @@ function PayrollWizard() {
               <span
                 className={`text-sm font-medium ${
                   i <= idx ? "text-gray-900" : "text-gray-400"
-                }`}
+                } ${i !== idx ? "hidden sm:block" : "block"}`}
               >
                 {step.label}
               </span>
             </div>
             {i < STEPS.length - 1 && (
               <div
-                className={`w-12 h-px mx-3 ${
+                className={`w-8 sm:w-12 h-px mx-2 sm:mx-3 ${
                   i < idx ? "bg-green-400" : "bg-gray-200"
                 }`}
               />
@@ -399,7 +467,7 @@ function PayrollWizard() {
         ))}
       </nav>
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
         {currentStep === "review" && (
           <ReviewStep
             employeeIds={employeeIds}
@@ -450,6 +518,10 @@ function PayrollWizard() {
           <PayrollApprovalAuditTrail payrollRunId={payrollRunId} />
         </div>
       )}
+      <ApprovalHistoryDrawer
+        open={historyDrawerOpen}
+        onOpenChange={setHistoryDrawerOpen}
+      />
     </section>
   );
 }
@@ -505,17 +577,14 @@ function ReviewStep({
           </div>
         ))}
       </div>
-      <div className="flex justify-between items-center pt-2 border-t">
-        <span className="text-sm font-semibold text-gray-900">
+      <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-3 sm:gap-0 pt-4 border-t">
+        <span className="text-sm font-semibold text-gray-900 w-full sm:w-auto text-center sm:text-left">
           Total: ${totalAmount.toLocaleString()}
         </span>
         <button
           type="button"
-          onClick={() => {
-            // Log review initiated via callback passed from parent
-            onNext();
-          }}
-          className="px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center gap-1"
+          onClick={onNext}
+          className="w-full sm:w-auto px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors flex items-center justify-center gap-1"
         >
           Continue
           <ArrowRight className="w-4 h-4" />
@@ -589,7 +658,7 @@ function ProofStep({
           <button
             type="button"
             onClick={onRetry}
-            className="px-4 py-2 rounded-md bg-red-50 text-red-700 text-sm font-medium hover:bg-red-100 border border-red-200 transition-colors inline-flex items-center gap-1"
+            className="w-full sm:w-auto px-4 py-2 rounded-md bg-red-50 text-red-700 text-sm font-medium hover:bg-red-100 border border-red-200 transition-colors inline-flex justify-center items-center gap-1"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Retry
@@ -597,11 +666,11 @@ function ProofStep({
         </div>
       )}
 
-      <div className="flex justify-between pt-4 border-t">
+      <div className="flex pt-4 border-t">
         <button
           type="button"
           onClick={onBack}
-          className="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-1"
+          className="w-full sm:w-auto px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-1"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -627,6 +696,8 @@ function ConfirmStep({
 }) {
   const [confirmed, setConfirmed] = useState(false);
   const store = usePayrollWizardStore();
+  const { sessionState } = useSession();
+  const isSessionExpired = sessionState === "expired";
 
   const { isProofNearingExpiration, treasuryBalanceOverride } = store;
   const treasuryBalance =
@@ -696,8 +767,13 @@ function ConfirmStep({
       list.push("No employees selected for this payroll run.");
     }
 
+    // 5. Stale session check
+    if (isSessionExpired) {
+      list.push("Your session has expired. Wallet signing cannot proceed with stale authentication. Please re-authenticate before submitting.");
+    }
+
     return list;
-  }, [treasuryBalance, totalAmount, store.proofStatus, selectedEmployees]);
+  }, [treasuryBalance, totalAmount, store.proofStatus, selectedEmployees, isSessionExpired]);
 
   const warnings = useMemo(() => {
     const list: string[] = [];
@@ -1059,7 +1135,8 @@ function ConfirmStep({
 
       {/* Explicit Confirmation Checkbox */}
       <div className="bg-indigo-50/50 border border-indigo-150 rounded-lg p-4">
-        <label className="flex items-start gap-3 cursor-pointer select-none">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label htmlFor="confirm-checkbox" className="flex items-start gap-3 cursor-pointer select-none">
           <input
             id="confirm-checkbox"
             type="checkbox"
@@ -1083,11 +1160,24 @@ function ConfirmStep({
       </div>
 
       {/* Navigation Buttons */}
-      <div className="flex justify-between pt-4 border-t">
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-start gap-3 mb-4">
+        <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+        <div>
+          <p className="text-sm font-medium text-amber-800">
+            Irreversible Action
+          </p>
+          <p className="text-sm text-amber-700 mt-1">
+            Once submitted, this payroll transaction cannot be reversed. Please ensure all details are correct.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-between pt-4 border-t gap-3 sm:gap-0">
+
         <button
           type="button"
           onClick={onBack}
-          className="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors flex items-center gap-1"
+          className="w-full sm:w-auto px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-1"
         >
           <ArrowLeft className="w-4 h-4" />
           Back
@@ -1095,7 +1185,7 @@ function ConfirmStep({
         <button
           type="button"
           onClick={onSubmit}
-          disabled={!confirmed || state === "blocked" || isWrongNetwork}
+          disabled={!confirmed || state === "blocked" || isWrongNetwork || isSessionExpired}
           title={
             isWrongNetwork
               ? "Switch to Testnet in Freighter"
@@ -1105,7 +1195,7 @@ function ConfirmStep({
                   ? "Check the confirmation box to submit"
                   : undefined
           }
-          className="px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 animate-pulse"
+          className="w-full sm:w-auto px-6 py-2 rounded-md bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 transition-colors inline-flex justify-center items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed animate-pulse"
         >
           <Lock className="w-4 h-4" />
           Submit Payroll
@@ -1163,7 +1253,7 @@ function SubmitStep({
             Submission Failed
           </h4>
           <p className="text-sm text-red-600">{error}</p>
-          <div className="flex justify-center gap-3 mt-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
             <button
               type="button"
               onClick={onRetry}
@@ -1181,7 +1271,7 @@ function SubmitStep({
             <button
               type="button"
               onClick={onReset}
-              className="px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+              className="w-full sm:w-auto px-4 py-2 rounded-md bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors inline-flex justify-center"
             >
               Start Over
             </button>

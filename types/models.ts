@@ -1,3 +1,5 @@
+import type { StellarNetwork } from "./stellar";
+
 export type OnboardingStatus = "not_started" | "in_progress" | "completed";
 
 export interface Employee {
@@ -24,6 +26,31 @@ export interface Company {
   isActive: boolean;
 }
 
+/**
+ * Soroban contract IDs backing a company's on-chain payroll deployment.
+ * Each value is expected to be a Soroban contract address (starts with `C`,
+ * 56 characters).
+ */
+export interface CompanyContractConfig {
+  registry: string;
+  commitment: string;
+  verifier: string;
+  executor: string;
+  audit: string;
+}
+
+/**
+ * A company's full operational configuration: the base {@link Company} profile
+ * plus the network selection and on-chain contract wiring required to run
+ * payroll. Used by the configuration sanity check.
+ */
+export interface CompanyConfig extends Company {
+  network: StellarNetwork;
+  contracts: CompanyContractConfig;
+  /** Optional token (SAC/asset) contract used for disbursements. */
+  tokenContractId?: string;
+}
+
 export type UserRole = "admin" | "operator" | "auditor";
 
 export interface SessionPayload {
@@ -41,6 +68,13 @@ export interface PayrollTransaction {
   employeeCount: number;
   proof: string;
   status: "pending" | "verified" | "failed" | "cancelled";
+  approvalStatus?: "draft" | "pending_executive_approval" | "approved" | "rejected";
+  approvalHistory?: Array<{
+    approvedBy: string;
+    approvedAt: string;
+    role: string;
+    comment?: string;
+  }>;
   txHash?: string;
   isArchived?: boolean;
 }
@@ -115,6 +149,26 @@ export interface PayrollWizardState {
   treasuryBalanceOverride?: number | null;
 }
 
+export type ApprovalEventType =
+  | "draft_created"
+  | "draft_edited"
+  | "proof_generation_started"
+  | "proof_generation_completed"
+  | "proof_generation_failed"
+  | "payroll_confirmed"
+  | "submission_started"
+  | "submission_completed"
+  | "submission_failed";
+
+export interface ApprovalEvent {
+  id: string;
+  type: ApprovalEventType;
+  timestamp: string;
+  actor: string;
+  details: string;
+  metadata?: Record<string, unknown>;
+}
+
 export interface AuditAccessRequest {
   id: string;
   requesterName: string;
@@ -127,3 +181,151 @@ export interface AuditAccessRequest {
   updatedAt?: string;
   viewKeyId?: string;
 }
+
+// ── Multi-asset payroll orchestration ────────────────────────────────────────
+
+export type StellarAsset = {
+  code: string;
+  issuer?: string; // undefined for native XLM
+};
+
+export type AssetGroupStatus =
+  | "pending"
+  | "funded"
+  | "underfunded"
+  | "executing"
+  | "succeeded"
+  | "failed"
+  | "partial";
+
+export interface AssetGroupEmployee {
+  employeeId: string;
+  name: string;
+  address: string;
+  amount: number;
+  /** SHA-256 commitment of the salary — never expose the raw amount to unauthorized viewers */
+  salaryCommitment: string;
+}
+
+export interface TreasuryReadiness {
+  asset: StellarAsset;
+  requiredAmount: number;
+  availableBalance: number;
+  isFunded: boolean;
+  shortfall: number;
+}
+
+export interface AssetGroup {
+  asset: StellarAsset;
+  employees: AssetGroupEmployee[];
+  totalAmount: number;
+  transactionCount: number;
+  status: AssetGroupStatus;
+  txHash?: string;
+  errorMessage?: string;
+  executedAt?: string;
+  treasuryReadiness: TreasuryReadiness;
+}
+
+export type MultiAssetRunStatus =
+  | "draft"
+  | "ready"
+  | "underfunded"
+  | "executing"
+  | "succeeded"
+  | "partial"
+  | "failed";
+
+export interface MultiAssetPayrollRun {
+  id: string;
+  companyId: string;
+  label: string;
+  createdAt: string;
+  executedAt?: string;
+  status: MultiAssetRunStatus;
+  assetGroups: AssetGroup[];
+  totalEmployees: number;
+  /** Opaque ZK proof covering all groups */
+  proof?: string;
+  proofStatus: "none" | "generating" | "ready" | "expired";
+}
+
+export type ReconciliationGroupStatus = "complete" | "partial" | "failed" | "pending";
+
+export interface ReconciliationEntry {
+  employeeId: string;
+  name: string;
+  assetCode: string;
+  expectedAmount: number;
+  confirmedAmount: number;
+  status: "confirmed" | "discrepancy" | "missing";
+  txHash?: string;
+  confirmedAt?: string;
+}
+
+export interface MultiAssetReconciliation {
+  runId: string;
+  generatedAt: string;
+  groups: Array<{
+    asset: StellarAsset;
+    status: ReconciliationGroupStatus;
+    entries: ReconciliationEntry[];
+    totalExpected: number;
+    totalConfirmed: number;
+    discrepancyCount: number;
+  }>;
+  canExportAudit: boolean;
+}
+
+// ── Compliance Evidence Bundle ───────────────────────────────────────────────
+
+export interface AuditSafeReceipt {
+  receiptId: string;
+  payrollRunId: string;
+  timestamp: string;
+  totalDisbursed: number;
+  recipientCount: number;
+  recipientCommitments: string[];
+  status: "verified" | "pending" | "revoked";
+  receiptHash: string;
+  signature: string;
+}
+
+export interface ProofReference {
+  proofId: string;
+  verifierContract: string;
+  circuitHash: string;
+  publicSignalsDigest: string;
+  proofStatus: "verified" | "pending" | "failed" | "expired";
+  verifiedAt?: string;
+  expiresAt: string;
+  rawProofHash: string;
+}
+
+export interface ComplianceEvidenceBundle {
+  bundleId: string;
+  payrollRunId: string;
+  companyId: string;
+  title: string;
+  createdAt: string;
+  status: "verified" | "pending_review" | "flagged" | "archived";
+  classification: "audit-safe-redacted";
+  receipts: AuditSafeReceipt[];
+  proofReference: ProofReference;
+  transactionMetadata: {
+    txHash: string;
+    network: string;
+    ledgerSequence: number;
+    feeStroops: number;
+    contractAddresses: CompanyContractConfig;
+  };
+  approvalHistory: ApprovalEvent[];
+  verificationStatus: {
+    isVerified: boolean;
+    verifiedAt: string;
+    verifiedBy: string;
+    checksPassed: number;
+    totalChecks: number;
+  };
+}
+
