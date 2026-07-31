@@ -21,6 +21,7 @@ import { HelpButton } from "@/components/ui/HelpDrawer";
 import AuditActivityFeed from "./AuditActivityFeed";
 import type { ViewKey } from "@/types";
 import AuditExportRequest from "./AuditExportRequest";
+import ComplianceEvidenceBundleView from "./ComplianceEvidenceBundleView";
 import type { AuditAccessRequest } from "@/types/models";
 
 function generateKeyId(): string {
@@ -35,7 +36,7 @@ function generateKeyId(): string {
 function ComplianceManager() {
   const { viewKeys, addViewKey, revokeViewKey, setViewKeys } =
     useViewKeyStore();
-  const [activeTab, setActiveTab] = useState<"access" | "exports">("access");
+  const [activeTab, setActiveTab] = useState<"bundles" | "access" | "exports">("bundles");
   const { requests, setRequests, approveRequest, rejectRequest } =
     useAuditRequestStore();
   const [initialized, setInitialized] = useState(false);
@@ -157,10 +158,24 @@ function ComplianceManager() {
       <div className="flex border-b border-gray-200">
         <button
           type="button"
+          onClick={() => setActiveTab("bundles")}
+          className={`px-6 py-3 text-sm font-medium transition-colors relative ${
+            activeTab === "bundles"
+              ? "text-indigo-600 font-semibold"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Evidence Bundles
+          {activeTab === "bundles" && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 animate-in fade-in slide-in-from-bottom-1" />
+          )}
+        </button>
+        <button
+          type="button"
           onClick={() => setActiveTab("access")}
           className={`px-6 py-3 text-sm font-medium transition-colors relative ${
             activeTab === "access"
-              ? "text-indigo-600"
+              ? "text-indigo-600 font-semibold"
               : "text-gray-500 hover:text-gray-700"
           }`}
         >
@@ -174,7 +189,7 @@ function ComplianceManager() {
           onClick={() => setActiveTab("exports")}
           className={`px-6 py-3 text-sm font-medium transition-colors relative ${
             activeTab === "exports"
-              ? "text-indigo-600"
+              ? "text-indigo-600 font-semibold"
               : "text-gray-500 hover:text-gray-700"
           }`}
         >
@@ -411,8 +426,10 @@ function ComplianceManager() {
 
           <AuditActivityFeed />
         </div>
-      ) : (
+      ) : activeTab === "exports" ? (
         <AuditExportRequest />
+      ) : (
+        <ComplianceEvidenceBundleView />
       )}
     </section>
   );

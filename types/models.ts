@@ -354,3 +354,55 @@ export interface ApprovalComment {
   createdAt: string;
   attachmentUrl?: string | null;
 }
+// ── Compliance Evidence Bundle ───────────────────────────────────────────────
+
+export interface AuditSafeReceipt {
+  receiptId: string;
+  payrollRunId: string;
+  timestamp: string;
+  totalDisbursed: number;
+  recipientCount: number;
+  recipientCommitments: string[];
+  status: "verified" | "pending" | "revoked";
+  receiptHash: string;
+  signature: string;
+}
+
+export interface ProofReference {
+  proofId: string;
+  verifierContract: string;
+  circuitHash: string;
+  publicSignalsDigest: string;
+  proofStatus: "verified" | "pending" | "failed" | "expired";
+  verifiedAt?: string;
+  expiresAt: string;
+  rawProofHash: string;
+}
+
+export interface ComplianceEvidenceBundle {
+  bundleId: string;
+  payrollRunId: string;
+  companyId: string;
+  title: string;
+  createdAt: string;
+  status: "verified" | "pending_review" | "flagged" | "archived";
+  classification: "audit-safe-redacted";
+  receipts: AuditSafeReceipt[];
+  proofReference: ProofReference;
+  transactionMetadata: {
+    txHash: string;
+    network: string;
+    ledgerSequence: number;
+    feeStroops: number;
+    contractAddresses: CompanyContractConfig;
+  };
+  approvalHistory: ApprovalEvent[];
+  verificationStatus: {
+    isVerified: boolean;
+    verifiedAt: string;
+    verifiedBy: string;
+    checksPassed: number;
+    totalChecks: number;
+  };
+}
+
