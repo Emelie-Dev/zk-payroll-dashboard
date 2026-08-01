@@ -20,6 +20,7 @@ import {
 import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
 import type { PayrollRun } from "@/types/models";
 import StatusBadge from "@/components/ui/StatusBadge";
+import PayrollApprovalAuditTrail from "./PayrollApprovalAuditTrail";
 import {
   classifyRun,
   formatPayrollDate,
@@ -392,6 +393,8 @@ export default function PayrollRunDetail({ run: propRun }: PayrollRunDetailProps
         </div>
       </div>
 
+      {/* Approval Audit Trail */}
+      <PayrollApprovalAuditTrail payrollRunId={run.id} compact />
       <ReconciliationDiffPanel run={run} employees={employeesInRun} />
 
       <div className="flex flex-wrap gap-3">
