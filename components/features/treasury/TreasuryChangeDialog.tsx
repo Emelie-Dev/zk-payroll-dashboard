@@ -138,8 +138,8 @@ export function TreasuryChangeDialog({
         step === 'form' 
           ? "Modify the treasury balance. Changes are recorded and audited for compliance."
           : step === 'confirm'
-          ? `Modify the treasury balance from ${formatCurrency(currentBalance)} to ${formatCurrency(getBalanceResult())}. This action will be logged and audited."
-          : `Treasury balance has been successfully updated to ${formatCurrency(getBalanceResult())}. The change has been logged for audit purposes."
+          ? `Modify the treasury balance from ${formatCurrency(currentBalance)} to ${formatCurrency(getBalanceResult())}. This action will be logged and audited.`
+          : `Treasury balance has been successfully updated to ${formatCurrency(getBalanceResult())}. The change has been logged for audit purposes.`
       }
       warning={
         step === 'form' 
@@ -151,15 +151,14 @@ export function TreasuryChangeDialog({
       confirmText={step === 'confirm' ? 'Update Treasury' : 'Done'}
       cancelText={step === 'success' ? 'Close' : 'Cancel'}
       variant={changeType === 'subtract' && getBalanceResult() < 25000 ? 'danger' : 'warning'}
-      icon={Shield}
+      icon="shield"
       isOpen={isOpen}
-      onConfirm={step === 'confirm' ? () => handleConfirm() : () => {}}
+      onConfirm={step === 'confirm' ? () => handleConfirm() : async () => {}}
       onCancel={step === 'success' ? handleClose : handleClose}
       isLoading={isLoading}
       showReasonField={step === 'form'}
       reasonLabel="Change Reason"
       reasonPlaceholder="e.g., Bonus allocation, operational expense, reserve adjustment..."
-      disabled={step !== 'confirm'}
     >
       {step === 'form' && (
         <div className="space-y-6">
@@ -231,24 +230,29 @@ export function TreasuryChangeDialog({
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Proposed Change</span>
-                <span className={
-                  changeType === 'add' ? 'text-green-600' :
-                  changeType === 'subtract' ? 'text-amber-600' :
-                  'text-blue-600'
-                }+
-                  ${changeType === 'add' ? '+' :
-                   changeType === 'subtract' ? '-' :
-                   ''}${parseFloat(amount || '0').toLocaleString()}
-                }
+                <span
+                  className={
+                    changeType === 'add'
+                      ? 'text-green-600'
+                      : changeType === 'subtract'
+                      ? 'text-amber-600'
+                      : 'text-blue-600'
+                  }
+                >
+                  {changeType === 'add' ? '+' : changeType === 'subtract' ? '-' : ''}
+                  {parseFloat(amount || '0').toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between border-t pt-2">
                 <span className="font-medium">New Balance</span>
-                <span className={
-                  getBalanceResult() < 25000 ? 'text-red-600 font-semibold' :
-                  'text-gray-900 font-semibold'
-                }+
-                  ${getBalanceResult().toLocaleString()}
+                <span
+                  className={
+                    getBalanceResult() < 25000
+                      ? 'text-red-600 font-semibold'
+                      : 'text-gray-900 font-semibold'
+                  }
+                >
+                  {formatCurrency(getBalanceResult())}
                 </span>
               </div>
             </div>

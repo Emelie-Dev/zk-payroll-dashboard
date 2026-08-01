@@ -201,8 +201,7 @@ export function ConfirmationAuditLog() {
                           key={log.id}
                           className="flex items-start gap-3 p-3 bg-white rounded-lg border hover:bg-gray-50 transition-colors"
                         >
-                          <div className={`p-2 rounded-lg ${statusStyles} flex-shrink-0`}
-                          >
+                          <div className={`p-2 rounded-lg ${statusStyles} flex-shrink-0`}>
                             <Icon className="w-4 h-4" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -210,8 +209,7 @@ export function ConfirmationAuditLog() {
                               <p className="text-sm font-medium text-gray-900">
                                 {log.action.replace(/([A-Z])/g, ' $1').trim()}
                               </p>
-                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full ${statusStyles}`
-                              >
+                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full ${statusStyles}`}>
                                 {log.status}
                               </span>
                             </div>

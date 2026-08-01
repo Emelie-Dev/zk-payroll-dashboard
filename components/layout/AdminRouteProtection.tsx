@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AlertTriangle, Lock, Shield } from "lucide-react";
-import { hasPermission } from "@/lib/api/auth";
+import { canAccessPath } from "@/lib/auth/roles";
 import type { UserRole } from "@/types";
 
 interface AdminRouteProtection {
@@ -39,8 +39,7 @@ export function AdminRouteProtection({
           return;
         }
 
-        const canAccess = await hasPermission(userRole, pathname);
-        if (!canAccess) {
+        if (!canAccessPath(userRole, pathname)) {
           router.push(fallbackPath);
           return;
         }

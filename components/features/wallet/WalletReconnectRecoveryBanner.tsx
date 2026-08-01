@@ -148,7 +148,7 @@ export function WalletReconnectRecoveryBanner() {
             </h3>
             <p className={`text-sm ${descTextColor} mt-1`}>
               Your wallet connection may have been interrupted. Payroll data is
-              safe, but you'll need to reconnect to continue signing or
+              safe, but you&apos;ll need to reconnect to continue signing or
               submitting.
             </p>
             <div className="mt-3 flex flex-col sm:flex-row gap-2">
