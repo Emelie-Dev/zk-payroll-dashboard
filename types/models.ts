@@ -209,7 +209,7 @@ export interface AuditAccessRequest {
   requesterEmail: string;
   scope: "read-only" | "full-audit";
   rationale: string;
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "expired" | "revoked" | "export_ready";
   createdAt: string;
   updatedAt?: string;
   viewKeyId?: string;
@@ -309,3 +309,133 @@ export interface MultiAssetReconciliation {
   }>;
   canExportAudit: boolean;
 }
+
+// ─── Payroll Lock Reason (#221) ──────────────────────────────────────────────
+
+export type PayrollLockReasonType =
+  | "insufficient_treasury"
+  | "pending_approval"
+  | "zk_proof_failed"
+  | "employee_data_changed"
+  | "network_error"
+  | "manual_freeze"
+  | "compliance_hold";
+
+export interface PayrollLock {
+  id: string;
+  payrollId: string;
+  reasonType: PayrollLockReasonType;
+  reasonDescription: string;
+  lockedAt: string;
+  lockedBy: string;
+  /** Human-readable instruction on what action can safely unlock or advance this payroll. */
+  resolutionAction: string;
+  isResolved: boolean;
+  resolvedAt?: string | null;
+  resolvedBy?: string | null;
+}
+
+// ─── Recurring Payroll Template (#220) ───────────────────────────────────────
+
+export type PayrollFrequency = "weekly" | "biweekly" | "monthly" | "quarterly";
+
+export interface PayrollTemplate {
+  id: string;
+  companyId: string;
+  name: string;
+  description: string;
+  frequency: PayrollFrequency;
+  employeeIds: string[];
+  dayOfMonth?: number; // 1-31, for monthly/quarterly
+  dayOfWeek?: number; // 0=Sun..6=Sat, for weekly/biweekly
+  isActive: boolean;
+  lastExecuted?: string | null;
+  nextScheduled?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+}
+
+// ─── Overdue Payroll Alert (#219) ────────────────────────────────────────────
+
+export type OverdueAlertSeverity = "warning" | "critical";
+
+export interface OverduePayrollAlert {
+  id: string;
+  payrollId: string;
+  payrollName: string;
+  scheduledDate: string;
+  dueDate: string;
+  severity: OverdueAlertSeverity;
+  reason: string;
+  totalAmount: number;
+  employeeCount: number;
+  daysOverdue: number;
+}
+
+// ─── Approval Comment History (#222) ─────────────────────────────────────────
+
+export type ApprovalAction = "approved" | "rejected" | "requested_changes" | "commented" | "submitted";
+
+export interface ApprovalComment {
+  id: string;
+  payrollId: string;
+  action: ApprovalAction;
+  comment: string;
+  createdBy: string;
+  createdByName: string;
+  createdAt: string;
+  attachmentUrl?: string | null;
+}
+// ── Compliance Evidence Bundle ───────────────────────────────────────────────
+
+export interface AuditSafeReceipt {
+  receiptId: string;
+  payrollRunId: string;
+  timestamp: string;
+  totalDisbursed: number;
+  recipientCount: number;
+  recipientCommitments: string[];
+  status: "verified" | "pending" | "revoked";
+  receiptHash: string;
+  signature: string;
+}
+
+export interface ProofReference {
+  proofId: string;
+  verifierContract: string;
+  circuitHash: string;
+  publicSignalsDigest: string;
+  proofStatus: "verified" | "pending" | "failed" | "expired";
+  verifiedAt?: string;
+  expiresAt: string;
+  rawProofHash: string;
+}
+
+export interface ComplianceEvidenceBundle {
+  bundleId: string;
+  payrollRunId: string;
+  companyId: string;
+  title: string;
+  createdAt: string;
+  status: "verified" | "pending_review" | "flagged" | "archived";
+  classification: "audit-safe-redacted";
+  receipts: AuditSafeReceipt[];
+  proofReference: ProofReference;
+  transactionMetadata: {
+    txHash: string;
+    network: string;
+    ledgerSequence: number;
+    feeStroops: number;
+    contractAddresses: CompanyContractConfig;
+  };
+  approvalHistory: ApprovalEvent[];
+  verificationStatus: {
+    isVerified: boolean;
+    verifiedAt: string;
+    verifiedBy: string;
+    checksPassed: number;
+    totalChecks: number;
+  };
+}
+

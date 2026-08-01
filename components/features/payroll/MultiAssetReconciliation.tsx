@@ -238,7 +238,7 @@ export default function MultiAssetReconciliationView({
             Retry guidance
           </p>
           <ul className="list-disc list-inside space-y-1 text-orange-700">
-            <li>Confirm the affected employees' trust lines are established for the failed asset.</li>
+            <li>Confirm the affected employees&apos; trust lines are established for the failed asset.</li>
             <li>Verify treasury balance covers the shortfall amount.</li>
             <li>Re-run only the failed asset groups — already-confirmed groups will not be re-processed.</li>
             <li>

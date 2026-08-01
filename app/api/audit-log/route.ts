@@ -32,12 +32,11 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
     const { searchParams } = new URL(request.url);
     const filters: { [key: string]: string } = {};
 
-    for (const [key, value] of searchParams.entries()) {
-      if (!['action', 'admin', 'from', 'to', 'targetType'].includes(key)) {
-        continue;
+    searchParams.forEach((value, key) => {
+      if (['action', 'admin', 'from', 'to', 'targetType'].includes(key)) {
+        filters[key] = value;
       }
-      filters[key] = value;
-    }
+    });
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/internal/${AUDIT_LOG_COLLECTION}/list`,

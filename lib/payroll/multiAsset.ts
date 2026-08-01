@@ -35,7 +35,7 @@ export function groupEmployeesByAsset(
     byKey.get(key)!.push(emp);
   }
 
-  return [...byKey.entries()].map(([_key, emps]) => {
+  return Array.from(byKey.entries()).map(([_key, emps]) => {
     const first = emps[0];
     const asset: StellarAsset = { code: first.assetCode, issuer: first.assetIssuer };
     const assetKey = asset.issuer ? `${asset.code}:${asset.issuer}` : asset.code;
