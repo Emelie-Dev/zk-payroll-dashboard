@@ -176,7 +176,7 @@ export interface AuditAccessRequest {
   requesterEmail: string;
   scope: "read-only" | "full-audit";
   rationale: string;
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "expired" | "revoked" | "export_ready";
   createdAt: string;
   updatedAt?: string;
   viewKeyId?: string;
