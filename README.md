@@ -128,11 +128,13 @@ For detailed usage instructions, see [Transaction Detail Usage Guide](docs/TRANS
 
 - [Dashboard setup guide](docs/SETUP_GUIDE.md)
 - [Admin recovery guide](docs/ADMIN_RECOVERY_GUIDE.md)
+- [Wallet signing failure recovery guide](docs/WALLET_SIGNING_RECOVERY_GUIDE.md) 🆕
 - [Content style guide](docs/CONTENT_STYLE_GUIDE.md)
 
 ## 🤝 Contributing
 
 Contributions are welcome! Please check out the [issues](https://github.com/zkpayroll/zk-payroll-dashboard/issues) page.
+Before opening a PR, please review our [Contributor Issue Validation Checklist](docs/contributing/ISSUE_VALIDATION_CHECKLIST.md).
 
 ## 📄 License
 

@@ -11,6 +11,7 @@ import {
   MOCK_TREASURY_BALANCE,
   MOCK_TRANSACTIONS,
 } from "@/lib/api/mockData";
+import { CompanyConfigHealthPanel } from "./CompanyConfigHealthPanel";
 
 function StatCard({
   icon: Icon,
@@ -80,8 +81,8 @@ export default function AdminOverview() {
     surplus >= 10_000 ? "green" : surplus >= 0 ? "yellow" : "red";
 
   return (
-    <section aria-labelledby="admin-overview-heading">
-      <h2 id="admin-overview-heading" className="mb-6 text-xl font-semibold text-gray-900">
+    <section aria-labelledby="admin-overview-heading" className="space-y-6">
+      <h2 id="admin-overview-heading" className="text-xl font-semibold text-gray-900">
         Admin Overview
       </h2>
 
@@ -129,3 +130,4 @@ export default function AdminOverview() {
     </section>
   );
 }
+
