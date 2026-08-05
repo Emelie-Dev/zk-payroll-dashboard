@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { Building2, Users, DollarSign, AlertTriangle, ArrowRight } from "lucide-react";
 import { useCompanyStore } from "@/stores/company";
 import { useEmployeeStore } from "@/stores/employees";
+import AdminActionQueue from "./AdminActionQueue";
 import {
   MOCK_COMPANIES,
   MOCK_EMPLOYEES,
@@ -123,7 +124,9 @@ export default function AdminOverview() {
         />
       </div>
 
-      <CompanyConfigHealthPanel />
+      <div className="mt-8">
+        <AdminActionQueue />
+      </div>
     </section>
   );
 }
