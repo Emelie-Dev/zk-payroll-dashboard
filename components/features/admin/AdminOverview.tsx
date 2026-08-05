@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { Building2, Users, DollarSign, AlertTriangle, ArrowRight } from "lucide-react";
 import { useCompanyStore } from "@/stores/company";
 import { useEmployeeStore } from "@/stores/employees";
+import AdminActionQueue from "./AdminActionQueue";
 import {
   MOCK_COMPANIES,
   MOCK_EMPLOYEES,
@@ -11,6 +12,7 @@ import {
   MOCK_TRANSACTIONS,
 } from "@/lib/api/mockData";
 import PendingTransactionMonitor from "./PendingTransactionMonitor";
+import { CompanyConfigHealthPanel } from "./CompanyConfigHealthPanel";
 
 function StatCard({
   icon: Icon,
@@ -80,8 +82,8 @@ export default function AdminOverview() {
     surplus >= 10_000 ? "green" : surplus >= 0 ? "yellow" : "red";
 
   return (
-    <section aria-labelledby="admin-overview-heading">
-      <h2 id="admin-overview-heading" className="mb-6 text-xl font-semibold text-gray-900">
+    <section aria-labelledby="admin-overview-heading" className="space-y-6">
+      <h2 id="admin-overview-heading" className="text-xl font-semibold text-gray-900">
         Admin Overview
       </h2>
 
@@ -126,6 +128,11 @@ export default function AdminOverview() {
       <div className="mt-6">
         <PendingTransactionMonitor />
       </div>
+
+      <div className="mt-8">
+        <AdminActionQueue />
+      </div>
     </section>
   );
 }
+

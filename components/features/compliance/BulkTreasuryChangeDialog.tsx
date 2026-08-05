@@ -88,11 +88,11 @@ export function BulkTreasuryChangeDialog({ isOpen, onClose }: BulkTreasuryChange
           : 'Access Revoked'
       }
       description={
-        step === 'select' 
+        step === 'select'
           ? "Select multiple auditor access keys to revoke simultaneously. This will immediately invalidate their access across the entire audit system."
           : step === 'confirm'
           ? `Are you sure you want to revoke access for ${selectedKeysArray.length} auditor? This cannot be undone.`
-          : `Access has been successfully revoked for ${selectedKeysArray.length} auditor."
+          : `Access has been successfully revoked for ${selectedKeysArray.length} auditor.`
       }
       warning={
         step === 'select' 
@@ -106,13 +106,12 @@ export function BulkTreasuryChangeDialog({ isOpen, onClose }: BulkTreasuryChange
       variant="danger"
       icon="shield"
       isOpen={isOpen}
-      onConfirm={step === 'confirm' ? (reason) => handleConfirm(reason) : () => {}}
+      onConfirm={step === 'confirm' ? (reason) => handleConfirm(reason) : async () => {}}
       onCancel={step === 'success' ? handleClose : handleClose}
       isLoading={isLoading}
       showReasonField={step === 'confirm'}
       reasonLabel="Revocation Reason"
       reasonPlaceholder="e.g., Security audit, compliance violation, role change, access review complete..."
-      disabled={step !== 'confirm'}
     >
       {step === 'select' && (
         <div className="space-y-4">
@@ -148,17 +147,18 @@ export function BulkTreasuryChangeDialog({ isOpen, onClose }: BulkTreasuryChange
           ) : (
             <div className="max-h-64 overflow-y-auto border rounded-lg divide-y">
               {activeKeys.map((key: ViewKey) => (
-                <label
+                <div
                   key={key.id}
                   className="flex items-center p-4 hover:bg-gray-50 cursor-pointer select-none"
                 >
                   <input
+                    id={`treasury-key-${key.id}`}
                     type="checkbox"
                     checked={selectedKeys.has(key.id)}
                     onChange={() => handleKeyToggle(key.id)}
                     className="w-4 h-4 text-indigo-600 border-gray-300 rounded mr-3"
                   />
-                  <div className="flex-1 min-w-0">
+                  <label htmlFor={`treasury-key-${key.id}`} className="flex-1 min-w-0 cursor-pointer">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium text-gray-900 truncate">
                         {key.auditorName}
@@ -173,8 +173,8 @@ export function BulkTreasuryChangeDialog({ isOpen, onClose }: BulkTreasuryChange
                     <p className="text-xs text-gray-400 mt-1">
                       Granted {formatDate(key.createdAt)}
                     </p>
-                  </div>
-                </label>
+                  </label>
+                </div>
               ))}
             </div>
           )}

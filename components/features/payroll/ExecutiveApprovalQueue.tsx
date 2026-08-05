@@ -122,14 +122,14 @@ export function ExecutiveApprovalQueue() {
                           ? "failed"
                           : "pending"
                       }
-                      customLabel={
-                        draft.approvalStatus === "pending_executive_approval"
-                          ? "Executive Review Required"
-                          : draft.approvalStatus === "approved"
-                          ? "Approved for Signing"
-                          : "Rejected"
-                      }
                     />
+                    <span className="text-xs text-gray-500">
+                      {draft.approvalStatus === "pending_executive_approval"
+                        ? "Executive Review Required"
+                        : draft.approvalStatus === "approved"
+                        ? "Approved for Signing"
+                        : "Rejected"}
+                    </span>
                   </div>
                   {draft.notes && <p className="text-sm text-gray-700 mt-1 font-medium">{draft.notes}</p>}
                 </div>

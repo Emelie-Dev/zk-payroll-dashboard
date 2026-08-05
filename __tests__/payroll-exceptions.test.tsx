@@ -1,104 +1,57 @@
-import { describe, expect, it } from "vitest";
-import { render, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import PayrollExceptionsQueue, {
-  type PayrollExceptionItem,
-} from "@/components/features/payroll/PayrollExceptionsQueue";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import PayrollExceptionsQueue from "@/components/features/payroll/PayrollExceptionsQueue";
 
-const TRIAGE_ITEMS: PayrollExceptionItem[] = [
-  {
-    id: "exc_blocking",
-    runId: "run_blocking",
-    title: "Settlement failed on trust line limit",
-    summary: "A reconciliation error blocked the run.",
-    source: "reconciliation",
-    severity: "blocking",
-    status: "in_review",
-    nextAction: "Increase the receiving trust line limit and retry settlement.",
-    redactedValueLabel: "Settlement amount redacted",
-    createdAt: "2026-07-10T11:00:00Z",
+const toastSuccess = vi.fn();
+
+vi.mock("sonner", () => ({
+  toast: {
+    success: (...args: unknown[]) => toastSuccess(...args),
   },
-  {
-    id: "exc_warning",
-    runId: "run_warning",
-    title: "Proof generation pending",
-    summary: "The payroll batch is waiting on proof generation.",
-    source: "payroll-engine",
-    severity: "warning",
-    status: "open",
-    nextAction: "Generate the ZK proof and resubmit the run.",
-    redactedValueLabel: "Payroll amount redacted",
-    createdAt: "2026-07-12T11:00:00Z",
-  },
-  {
-    id: "exc_info",
-    runId: "run_info",
-    title: "Payroll run cancelled after review",
-    summary: "The run was intentionally cancelled.",
-    source: "compliance",
-    severity: "info",
-    status: "resolved",
-    nextAction: "No action required.",
-    redactedValueLabel: "Sensitive run details hidden",
-    createdAt: "2026-07-13T11:00:00Z",
-  },
-];
+}));
 
 describe("PayrollExceptionsQueue", () => {
-  it("renders grouped severity sections with redaction copy", () => {
-    render(<PayrollExceptionsQueue exceptions={TRIAGE_ITEMS} />);
+  beforeEach(() => {
+    toastSuccess.mockClear();
+  });
+
+  it("renders the section heading and tabs", () => {
+    render(<PayrollExceptionsQueue />);
 
     expect(
-      screen.getByRole("region", { name: /payroll exception triage/i }),
+      screen.getByRole("heading", { name: /payroll exceptions queue/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/sensitive payroll values stay redacted/i)).toBeInTheDocument();
-    expect(screen.getAllByRole("table").length).toBe(3);
-    expect(screen.getByText(/settlement amount redacted/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("tab", { name: /transaction exceptions/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("tab", { name: /employee exceptions/i }),
+    ).toBeInTheDocument();
   });
 
-  it("filters by severity", async () => {
-    const user = userEvent.setup();
-    render(<PayrollExceptionsQueue exceptions={TRIAGE_ITEMS} />);
+  it("renders transaction exceptions and labels them accessibly", () => {
+    render(<PayrollExceptionsQueue />);
 
-    await user.selectOptions(screen.getByLabelText(/filter by severity/i), "warning");
-
-    expect(screen.getAllByRole("table")).toHaveLength(1);
-    expect(screen.getByText(/proof generation pending/i)).toBeInTheDocument();
-    expect(screen.queryByText(/settlement failed on trust line limit/i)).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("tabpanel", { name: /transaction exceptions/i }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByRole("status").length).toBeGreaterThan(0);
+    expect(screen.getByText(/payroll run tx_/i)).toBeInTheDocument();
   });
 
-  it("filters by search term", async () => {
-    const user = userEvent.setup();
-    render(<PayrollExceptionsQueue exceptions={TRIAGE_ITEMS} />);
+  it("switches to employee exceptions and resolves an item", () => {
+    render(<PayrollExceptionsQueue />);
 
-    await user.type(screen.getByLabelText(/search exceptions/i), "trust line");
+    fireEvent.click(screen.getByRole("tab", { name: /employee exceptions/i }));
 
-    expect(screen.getAllByRole("table")).toHaveLength(1);
-    expect(screen.getByText(/settlement failed on trust line limit/i)).toBeInTheDocument();
-    expect(screen.queryByText(/proof generation pending/i)).not.toBeInTheDocument();
-  });
+    expect(
+      screen.getByRole("tabpanel", { name: /employee exceptions/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Amara Diallo")).toBeInTheDocument();
+    expect(screen.getByText("Kofi Boateng")).toBeInTheDocument();
 
-  it("filters by source and status", async () => {
-    const user = userEvent.setup();
-    render(<PayrollExceptionsQueue exceptions={TRIAGE_ITEMS} />);
+    fireEvent.click(screen.getByRole("button", { name: /resolve exception/i }));
 
-    await user.selectOptions(screen.getByLabelText(/filter by source/i), "compliance");
-    await user.selectOptions(screen.getByLabelText(/filter by status/i), "resolved");
-
-    const table = screen.getAllByRole("table")[0];
-    expect(screen.getAllByRole("table")).toHaveLength(1);
-    expect(within(table).getByText(/sensitive run details hidden/i)).toBeInTheDocument();
-    expect(within(table).getByText(/no action required/i)).toBeInTheDocument();
-    expect(screen.queryByText(/generate the zk proof/i)).not.toBeInTheDocument();
-  });
-
-  it("renders an empty state when there are no exceptions", () => {
-    render(<PayrollExceptionsQueue exceptions={[]} />);
-
-    expect(screen.getByText(/no payroll exceptions to triage/i)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /open payroll/i })).toHaveAttribute(
-      "href",
-      "/payroll",
-    );
+    expect(toastSuccess).toHaveBeenCalled();
   });
 });

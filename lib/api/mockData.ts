@@ -88,6 +88,29 @@ export const MOCK_COMPANIES: Company[] = [
   },
 ];
 
+export const MOCK_COMPANY_CONFIG: CompanyConfig = {
+  id: "company_001",
+  name: "ZK Payroll Inc.",
+  admin: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37",
+  treasury: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN",
+  employeeCount: 2,
+  isActive: true,
+  network: "TESTNET",
+  contracts: {
+    registry: "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    commitment: "CBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+    verifier: "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+    executor: "CDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
+    audit: "CEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+  },
+  auditSettings: {
+    enabled: true,
+    retentionDays: 365,
+    requireAuditorApproval: false,
+  },
+};
+
+
 export const MOCK_TRANSACTIONS: PayrollTransaction[] = [
   {
     id: "tx_001",

@@ -95,20 +95,19 @@ export function BulkRevokeDialog({ isOpen, onClose }: BulkRevokeDialogProps) {
           ? "Select multiple auditor access keys to revoke simultaneously. This will immediately invalidate their access."
           : step === 'confirm'
           ? `Are you sure you want to revoke access for ${selectedKeysArray.length} key${selectedKeysArray.length !== 1 ? 's' : ''}? This cannot be undone.`
-          : `Access has been successfully revoked for ${selectedKeysArray.length} auditor key${selectedKeysArray.length !== 1 ? 's' : ''}."
+          : `Access has been successfully revoked for ${selectedKeysArray.length} auditor key${selectedKeysArray.length !== 1 ? 's' : ''}.`
       }
       confirmText={step === 'confirm' ? 'Revoke Access' : 'Done'}
       cancelText={step === 'success' ? 'Close' : 'Cancel'}
       variant="danger"
       icon="shield"
       isOpen={isOpen}
-      onConfirm={step === 'confirm' ? (reason) => handleConfirm(reason) : () => {}}
+      onConfirm={step === 'confirm' ? (reason) => handleConfirm(reason) : async () => {}}
       onCancel={step === 'success' ? handleClose : handleClose}
       isLoading={isLoading}
       showReasonField={step === 'confirm'}
       reasonLabel="Revocation Reason"
       reasonPlaceholder="e.g., Security concerns, role change, access review complete..."
-      disabled={step !== 'confirm'}
     >
       {step === 'select' && (
         <div className="space-y-4">
@@ -132,17 +131,18 @@ export function BulkRevokeDialog({ isOpen, onClose }: BulkRevokeDialogProps) {
           ) : (
             <div className="max-h-64 overflow-y-auto border rounded-lg divide-y">
               {activeKeys.map((key: ViewKey) => (
-                <label
+                <div
                   key={key.id}
                   className="flex items-center p-4 hover:bg-gray-50 cursor-pointer select-none"
                 >
                   <input
+                    id={`revoke-key-${key.id}`}
                     type="checkbox"
                     checked={selectedKeys.has(key.id)}
                     onChange={() => handleKeyToggle(key.id)}
                     className="w-4 h-4 text-indigo-600 border-gray-300 rounded mr-3"
                   />
-                  <div className="flex-1 min-w-0">
+                  <label htmlFor={`revoke-key-${key.id}`} className="flex-1 min-w-0 cursor-pointer">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium text-gray-900 truncate">
                         {key.auditorName}
@@ -154,8 +154,8 @@ export function BulkRevokeDialog({ isOpen, onClose }: BulkRevokeDialogProps) {
                     <p className="text-xs text-gray-500 mt-1">
                       {key.auditorOrg} • Expires {formatDate(key.expiresAt)}
                     </p>
-                  </div>
-                </label>
+                  </label>
+                </div>
               ))}
             </div>
           )}

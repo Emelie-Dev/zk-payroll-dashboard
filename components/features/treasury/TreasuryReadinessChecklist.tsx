@@ -135,7 +135,6 @@ export function TreasuryReadinessChecklist({
 
       <ul
         className="divide-y divide-gray-100 px-4"
-        role="list"
         aria-label="Treasury readiness checks"
       >
         {readiness.items.map((item) => (

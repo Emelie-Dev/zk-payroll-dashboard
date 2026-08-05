@@ -26,14 +26,16 @@ import { toast } from "sonner";
 import { usePayrollWizardStore } from "@/stores/payrollWizard";
 import { useWalletStore } from "@/stores/walletStore";
 import { useApprovalHistory } from "@/stores/approvalHistory";
+import { useSession } from "@/hooks/useSession";
 import { EXPECTED_NETWORK } from "@/components/providers/StellarProvider";
 import { IncidentBanner } from "@/components/ui/IncidentBanner";
 import { MOCK_COMPANIES, MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS, MOCK_TREASURY_BALANCE } from "@/lib/api/mockData";
 import PayrollReceipt from "./PayrollReceipt";
+import PayrollApprovalAuditTrail from "./PayrollApprovalAuditTrail";
+import { usePayrollAuditTrailStore } from "@/stores/payrollAuditTrail";
 import ApprovalHistoryDrawer from "./ApprovalHistoryDrawer";
 import { PayrollRiskWarnings } from "./PayrollRiskWarnings";
 import { WalletReconnectRecoveryBanner } from "@/components/features/wallet/WalletReconnectRecoveryBanner";
-import { useSession } from "@/hooks/useSession";
 import type { PayrollRun, PayrollWizardStep } from "@/types";
 import { trackEvent, mapErrorToType, bucketEmployeeCount } from "@/lib/telemetry";
 
@@ -80,6 +82,8 @@ function PayrollWizard() {
     restoreDraft,
     clearDraft,
   } = usePayrollWizardStore();
+  const logEvent = usePayrollAuditTrailStore((s) => s.logEvent);
+  const [payrollRunId, setPayrollRunId] = useState<string | null>(null);
   const [showDraftBanner, setShowDraftBanner] = useState(false);
   const draftResolvedRef = useRef(false);
   const initialEventRecordedRef = useRef(false);
@@ -116,6 +120,8 @@ function PayrollWizard() {
 
   const handleStartPayroll = useCallback(() => {
     const selected = MOCK_EMPLOYEES.map((e) => e.id);
+    const runId = `run_${Date.now()}`;
+    setPayrollRunId(runId);
     setEmployeeIds(selected);
     setTotalAmount(MOCK_EMPLOYEES.reduce((sum, e) => sum + e.salary, 0));
     draftResolvedRef.current = true;
@@ -128,10 +134,18 @@ function PayrollWizard() {
       { employeeCount: selected.length },
     );
 
+    logEvent({
+      payrollRunId: runId,
+      action: "draft_created",
+      actor: "Current Admin",
+      actorRole: "admin",
+      details: `Payroll run started with ${selected.length} employees totaling $${MOCK_EMPLOYEES.reduce((sum, e) => sum + e.salary, 0).toLocaleString()}`,
+    });
+
     trackEvent("payroll_wizard_started", {
       employeeCountBucket: bucketEmployeeCount(selected.length),
     });
-  }, [setEmployeeIds, setTotalAmount, addApprovalEvent, walletPublicKey]);
+  }, [setEmployeeIds, setTotalAmount, addApprovalEvent, walletPublicKey, logEvent]);
 
   const handleGenerateProof = useCallback(async () => {
     if (isWrongNetwork) {
@@ -155,6 +169,15 @@ function PayrollWizard() {
     const success = Math.random() > 0.2;
     if (success) {
       setProofStatus("success");
+      if (payrollRunId) {
+        logEvent({
+          payrollRunId,
+          action: "proof_generated",
+          actor: "Current Admin",
+          actorRole: "admin",
+          details: `ZK proof generated successfully for ${selectedEmployees.length} employees totaling $${totalAmount.toLocaleString()}`,
+        });
+      }
       addApprovalEvent(
         "proof_generation_completed",
         walletPublicKey,
@@ -168,6 +191,15 @@ function PayrollWizard() {
       const errMsg =
         "Proof generation failed: circuit constraint mismatch. Please retry.";
       setProofError(errMsg);
+      if (payrollRunId) {
+        logEvent({
+          payrollRunId,
+          action: "proof_failed",
+          actor: "Current Admin",
+          actorRole: "admin",
+          details: errMsg,
+        });
+      }
       addApprovalEvent(
         "proof_generation_failed",
         walletPublicKey,
@@ -181,7 +213,7 @@ function PayrollWizard() {
         description: "Circuit constraint mismatch.",
       });
     }
-  }, [setProofStatus, setProofError, nextStep, isWrongNetwork, addApprovalEvent, walletPublicKey]);
+  }, [setProofStatus, setProofError, nextStep, isWrongNetwork, addApprovalEvent, walletPublicKey, payrollRunId, logEvent, selectedEmployees.length, totalAmount]);
 
   const handleSubmit = useCallback(async () => {
     if (isWrongNetwork) {
@@ -189,6 +221,17 @@ function PayrollWizard() {
         description: `Switch your wallet to ${EXPECTED_NETWORK} to continue.`,
       });
       return;
+    }
+
+    // Log wallet signing before submission
+    if (payrollRunId) {
+      logEvent({
+        payrollRunId,
+        action: "wallet_signing",
+        actor: "Current Admin",
+        actorRole: "admin",
+        details: `Wallet signing initiated for payroll run: ${selectedEmployees.length} employees, $${totalAmount.toLocaleString()} total`,
+      });
     }
 
     setSubmissionStatus("submitting");
@@ -214,6 +257,15 @@ function PayrollWizard() {
       setSubmissionStatus("success");
       const txHash = `0x${Date.now().toString(16)}abc`;
       setTransactionHash(txHash);
+      if (payrollRunId) {
+        logEvent({
+          payrollRunId,
+          action: "submitted",
+          actor: "Current Admin",
+          actorRole: "admin",
+          details: `Payroll submitted successfully. Transaction hash: ${txHash}`,
+        });
+      }
       addApprovalEvent(
         "submission_completed",
         walletPublicKey,
@@ -228,6 +280,15 @@ function PayrollWizard() {
       const errMsg =
         "Submission failed: network timeout. The transaction may still be processing.";
       setSubmissionError(errMsg);
+      if (payrollRunId) {
+        logEvent({
+          payrollRunId,
+          action: "submission_failed",
+          actor: "Current Admin",
+          actorRole: "admin",
+          details: errMsg,
+        });
+      }
       addApprovalEvent(
         "submission_failed",
         walletPublicKey,
@@ -242,12 +303,34 @@ function PayrollWizard() {
           "Network timeout. The transaction may still be processing.",
       });
     }
-  }, [setSubmissionStatus, setSubmissionError, setTransactionHash, nextStep, isWrongNetwork, addApprovalEvent, walletPublicKey, employeeIds, totalAmount]);
+  }, [setSubmissionStatus, setSubmissionError, setTransactionHash, nextStep, isWrongNetwork, addApprovalEvent, walletPublicKey, employeeIds, totalAmount, payrollRunId, logEvent, selectedEmployees.length]);
+
+  const handleReviewNext = useCallback(() => {
+    if (payrollRunId) {
+      logEvent({
+        payrollRunId,
+        action: "review_initiated",
+        actor: "Current Admin",
+        actorRole: "admin",
+        details: `Review step completed for ${selectedEmployees.length} employees totaling $${totalAmount.toLocaleString()}`,
+      });
+    }
+    nextStep();
+  }, [payrollRunId, logEvent, nextStep, selectedEmployees.length, totalAmount]);
 
   const handleReset = useCallback(() => {
+    if (payrollRunId) {
+      logEvent({
+        payrollRunId,
+        action: "cancelled",
+        actor: "Current Admin",
+        actorRole: "admin",
+        details: `Payroll workflow reset. Run was ${submissionStatus === "error" ? "in error state" : "incomplete"}.`,
+      });
+    }
     reset();
     clearApprovalHistory();
-  }, [reset, clearApprovalHistory]);
+  }, [payrollRunId, logEvent, reset, submissionStatus, clearApprovalHistory]);
 
   const idx = stepIndex(currentStep);
 
@@ -318,6 +401,15 @@ function PayrollWizard() {
               <button
                 type="button"
                 onClick={() => {
+                  if (payrollRunId) {
+                    logEvent({
+                      payrollRunId,
+                      action: "cancelled",
+                      actor: "Current Admin",
+                      actorRole: "admin",
+                      details: `Payroll draft discarded. ${employeeIds.length} employees selected, $${totalAmount.toLocaleString()} total was pending.`,
+                    });
+                  }
                   clearDraft();
                   clearApprovalHistory();
                   setShowDraftBanner(false);
@@ -390,7 +482,7 @@ function PayrollWizard() {
             selectedEmployees={selectedEmployees}
             totalAmount={totalAmount}
             onStart={handleStartPayroll}
-            onNext={nextStep}
+            onNext={handleReviewNext}
             isWrongNetwork={isWrongNetwork}
           />
         )}
@@ -430,6 +522,12 @@ function PayrollWizard() {
         )}
       </div>
 
+      {/* Approval Audit Trail */}
+      {payrollRunId && (
+        <div className="mt-8">
+          <PayrollApprovalAuditTrail payrollRunId={payrollRunId} />
+        </div>
+      )}
       <ApprovalHistoryDrawer
         open={historyDrawerOpen}
         onOpenChange={setHistoryDrawerOpen}
@@ -1070,8 +1168,7 @@ function ConfirmStep({
 
       {/* Explicit Confirmation Checkbox */}
       <div className="bg-indigo-50/50 border border-indigo-150 rounded-lg p-4">
-        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-        <label htmlFor="confirm-checkbox" className="flex items-start gap-3 cursor-pointer select-none">
+        <div className="flex items-start gap-3">
           <input
             id="confirm-checkbox"
             type="checkbox"
@@ -1080,8 +1177,8 @@ function ConfirmStep({
             disabled={state === "blocked"}
             className="w-4 h-4 text-indigo-600 border-gray-300 rounded mt-0.5 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
           />
-          <div>
-            <span className="text-sm font-medium text-gray-900">
+          <label htmlFor="confirm-checkbox" className="cursor-pointer select-none">
+            <span className="text-sm font-medium text-gray-900 block">
               Confirm Payroll Execution Summary
             </span>
             <p className="text-xs text-gray-600 mt-0.5">
@@ -1090,8 +1187,8 @@ function ConfirmStep({
               commitment represents the exact batch payouts. This action
               triggers wallet signing.
             </p>
-          </div>
-        </label>
+          </label>
+        </div>
       </div>
 
       {/* Navigation Buttons */}
