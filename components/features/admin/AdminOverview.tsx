@@ -11,6 +11,7 @@ import {
   MOCK_TREASURY_BALANCE,
   MOCK_TRANSACTIONS,
 } from "@/lib/api/mockData";
+import PendingTransactionMonitor from "./PendingTransactionMonitor";
 import { CompanyConfigHealthPanel } from "./CompanyConfigHealthPanel";
 
 function StatCard({
@@ -122,6 +123,10 @@ export default function AdminOverview() {
           accent={pendingCount > 0 ? "yellow" : "green"}
           href="/payroll"
         />
+      </div>
+
+      <div className="mt-6">
+        <PendingTransactionMonitor />
       </div>
 
       <div className="mt-8">

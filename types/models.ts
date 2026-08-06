@@ -13,6 +13,9 @@ export interface Employee {
   isActive: boolean;
   status?: "active" | "inactive" | "pending";
   onboardingStatus: OnboardingStatus;
+  onboardingRetryCount?: number;
+  onboardingError?: string | null;
+  lastOnboardingAttemptAt?: string | null;
   startDate: string;
   lastPayment?: string;
 }
