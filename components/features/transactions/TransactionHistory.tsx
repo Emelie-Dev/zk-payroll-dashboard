@@ -486,12 +486,6 @@ function TransactionHistoryInner({
               Filters
               {activeFilterCount > 0 && (
                 <span className="ml-1 px-1.5 py-0.5 text-xs bg-indigo-600 text-white rounded-full">
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
-            >
-              <Filter className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Filter</span>
-              {activeFilterCount > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 text-xs bg-gray-600 text-white rounded-full">
                   {activeFilterCount}
                 </span>
               )}
