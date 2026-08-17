@@ -37,7 +37,7 @@ function generateKeyId(): string {
 function ComplianceManager() {
   const { viewKeys, addViewKey, revokeViewKey, setViewKeys } =
     useViewKeyStore();
-  const [activeTab, setActiveTab] = useState<"access" | "exports">("access");
+  const [activeTab, setActiveTab] = useState<"access" | "exports" | "bundles">("access");
   const {
     requests,
     setRequests,

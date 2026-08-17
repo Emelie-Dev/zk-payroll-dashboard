@@ -1,4 +1,4 @@
-import { Employee, Company, PayrollTransaction, PayrollRun, ViewKey, FundingForecast, AuditAccessRequest, MultiAssetPayrollRun, ComplianceEvidenceBundle } from "@/types/models";
+import { Employee, Company, CompanyConfig, PayrollTransaction, PayrollRun, ViewKey, FundingForecast, AuditAccessRequest, MultiAssetPayrollRun, ComplianceEvidenceBundle, PayrollLock, PayrollTemplate, OverduePayrollAlert, ApprovalComment } from "@/types/models";
 
 export const MOCK_EMPLOYEES: Employee[] = [
   {
@@ -95,7 +95,7 @@ export const MOCK_COMPANY_CONFIG: CompanyConfig = {
   treasury: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN",
   employeeCount: 2,
   isActive: true,
-  network: "TESTNET",
+  network: "testnet",
   contracts: {
     registry: "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
     commitment: "CBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
@@ -190,6 +190,25 @@ export const MOCK_TREASURY_BALANCE = {
   balance: 45000,
   projectedPayroll: 19500,
   lastFunded: "2025-02-15T10:00:00Z",
+};
+
+export const MOCK_FUNDING_FORECAST: FundingForecast = {
+  cycleStart: "2025-04-01T00:00:00Z",
+  cycleEnd: "2025-04-30T23:59:59Z",
+  estimatedTotal: 19500,
+  employeeCount: 4,
+  breakdown: {
+    payrollTotal: 18500,
+    bufferReserve: 750,
+    miscellaneous: 250,
+  },
+  currentBalance: 45000,
+  fundingGap: 25500,
+  confidence: "medium",
+  uncertaintyFactors: [
+    "Two employees still have pending onboarding status.",
+    "One payroll template has not run successfully this cycle.",
+  ],
 };
 
 export const MOCK_PAYROLL_LOCKS: PayrollLock[] = [
