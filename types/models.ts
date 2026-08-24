@@ -104,12 +104,18 @@ export interface PayrollTransaction {
   employeeCount: number;
   proof: string;
   status: "pending" | "verified" | "failed" | "cancelled";
-  approvalStatus?: "draft" | "pending_executive_approval" | "approved" | "rejected";
+  approvalStatus?:
+    | "draft"
+    | "pending_executive_approval"
+    | "approved"
+    | "rejected"
+    | "correction_requested";
   approvalHistory?: Array<{
     approvedBy: string;
     approvedAt: string;
     role: string;
     comment?: string;
+    action?: "approved" | "rejected" | "correction_requested" | "resubmitted";
   }>;
   txHash?: string;
   isArchived?: boolean;
