@@ -60,6 +60,52 @@ jobs:
 
             const closed = [];
             const skipped = [];
+
+            for (const { number, source } of refs.values()) {
+              const { data: issue } = await github.rest.issues.get({
+                owner,
+                repo,
+                issue_number: number,
+              });
+
+              if (issue.pull_request) {
+                skipped.push(`#${number} is a pull request`);
+                continue;
+              }
+
+              if (issue.state === 'closed') {
+                skipped.push(`#${number} was already closed`);
+                continue;
+              }
+
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: number,
+                body: `Closed automatically because PR #${pr.number} was merged into dev. Source: ${source}.`,
+              });
+
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: number,
+                state: 'closed',
+                state_reason: 'completed',
+              });
+
+              closed.push(`#${number}`);
+            }
+
+            if (closed.length > 0 || skipped.length > 0) {
+              const lines = [];
+              if (closed.length > 0) lines.push(`Closed linked issue(s): ${closed.join(', ')}.`);
+              if (skipped.length > 0) lines.push(`Skipped: ${skipped.join(', ')}.`);
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: pr.number,
+                body: lines.join('\n'),
+              });
             const failures = [];
 
             for (const { number, source } of refs.values()) {
