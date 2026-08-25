@@ -123,6 +123,7 @@ export const ROUTE_ROLE_RULES: Array<{ prefix: string; roles: UserRole[] }> = [
   { prefix: '/company/switch', roles: ['admin'] },
   { prefix: '/payroll/reconciliation', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/wallet/recovery', roles: ['admin', 'operator'] },
+  { prefix: '/archive', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/history/archived', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/history', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/exports', roles: ['admin', 'operator', 'auditor'] },
