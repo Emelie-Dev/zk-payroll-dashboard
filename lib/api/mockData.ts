@@ -86,6 +86,22 @@ export const MOCK_COMPANIES: Company[] = [
     employeeCount: 2,
     isActive: true,
   },
+  {
+    id: "company_002",
+    name: "Accra Remote Collective",
+    admin: "GBVXCPHJMZ5HZJMBBP3YMBM6HXKH3JRXJBHXJHXJHXJHXJHXJHXJHX",
+    treasury: "GCZJM2ZPKZM5LZPM2CZJM2ZPKZM5LZPM2CZJM2ZPKZM5LZPM2CZJM2",
+    employeeCount: 1,
+    isActive: false,
+  },
+  {
+    id: "company_003",
+    name: "Lagos Payroll Cooperative",
+    admin: "not-a-valid-stellar-address",
+    treasury: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN",
+    employeeCount: 0,
+    isActive: true,
+  },
 ];
 
 export const MOCK_COMPANY_CONFIG: CompanyConfig = {
