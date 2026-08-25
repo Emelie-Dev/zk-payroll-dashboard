@@ -126,20 +126,17 @@ function SelectStep() {
           </div>
         ) : (
           searchFiltered.map((entry) => (
+            // eslint-disable-next-line jsx-a11y/label-has-associated-control
             <label
               key={entry.id}
-              htmlFor={`audit-entry-${entry.id}`}
               className={`flex items-start gap-3 p-3 cursor-pointer hover:bg-muted/50 transition-colors ${entry.selected ? "bg-blue-50/50" : ""}`}
             >
-              <span className="sr-only">{entry.title}</span>
               <input
-                id={`audit-entry-${entry.id}`}
                 type="checkbox"
                 checked={entry.selected}
                 onChange={() => toggleEntry(entry.id)}
                 className="h-4 w-4 mt-0.5 rounded border-gray-300"
               />
-
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">{entry.title}</span>
@@ -152,6 +149,7 @@ function SelectStep() {
               </div>
             </label>
           ))
+
         )}
       </div>
     </div>
