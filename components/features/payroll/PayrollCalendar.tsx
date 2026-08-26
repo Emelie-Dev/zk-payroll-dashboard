@@ -15,6 +15,7 @@ import {
 import { MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
 import type { PayrollRun } from "@/types/models";
 import EmptyState from "@/components/ui/EmptyState";
+import { useHelpDrawer, HELP_CONTENT } from "@/stores/helpDrawer";
 import PayrollDetailSheet from "@/components/features/payroll/PayrollDetailSheet";
 import {
   classifyRun,
@@ -303,6 +304,7 @@ function MonthCalendar({
 function PayrollCalendar({ runs = MOCK_PAYROLL_RUNS }: PayrollCalendarProps) {
   const [selectedRun, setSelectedRun] = useState<PayrollRun | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const { openHelp } = useHelpDrawer();
 
   const handleRunSelect = useCallback((run: PayrollRun) => {
     setSelectedRun(run);
@@ -357,6 +359,13 @@ function PayrollCalendar({ runs = MOCK_PAYROLL_RUNS }: PayrollCalendarProps) {
             action={{
               label: "Start first payroll run",
               href: "/payroll/execute",
+            }}
+            secondaryAction={{
+              label: "View payroll guide",
+              onClick: () => {
+                const content = HELP_CONTENT.payroll;
+                if (content) openHelp("payroll", content);
+              },
             }}
           />
         </div>
