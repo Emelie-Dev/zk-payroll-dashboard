@@ -11,7 +11,7 @@ export type NavigationAccess = 'enabled' | 'disabled';
 export interface NavigationItem {
   label: string;
   href: string;
-  icon: 'home' | 'users' | 'play' | 'history' | 'archive' | 'shield' | 'building' | 'treasury' | 'settings' | 'file-search' | 'alert' | 'clipboard' | 'upload' | 'calendar' | 'download';
+  icon: 'home' | 'users' | 'play' | 'history' | 'archive' | 'shield' | 'building' | 'treasury' | 'settings' | 'file-search' | 'alert' | 'clipboard' | 'upload' | 'calendar' | 'download' | 'gavel';
   roles: UserRole[];
   access?: Partial<Record<UserRole, NavigationAccess>>;
   disabledReason?: Partial<Record<UserRole, string>>;
@@ -42,6 +42,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     label: 'Execute Payroll',
     href: '/payroll/execute',
     icon: 'play',
+    roles: ['admin', 'operator'],
+  },
+  {
+    label: 'Disputes',
+    href: '/disputes',
+    icon: 'gavel',
     roles: ['admin', 'operator'],
   },
   {
@@ -113,6 +119,7 @@ export const ROUTE_ROLE_RULES: Array<{ prefix: string; roles: UserRole[] }> = [
   { prefix: '/employees', roles: ['admin', 'operator'] },
   { prefix: '/payroll/approvals', roles: ['admin', 'operator'] },
   { prefix: '/payroll/execute', roles: ['admin', 'operator'] },
+  { prefix: '/disputes', roles: ['admin', 'operator'] },
   { prefix: '/payroll/run', roles: ['admin'] },
   { prefix: '/payroll/exceptions', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/payroll/runs', roles: ['admin', 'operator', 'auditor'] },

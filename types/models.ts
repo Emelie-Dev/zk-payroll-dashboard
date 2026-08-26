@@ -396,6 +396,36 @@ export interface ApprovalComment {
   createdAt: string;
   attachmentUrl?: string | null;
 }
+// ─── Payroll Dispute Resolution Queue (#317) ──────────────────────────────────
+
+export type DisputeStatus = "active" | "overdue" | "resolved" | "escalated";
+
+export type DisputeResolutionAction = "resolve" | "escalate" | "dismiss";
+
+export type DisputeBlockedAction =
+  | "finalization"
+  | "approval"
+  | "execution"
+  | "reconciliation"
+  | "audit_export";
+
+export interface PayrollDispute {
+  id: string;
+  payrollPeriod: string;
+  payrollBatch: string;
+  status: DisputeStatus;
+  resolutionDeadline: string;
+  safeReasonCode: PayrollLockReasonType;
+  safeReasonDescription: string;
+  blockedActions: DisputeBlockedAction[];
+  requiredReviewer: UserRole;
+  resolutionAction: string;
+  createdAt: string;
+  resolvedAt?: string | null;
+  resolvedBy?: string | null;
+  resolutionNote?: string;
+}
+
 // ── Compliance Evidence Bundle ───────────────────────────────────────────────
 
 export interface AuditSafeReceipt {
