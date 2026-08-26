@@ -23,6 +23,8 @@ import {
   History,
 } from "lucide-react";
 import { toast } from "sonner";
+import type { Employee } from "@/types/models";
+import DuplicateWarningPanel from "@/components/employees/DuplicateWarningPanel";
 import { usePayrollWizardStore } from "@/stores/payrollWizard";
 import { useWalletStore } from "@/stores/walletStore";
 import { useApprovalHistory } from "@/stores/approvalHistory";
@@ -545,7 +547,7 @@ function ReviewStep({
   isWrongNetwork,
 }: {
   employeeIds: string[];
-  selectedEmployees: { id: string; name: string; salary: number }[];
+  selectedEmployees: Employee[];
   totalAmount: number;
   onStart: () => void;
   onNext: () => void;
@@ -577,6 +579,7 @@ function ReviewStep({
         Review the employees and amounts included in this payroll run before
         generating the ZK proof.
       </p>
+      <DuplicateWarningPanel employees={selectedEmployees} />
       <div className="border rounded-lg divide-y">
         {selectedEmployees.map((emp) => (
           <div key={emp.id} className="px-4 py-3 flex justify-between">
