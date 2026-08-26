@@ -38,6 +38,7 @@ import { usePayrollAuditTrailStore } from "@/stores/payrollAuditTrail";
 import ApprovalHistoryDrawer from "./ApprovalHistoryDrawer";
 import { PayrollRiskWarnings } from "./PayrollRiskWarnings";
 import { WalletReconnectRecoveryBanner } from "@/components/features/wallet/WalletReconnectRecoveryBanner";
+import { ContractErrorHelpButton } from "@/components/features/errors/ContractErrorDrawer";
 import type { PayrollRun, PayrollWizardStep } from "@/types";
 import { trackEvent, mapErrorToType, bucketEmployeeCount } from "@/lib/telemetry";
 
@@ -668,14 +669,17 @@ function ProofStep({
         <div className="text-center py-6 space-y-3">
           <AlertCircle className="w-8 h-8 text-red-500 mx-auto" />
           <p className="text-sm text-red-700">{error}</p>
-          <button
-            type="button"
-            onClick={onRetry}
-            className="w-full sm:w-auto px-4 py-2 rounded-md bg-red-50 text-red-700 text-sm font-medium hover:bg-red-100 border border-red-200 transition-colors inline-flex justify-center items-center gap-1"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            Retry
-          </button>
+          <div className="flex flex-col sm:flex-row justify-center gap-3">
+            <button
+              type="button"
+              onClick={onRetry}
+              className="w-full sm:w-auto px-4 py-2 rounded-md bg-red-50 text-red-700 text-sm font-medium hover:bg-red-100 border border-red-200 transition-colors inline-flex justify-center items-center gap-1"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              Retry
+            </button>
+            <ContractErrorHelpButton error={error} />
+          </div>
         </div>
       )}
 
@@ -1310,6 +1314,7 @@ function SubmitStep({
             >
               Start Over
             </button>
+            <ContractErrorHelpButton error={error} />
           </div>
         </div>
       )}
