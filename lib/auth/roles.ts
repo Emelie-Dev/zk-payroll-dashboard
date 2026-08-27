@@ -45,6 +45,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     roles: ['admin', 'operator'],
   },
   {
+    label: 'Verify Proof',
+    href: '/payroll/verify',
+    icon: 'shield',
+    roles: ['admin', 'operator', 'auditor'],
+  },
+  {
     label: 'History',
     href: '/history',
     icon: 'history',
@@ -113,6 +119,7 @@ export const ROUTE_ROLE_RULES: Array<{ prefix: string; roles: UserRole[] }> = [
   { prefix: '/employees', roles: ['admin', 'operator'] },
   { prefix: '/payroll/approvals', roles: ['admin', 'operator'] },
   { prefix: '/payroll/execute', roles: ['admin', 'operator'] },
+  { prefix: '/payroll/verify', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/payroll/run', roles: ['admin'] },
   { prefix: '/payroll/exceptions', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/payroll/runs', roles: ['admin', 'operator', 'auditor'] },
@@ -128,6 +135,7 @@ export const ROUTE_ROLE_RULES: Array<{ prefix: string; roles: UserRole[] }> = [
   { prefix: '/history', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/exports', roles: ['admin', 'operator', 'auditor'] },
   { prefix: '/settings/payroll-policy', roles: ['admin'] },
+  { prefix: '/settings/roles', roles: ['admin'] },
   { prefix: '/settings', roles: ['admin', 'operator', 'auditor'] },
 
   { prefix: '/dashboard', roles: ['admin', 'operator', 'auditor'] },
