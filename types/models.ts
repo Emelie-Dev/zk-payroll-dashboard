@@ -121,6 +121,15 @@ export interface PayrollTransaction {
   isArchived?: boolean;
 }
 
+export type PayrollCancellationReason =
+  | "treasury_insufficient"
+  | "approval_rejected"
+  | "compliance_hold"
+  | "duplicate_batch"
+  | "manual_request"
+  | "expired_proof"
+  | "unknown";
+
 export interface PayrollRun extends PayrollTransaction {
   employeeIds: string[];
   executedAt?: string | null;
@@ -132,6 +141,11 @@ export interface PayrollRun extends PayrollTransaction {
     discrepancies?: string[];
     lastReconciliedAt?: string;
   };
+  /** Cancellation details — present only when status is cancelled. */
+  cancellationReason?: PayrollCancellationReason;
+  cancellationDetail?: string;
+  cancelledAt?: string | null;
+  cancelledBy?: string | null;
 }
 
 export interface ViewKey {

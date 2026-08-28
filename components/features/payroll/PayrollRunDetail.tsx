@@ -30,6 +30,8 @@ import {
   RUN_KIND_STYLES,
 } from "@/lib/payroll/scheduleUtils";
 import ReconciliationDiffPanel from "@/components/features/payroll/ReconciliationDiffPanel";
+import { PayrollCancellationPanel } from "@/components/features/payroll/PayrollCancellationPanel";
+import { ApprovalExpiryBadge } from "@/components/signing/ApprovalExpiryBadge";
 
 
 
@@ -152,6 +154,33 @@ export default function PayrollRunDetail({ run: propRun, proofReference }: Payro
   const lockState = getPayrollLockState(run);
   const freshness = evaluateProofFreshness({ reference: proofReference });
 
+  // Derive approval expiry input from run approval history/status
+  const approvalInput = useMemo(() => {
+    const latest = run.approvalHistory?.[run.approvalHistory.length - 1];
+    const hasApproval = Boolean(run.approvalHistory && run.approvalHistory.length > 0) || Boolean(run.approvalStatus);
+    // If no explicit expiry, simulate a 7-day window from approvedAt for active approvals
+    const approvedAt = latest?.approvedAt ?? null;
+    let expiresAt: string | null = null;
+    if (latest?.approvedAt && run.approvalStatus === "approved") {
+      const d = new Date(latest.approvedAt);
+      d.setDate(d.getDate() + 7);
+      expiresAt = d.toISOString();
+    } else if (latest?.approvedAt && (run.approvalStatus as string) === "expired") {
+      // already expired — set expiresAt in past
+      const d = new Date(latest.approvedAt);
+      d.setDate(d.getDate() - 1);
+      expiresAt = d.toISOString();
+    }
+    // If status indicates missing
+    if (!hasApproval) return { hasApproval: false as const };
+    return {
+      approvedAt,
+      expiresAt,
+      approvalStatus: run.approvalStatus ?? null,
+      hasApproval: true as const,
+    };
+  }, [run.approvalHistory, run.approvalStatus]);
+
   return (
     <section aria-labelledby="payroll-run-detail-heading" className="space-y-6">
       <div>
@@ -189,6 +218,9 @@ export default function PayrollRunDetail({ run: propRun, proofReference }: Payro
           </div>
         </div>
       )}
+
+      {/* Cancellation detail panel — only for cancelled batches */}
+      {run.status === "cancelled" && <PayrollCancellationPanel run={run} />}
 
       <header className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -233,6 +265,11 @@ export default function PayrollRunDetail({ run: propRun, proofReference }: Payro
               Execution blocked — proof expired
             </span>
           )}
+        </div>
+
+        {/* Approval expiry badge — visible before execution */}
+        <div className="mt-4 flex flex-wrap items-center gap-2" aria-label="Approval expiry status">
+          <ApprovalExpiryBadge approval={approvalInput} />
         </div>
       </header>
 
