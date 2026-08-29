@@ -50,7 +50,7 @@ export function ProofReferenceInput({
           id={inputId}
           type="text"
           value={value}
-          autoFocus={autoFocus}
+          autoFocus={autoFocus} // eslint-disable-line jsx-a11y/no-autofocus
           onChange={(e) => commit(e.target.value)}
           onPaste={(e) => {
             e.preventDefault();
