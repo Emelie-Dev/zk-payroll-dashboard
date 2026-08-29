@@ -23,6 +23,8 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import ProofFreshnessBadge from "@/components/features/proofs/ProofFreshnessBadge";
 import { evaluateProofFreshness } from "@/lib/formatting/proofFreshness";
 import PayrollApprovalAuditTrail from "./PayrollApprovalAuditTrail";
+import { PeriodLabelBadge } from "@/components/features/payroll/PeriodLabelBadge";
+import { formatPeriodLabel } from "@/lib/date/periodLabel";
 import {
   classifyRun,
   formatPayrollDate,
@@ -246,6 +248,7 @@ export default function PayrollRunDetail({ run: propRun, proofReference }: Payro
                 >
                   {kindStyles.label}
                 </span>
+                <PeriodLabelBadge period={run} size="xs" variant="badge" />
                 <StatusBadge status={run.status} />
               </div>
             </div>
@@ -278,7 +281,16 @@ export default function PayrollRunDetail({ run: propRun, proofReference }: Payro
       {/* Run metadata */}
       <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
         <h3 className="text-sm font-semibold text-gray-900">Run Metadata</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="border rounded-lg p-4">
+            <div className="flex items-center gap-2 text-gray-500 mb-1">
+              <Calendar className="w-4 h-4" />
+              <span className="text-xs font-medium uppercase">Pay Period</span>
+            </div>
+            <p className="text-sm font-medium text-gray-900">
+              {formatPeriodLabel(run)}
+            </p>
+          </div>
           <div className="border rounded-lg p-4">
             <div className="flex items-center gap-2 text-gray-500 mb-1">
               <Calendar className="w-4 h-4" />
