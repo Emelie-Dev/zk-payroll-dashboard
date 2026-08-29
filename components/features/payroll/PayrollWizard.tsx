@@ -39,6 +39,7 @@ import { PayrollRiskWarnings } from "./PayrollRiskWarnings";
 import { WalletReconnectRecoveryBanner } from "@/components/features/wallet/WalletReconnectRecoveryBanner";
 import { useEnvironmentStore } from "@/stores/environment";
 import { ContractErrorHelpButton } from "@/components/features/errors/ContractErrorDrawer";
+import { MissingProofWarning } from "@/components/features/proofs/MissingProofWarning";
 import type { PayrollRun, PayrollWizardStep } from "@/types";
 import { trackEvent, mapErrorToType, bucketEmployeeCount } from "@/lib/telemetry";
 
@@ -936,6 +937,10 @@ function ConfirmStep({
             </ul>
           </div>
         </div>
+      )}
+
+      {store.proofStatus !== "success" && (
+        <MissingProofWarning actionHref="/payroll/execute" actionLabel="Generate proof" />
       )}
 
       {/* Operational Risk Warnings */}
