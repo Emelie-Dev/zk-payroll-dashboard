@@ -2103,6 +2103,96 @@ exports[`Visual Regression - Payroll Flow States > Payroll Run Detail - Pending 
         </p>
       </div>
     </div>
+    <div
+      aria-label="Payroll action blocked — proof missing"
+      class="rounded-lg border border-amber-200 bg-amber-50 p-4 flex items-start gap-3 "
+      data-testid="missing-proof-warning"
+      role="alert"
+    >
+      <svg
+        aria-hidden="true"
+        class="lucide lucide-shield-alert w-5 h-5 text-amber-600 mt-0.5 shrink-0"
+        fill="none"
+        height="24"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"
+        />
+        <path
+          d="M12 8v4"
+        />
+        <path
+          d="M12 16h.01"
+        />
+      </svg>
+      <div
+        class="flex-1 min-w-0"
+      >
+        <p
+          class="text-sm font-semibold text-amber-800"
+        >
+          Proof required — action blocked
+        </p>
+        <p
+          class="text-sm text-amber-700 mt-1"
+        >
+          This payroll action is blocked because no ZK proof data is attached
+           to run run-1
+          . Generate a fresh payroll proof before trying again. No salary values are shown or logged here.
+        </p>
+        <p
+          class="text-xs text-amber-600 mt-1"
+        >
+          Expected: a valid proof reference (
+          <span
+            class="font-mono"
+          >
+            zkp_ref_YYYYMMDD_NNN
+          </span>
+          ) and a verified proof status. If you just created the batch, run proof generation first.
+        </p>
+        <a
+          class="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-amber-600 text-white text-xs font-medium hover:bg-amber-700 transition-colors"
+          data-testid="missing-proof-action"
+          href="/payroll/execute"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-refresh-cw w-3.5 h-3.5"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+            />
+            <path
+              d="M21 3v5h-5"
+            />
+            <path
+              d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+            />
+            <path
+              d="M8 16H3v5"
+            />
+          </svg>
+          Generate proof
+        </a>
+      </div>
+    </div>
     <header
       class="bg-white rounded-lg shadow-sm p-6"
     >
@@ -2194,6 +2284,13 @@ exports[`Visual Regression - Payroll Flow States > Payroll Run Detail - Pending 
             </div>
           </div>
         </div>
+        <span
+          class="inline-flex items-center justify-center px-4 py-2 rounded-md bg-amber-100 text-amber-800 border border-amber-200 text-sm font-medium cursor-not-allowed shrink-0"
+          data-testid="execution-blocked-missing-proof"
+          role="alert"
+        >
+          Execution blocked — proof missing
+        </span>
       </div>
       <div
         aria-label="Approval expiry status"

@@ -34,6 +34,7 @@ import BatchRootComparison from "@/components/features/reconciliation/BatchRootC
 import { useReconciliationStore, computeBatchRootStatus } from "@/stores/reconciliation";
 import { PayrollCancellationPanel } from "@/components/features/payroll/PayrollCancellationPanel";
 import { ApprovalExpiryBadge } from "@/components/signing/ApprovalExpiryBadge";
+import { MissingProofWarning, ExpiredProofWarning } from "@/components/features/proofs/MissingProofWarning";
 
 
 
@@ -98,6 +99,31 @@ export default function PayrollRunDetail({ run: propRun, proofReference }: Payro
     return MOCK_EMPLOYEES.filter((e) => run.employeeIds.includes(e.id));
   }, [run]);
 
+  // Derive approval expiry input from run approval history/status — must be before early returns to satisfy hooks rules
+  const approvalInput = useMemo(() => {
+    if (!run) return { hasApproval: false as const };
+    const latest = run.approvalHistory?.[run.approvalHistory.length - 1];
+    const hasApproval = Boolean(run.approvalHistory && run.approvalHistory.length > 0) || Boolean(run.approvalStatus);
+    const approvedAt = latest?.approvedAt ?? null;
+    let expiresAt: string | null = null;
+    if (latest?.approvedAt && run.approvalStatus === "approved") {
+      const d = new Date(latest.approvedAt);
+      d.setDate(d.getDate() + 7);
+      expiresAt = d.toISOString();
+    } else if (latest?.approvedAt && (run.approvalStatus as string) === "expired") {
+      const d = new Date(latest.approvedAt);
+      d.setDate(d.getDate() - 1);
+      expiresAt = d.toISOString();
+    }
+    if (!hasApproval) return { hasApproval: false as const };
+    return {
+      approvedAt,
+      expiresAt,
+      approvalStatus: run.approvalStatus ?? null,
+      hasApproval: true as const,
+    };
+  }, [run]);
+
   if (isLoading) {
     return (
       <section aria-label="Loading payroll run details" className="space-y-6">
@@ -156,33 +182,6 @@ export default function PayrollRunDetail({ run: propRun, proofReference }: Payro
   const lockState = getPayrollLockState(run);
   const freshness = evaluateProofFreshness({ reference: proofReference });
 
-  // Derive approval expiry input from run approval history/status
-  const approvalInput = useMemo(() => {
-    const latest = run.approvalHistory?.[run.approvalHistory.length - 1];
-    const hasApproval = Boolean(run.approvalHistory && run.approvalHistory.length > 0) || Boolean(run.approvalStatus);
-    // If no explicit expiry, simulate a 7-day window from approvedAt for active approvals
-    const approvedAt = latest?.approvedAt ?? null;
-    let expiresAt: string | null = null;
-    if (latest?.approvedAt && run.approvalStatus === "approved") {
-      const d = new Date(latest.approvedAt);
-      d.setDate(d.getDate() + 7);
-      expiresAt = d.toISOString();
-    } else if (latest?.approvedAt && (run.approvalStatus as string) === "expired") {
-      // already expired — set expiresAt in past
-      const d = new Date(latest.approvedAt);
-      d.setDate(d.getDate() - 1);
-      expiresAt = d.toISOString();
-    }
-    // If status indicates missing
-    if (!hasApproval) return { hasApproval: false as const };
-    return {
-      approvedAt,
-      expiresAt,
-      approvalStatus: run.approvalStatus ?? null,
-      hasApproval: true as const,
-    };
-  }, [run.approvalHistory, run.approvalStatus]);
-
   return (
     <section aria-labelledby="payroll-run-detail-heading" className="space-y-6">
       <div>
@@ -224,6 +223,14 @@ export default function PayrollRunDetail({ run: propRun, proofReference }: Payro
       {/* Cancellation detail panel — only for cancelled batches */}
       {run.status === "cancelled" && <PayrollCancellationPanel run={run} />}
 
+      {/* Proof blocker warnings — actionable guidance when payroll cannot proceed */}
+      {kind === "scheduled" && freshness.state === "missing" && (
+        <MissingProofWarning runId={run.id} actionHref="/payroll/execute" />
+      )}
+      {kind === "scheduled" && freshness.state === "expired" && (
+        <ExpiredProofWarning actionHref="/payroll/execute" />
+      )}
+
       <header className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="flex items-start gap-3">
@@ -250,7 +257,16 @@ export default function PayrollRunDetail({ run: propRun, proofReference }: Payro
               </div>
             </div>
           </div>
-          {kind === "scheduled" && !lockState && !freshness.blocksExecution && (
+          {kind === "scheduled" && freshness.state === "missing" && (
+            <span
+              data-testid="execution-blocked-missing-proof"
+              role="alert"
+              className="inline-flex items-center justify-center px-4 py-2 rounded-md bg-amber-100 text-amber-800 border border-amber-200 text-sm font-medium cursor-not-allowed shrink-0"
+            >
+              Execution blocked — proof missing
+            </span>
+          )}
+          {kind === "scheduled" && !freshness.blocksExecution && freshness.state !== "missing" && freshness.state !== "expired" && !lockState && (
             <Link
               href="/payroll/execute"
               className="inline-flex items-center justify-center px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors shrink-0"
@@ -258,7 +274,7 @@ export default function PayrollRunDetail({ run: propRun, proofReference }: Payro
               Process payroll
             </Link>
           )}
-          {kind === "scheduled" && !lockState && freshness.blocksExecution && (
+          {kind === "scheduled" && freshness.blocksExecution && (
             <span
               data-testid="execution-blocked-by-proof"
               role="alert"
