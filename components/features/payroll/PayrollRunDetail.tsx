@@ -18,8 +18,10 @@ import {
   Lock,
 } from "lucide-react";
 import { MOCK_EMPLOYEES, MOCK_PAYROLL_RUNS } from "@/lib/api/mockData";
-import type { PayrollRun } from "@/types/models";
+import type { PayrollRun, ProofReference } from "@/types/models";
 import StatusBadge from "@/components/ui/StatusBadge";
+import ProofFreshnessBadge from "@/components/features/proofs/ProofFreshnessBadge";
+import { evaluateProofFreshness } from "@/lib/formatting/proofFreshness";
 import PayrollApprovalAuditTrail from "./PayrollApprovalAuditTrail";
 import {
   classifyRun,
@@ -28,11 +30,16 @@ import {
   RUN_KIND_STYLES,
 } from "@/lib/payroll/scheduleUtils";
 import ReconciliationDiffPanel from "@/components/features/payroll/ReconciliationDiffPanel";
+import BatchRootComparison from "@/components/features/reconciliation/BatchRootComparison";
+import { useReconciliationStore, computeBatchRootStatus } from "@/stores/reconciliation";
+import { PayrollCancellationPanel } from "@/components/features/payroll/PayrollCancellationPanel";
+import { ApprovalExpiryBadge } from "@/components/signing/ApprovalExpiryBadge";
+import { MissingProofWarning, ExpiredProofWarning } from "@/components/features/proofs/MissingProofWarning";
+
 
 
 
 import type { LucideIcon } from "lucide-react";
-
 const STATUS_ICONS: Record<string, LucideIcon> = {
   verified: CheckCircle,
   pending: Clock,
@@ -62,9 +69,11 @@ export function getPayrollLockState(run: PayrollRun): LockState {
 
 interface PayrollRunDetailProps {
   run?: PayrollRun;
+  /** Optional proof metadata driving the freshness warning experience. */
+  proofReference?: ProofReference | null;
 }
 
-export default function PayrollRunDetail({ run: propRun }: PayrollRunDetailProps = {}) {
+export default function PayrollRunDetail({ run: propRun, proofReference }: PayrollRunDetailProps = {}) {
   const router = useRouter();
   const params = useParams();
   const runId = params?.id as string;
@@ -88,6 +97,31 @@ export default function PayrollRunDetail({ run: propRun }: PayrollRunDetailProps
   const employeesInRun = useMemo(() => {
     if (!run) return [];
     return MOCK_EMPLOYEES.filter((e) => run.employeeIds.includes(e.id));
+  }, [run]);
+
+  // Derive approval expiry input from run approval history/status — must be before early returns to satisfy hooks rules
+  const approvalInput = useMemo(() => {
+    if (!run) return { hasApproval: false as const };
+    const latest = run.approvalHistory?.[run.approvalHistory.length - 1];
+    const hasApproval = Boolean(run.approvalHistory && run.approvalHistory.length > 0) || Boolean(run.approvalStatus);
+    const approvedAt = latest?.approvedAt ?? null;
+    let expiresAt: string | null = null;
+    if (latest?.approvedAt && run.approvalStatus === "approved") {
+      const d = new Date(latest.approvedAt);
+      d.setDate(d.getDate() + 7);
+      expiresAt = d.toISOString();
+    } else if (latest?.approvedAt && (run.approvalStatus as string) === "expired") {
+      const d = new Date(latest.approvedAt);
+      d.setDate(d.getDate() - 1);
+      expiresAt = d.toISOString();
+    }
+    if (!hasApproval) return { hasApproval: false as const };
+    return {
+      approvedAt,
+      expiresAt,
+      approvalStatus: run.approvalStatus ?? null,
+      hasApproval: true as const,
+    };
   }, [run]);
 
   if (isLoading) {
@@ -146,6 +180,7 @@ export default function PayrollRunDetail({ run: propRun }: PayrollRunDetailProps
   const StatusIcon = STATUS_ICONS[run.status] ?? Clock;
   const txHash = run.transactionHash ?? run.txHash;
   const lockState = getPayrollLockState(run);
+  const freshness = evaluateProofFreshness({ reference: proofReference });
 
   return (
     <section aria-labelledby="payroll-run-detail-heading" className="space-y-6">
@@ -185,6 +220,17 @@ export default function PayrollRunDetail({ run: propRun }: PayrollRunDetailProps
         </div>
       )}
 
+      {/* Cancellation detail panel — only for cancelled batches */}
+      {run.status === "cancelled" && <PayrollCancellationPanel run={run} />}
+
+      {/* Proof blocker warnings — actionable guidance when payroll cannot proceed */}
+      {kind === "scheduled" && freshness.state === "missing" && (
+        <MissingProofWarning runId={run.id} actionHref="/payroll/execute" />
+      )}
+      {kind === "scheduled" && freshness.state === "expired" && (
+        <ExpiredProofWarning actionHref="/payroll/execute" />
+      )}
+
       <header className="bg-white rounded-lg shadow-sm p-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="flex items-start gap-3">
@@ -211,7 +257,16 @@ export default function PayrollRunDetail({ run: propRun }: PayrollRunDetailProps
               </div>
             </div>
           </div>
-          {kind === "scheduled" && !lockState && (
+          {kind === "scheduled" && freshness.state === "missing" && (
+            <span
+              data-testid="execution-blocked-missing-proof"
+              role="alert"
+              className="inline-flex items-center justify-center px-4 py-2 rounded-md bg-amber-100 text-amber-800 border border-amber-200 text-sm font-medium cursor-not-allowed shrink-0"
+            >
+              Execution blocked — proof missing
+            </span>
+          )}
+          {kind === "scheduled" && !freshness.blocksExecution && freshness.state !== "missing" && freshness.state !== "expired" && !lockState && (
             <Link
               href="/payroll/execute"
               className="inline-flex items-center justify-center px-4 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors shrink-0"
@@ -219,6 +274,20 @@ export default function PayrollRunDetail({ run: propRun }: PayrollRunDetailProps
               Process payroll
             </Link>
           )}
+          {kind === "scheduled" && freshness.blocksExecution && (
+            <span
+              data-testid="execution-blocked-by-proof"
+              role="alert"
+              className="inline-flex items-center justify-center px-4 py-2 rounded-md bg-gray-100 text-gray-500 text-sm font-medium cursor-not-allowed shrink-0"
+            >
+              Execution blocked — proof expired
+            </span>
+          )}
+        </div>
+
+        {/* Approval expiry badge — visible before execution */}
+        <div className="mt-4 flex flex-wrap items-center gap-2" aria-label="Approval expiry status">
+          <ApprovalExpiryBadge approval={approvalInput} />
         </div>
       </header>
 
@@ -263,6 +332,11 @@ export default function PayrollRunDetail({ run: propRun }: PayrollRunDetailProps
                 ? `${run.proof.slice(0, 12)}...${run.proof.slice(-8)}`
                 : "Pending generation"}
             </p>
+            {proofReference && (
+              <div className="mt-2">
+                <ProofFreshnessBadge reference={proofReference} />
+              </div>
+            )}
           </div>
         </div>
 
@@ -392,6 +466,14 @@ export default function PayrollRunDetail({ run: propRun }: PayrollRunDetailProps
           {employeesInRun.length} employee{employeesInRun.length !== 1 ? "s" : ""} in this run
         </div>
       </div>
+
+      {/* Batch Root Comparison */}
+      <BatchRootComparison
+        expectedRoot={run.proof ?? null}
+        observedRoot={(run.transactionHash ?? run.txHash) ?? null}
+        eventSource="Soroban Executor Contract"
+        eventReference={(run.transactionHash ?? run.txHash) ?? null}
+      />
 
       {/* Approval Audit Trail */}
       <PayrollApprovalAuditTrail payrollRunId={run.id} compact />
