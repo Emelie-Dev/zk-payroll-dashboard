@@ -30,13 +30,15 @@ import {
   RUN_KIND_STYLES,
 } from "@/lib/payroll/scheduleUtils";
 import ReconciliationDiffPanel from "@/components/features/payroll/ReconciliationDiffPanel";
+import BatchRootComparison from "@/components/features/reconciliation/BatchRootComparison";
+import { useReconciliationStore, computeBatchRootStatus } from "@/stores/reconciliation";
 import { PayrollCancellationPanel } from "@/components/features/payroll/PayrollCancellationPanel";
 import { ApprovalExpiryBadge } from "@/components/signing/ApprovalExpiryBadge";
 
 
 
-import type { LucideIcon } from "lucide-react";
 
+import type { LucideIcon } from "lucide-react";
 const STATUS_ICONS: Record<string, LucideIcon> = {
   verified: CheckCircle,
   pending: Clock,
@@ -448,6 +450,14 @@ export default function PayrollRunDetail({ run: propRun, proofReference }: Payro
           {employeesInRun.length} employee{employeesInRun.length !== 1 ? "s" : ""} in this run
         </div>
       </div>
+
+      {/* Batch Root Comparison */}
+      <BatchRootComparison
+        expectedRoot={run.proof ?? null}
+        observedRoot={(run.transactionHash ?? run.txHash) ?? null}
+        eventSource="Soroban Executor Contract"
+        eventReference={(run.transactionHash ?? run.txHash) ?? null}
+      />
 
       {/* Approval Audit Trail */}
       <PayrollApprovalAuditTrail payrollRunId={run.id} compact />
