@@ -5,14 +5,6 @@ export const metadata = {
   description: "View supported payroll assets and their display metadata.",
 };
 
-export default function Page({
-  configuredAssets,
-}: {
-  configuredAssets?: Array<{
-    code: string;
-    issuer?: string;
-    label?: string;
-  }> | null;
-}) {
-  return <SettingsAssetsPage configuredAssets={configuredAssets} />;
+export default function Page() {
+  return <SettingsAssetsPage />;
 }
