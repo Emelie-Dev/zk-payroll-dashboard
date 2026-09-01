@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import SettingsAssetsPage from "@/app/settings/assets/page";
+import SettingsAssetsPage from "@/components/features/assets/SettingsAssetsPage";
 
 describe("SettingsAssetsPage", () => {
   it("shows the loading state before resolving the asset allowlist", async () => {
