@@ -7,7 +7,7 @@ describe("SettingsAssetsPage", () => {
     render(<SettingsAssetsPage />);
 
     expect(screen.getByText(/loading payroll assets/i)).toBeInTheDocument();
-    expect(await screen.findByText(/USDC/i)).toBeInTheDocument();
+    expect((await screen.findAllByText(/USDC/i)).length).toBeGreaterThan(0);
     expect(screen.getByText(/active/i)).toBeInTheDocument();
   });
 
@@ -18,8 +18,8 @@ describe("SettingsAssetsPage", () => {
       await screen.findByText(/No payroll assets configured/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Payroll batches cannot be created/i),
-    ).toBeInTheDocument();
+      screen.getAllByText(/Payroll batches cannot be created/i).length,
+    ).toBeGreaterThan(0);
   });
 
   it("includes a refresh control without mutation controls", async () => {
