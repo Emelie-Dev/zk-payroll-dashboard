@@ -943,7 +943,7 @@ export const MOCK_PAYROLL_DISPUTES: PayrollDispute[] = [
     isResolved: true,
     resolvedAt: "2025-04-05T12:00:00Z",
   },
-];
+] as PayrollDispute[];
 
 export const MOCK_FUNDING_RESERVATIONS: FundingReservation[] = [
   {
