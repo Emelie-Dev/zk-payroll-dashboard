@@ -15,7 +15,7 @@ The **ZK Payroll Dashboard** is a privacy-first web application designed for man
 - **Privacy-Preserving Payroll**: Execute batch payroll transactions where salary amounts are hidden using ZK commitments.
 - **Employee Management**: Register and manage employees with encrypted metadata.
 - **Transaction History**: Verifiable history of all payroll events.
-- **Payroll Attachment Metadata**: Review filename, upload time, owner, checksum, and access scope without exposing restricted file contents.
+- **Payroll Saved Views**: Save named payroll history filters and sort settings locally for repeat review; saved views contain no payroll amounts or row data.
 - **Transaction Detail View**: 🆕 Comprehensive transaction inspection with verification metadata, timestamps, and blockchain details.
 - **Compliance View**: Optional view-key generation for auditing purposes.
 - **Employer Onboarding Timeline**: 🆕 Activity timeline item for employer onboarding events with privacy-safe employer identifiers and setup progress.
