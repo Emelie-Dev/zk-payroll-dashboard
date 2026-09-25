@@ -1,4 +1,24 @@
-import { Employee, Company, CompanyConfig, PayrollTransaction, PayrollRun, ViewKey, FundingForecast, AuditAccessRequest, MultiAssetPayrollRun, ComplianceEvidenceBundle, PayrollLock, PayrollTemplate, OverduePayrollAlert, ApprovalComment, ProofReference, ComplianceEvidencePointer, ApproverThresholdPolicy, PayrollDispute, FundingReservation } from "@/types/models";
+import {
+  Employee,
+  Company,
+  CompanyConfig,
+  PayrollTransaction,
+  PayrollRun,
+  ViewKey,
+  FundingForecast,
+  AuditAccessRequest,
+  MultiAssetPayrollRun,
+  ComplianceEvidenceBundle,
+  PayrollLock,
+  PayrollTemplate,
+  OverduePayrollAlert,
+  ApprovalComment,
+  ProofReference,
+  ComplianceEvidencePointer,
+  ApproverThresholdPolicy,
+  PayrollDispute,
+  FundingReservation,
+} from "@/types/models";
 
 export const MOCK_EMPLOYEES: Employee[] = [
   {
@@ -126,7 +146,6 @@ export const MOCK_COMPANY_CONFIG: CompanyConfig = {
   },
 };
 
-
 export const MOCK_TRANSACTIONS: PayrollTransaction[] = [
   {
     id: "tx_001",
@@ -177,7 +196,7 @@ export const MOCK_TRANSACTIONS: PayrollTransaction[] = [
   },
 ];
 
-export const MOCK_PAYROLL_RUNS: PayrollRun[] = MOCK_TRANSACTIONS.map(tx => ({
+export const MOCK_PAYROLL_RUNS: PayrollRun[] = MOCK_TRANSACTIONS.map((tx) => ({
   ...tx,
   employeeIds: ["emp_001", "emp_002"],
   receiptId: tx.status === "verified" ? `rcpt_${tx.id}` : null,
@@ -233,30 +252,36 @@ export const MOCK_PAYROLL_LOCKS: PayrollLock[] = [
     id: "lock_001",
     payrollId: "tx_003",
     reasonType: "insufficient_treasury",
-    reasonDescription: "Treasury balance (45,000 XLM) is below the required payroll amount (95,000 XLM).",
+    reasonDescription:
+      "Treasury balance (45,000 XLM) is below the required payroll amount (95,000 XLM).",
     lockedAt: "2025-03-31T09:00:00Z",
     lockedBy: "system",
-    resolutionAction: "Fund the treasury with at least 50,000 XLM via the Treasury page, then retry the payroll run.",
+    resolutionAction:
+      "Fund the treasury with at least 50,000 XLM via the Treasury page, then retry the payroll run.",
     isResolved: false,
   },
   {
     id: "lock_002",
     payrollId: "tx_004",
     reasonType: "pending_approval",
-    reasonDescription: "Payroll run requires admin approval before execution. Currently awaiting sign-off from treasury admin.",
+    reasonDescription:
+      "Payroll run requires admin approval before execution. Currently awaiting sign-off from treasury admin.",
     lockedAt: "2025-04-01T10:30:00Z",
     lockedBy: "system",
-    resolutionAction: "Navigate to the payroll detail view and approve the pending run, or assign a delegate approver.",
+    resolutionAction:
+      "Navigate to the payroll detail view and approve the pending run, or assign a delegate approver.",
     isResolved: false,
   },
   {
     id: "lock_003",
     payrollId: "tx_005",
     reasonType: "zk_proof_failed",
-    reasonDescription: "ZK proof verification failed due to a salary commitment mismatch for employee emp_002.",
+    reasonDescription:
+      "ZK proof verification failed due to a salary commitment mismatch for employee emp_002.",
     lockedAt: "2025-04-02T14:15:00Z",
     lockedBy: "system",
-    resolutionAction: "Review and update salary commitments for affected employees, then regenerate the ZK proof.",
+    resolutionAction:
+      "Review and update salary commitments for affected employees, then regenerate the ZK proof.",
     isResolved: true,
     resolvedAt: "2025-04-03T09:00:00Z",
     resolvedBy: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37",
@@ -265,20 +290,24 @@ export const MOCK_PAYROLL_LOCKS: PayrollLock[] = [
     id: "lock_004",
     payrollId: "tx_006",
     reasonType: "employee_data_changed",
-    reasonDescription: "Employee salary or status changed after the payroll run was initiated. Re-validation required.",
+    reasonDescription:
+      "Employee salary or status changed after the payroll run was initiated. Re-validation required.",
     lockedAt: "2025-04-05T08:00:00Z",
     lockedBy: "system",
-    resolutionAction: "Review the employee changes in the Employee Directory, then re-initiate the payroll run to pick up the latest data.",
+    resolutionAction:
+      "Review the employee changes in the Employee Directory, then re-initiate the payroll run to pick up the latest data.",
     isResolved: false,
   },
   {
     id: "lock_005",
     payrollId: "tx_007",
     reasonType: "manual_freeze",
-    reasonDescription: "Payroll run was manually frozen by the compliance officer pending an internal audit review.",
+    reasonDescription:
+      "Payroll run was manually frozen by the compliance officer pending an internal audit review.",
     lockedAt: "2025-04-07T16:45:00Z",
     lockedBy: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37",
-    resolutionAction: "Contact the compliance team to complete the audit review. Once cleared, an admin can unfreeze from the payroll detail page.",
+    resolutionAction:
+      "Contact the compliance team to complete the audit review. Once cleared, an admin can unfreeze from the payroll detail page.",
     isResolved: false,
   },
 ];
@@ -337,7 +366,8 @@ export const MOCK_OVERDUE_ALERTS: OverduePayrollAlert[] = [
     scheduledDate: "2025-03-28T09:00:00Z",
     dueDate: "2025-03-31T23:59:59Z",
     severity: "critical",
-    reason: "Insufficient treasury balance — payroll has been pending for 3 days.",
+    reason:
+      "Insufficient treasury balance — payroll has been pending for 3 days.",
     totalAmount: 9500,
     employeeCount: 2,
     daysOverdue: 3,
@@ -361,7 +391,8 @@ export const MOCK_APPROVAL_COMMENTS: ApprovalComment[] = [
     id: "comment_001",
     payrollId: "tx_001",
     action: "submitted",
-    comment: "Payroll run for February 2025 has been initiated. Total: 9,500 XLM.",
+    comment:
+      "Payroll run for February 2025 has been initiated. Total: 9,500 XLM.",
     createdBy: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37",
     createdByName: "Alice Mensah (Admin)",
     createdAt: "2025-02-28T09:01:00Z",
@@ -370,7 +401,8 @@ export const MOCK_APPROVAL_COMMENTS: ApprovalComment[] = [
     id: "comment_002",
     payrollId: "tx_001",
     action: "approved",
-    comment: "All employee salaries verified. Treasury balance sufficient. Approved.",
+    comment:
+      "All employee salaries verified. Treasury balance sufficient. Approved.",
     createdBy: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN",
     createdByName: "Kwame Asante (Treasury)",
     createdAt: "2025-02-28T09:15:00Z",
@@ -388,16 +420,25 @@ export const MOCK_APPROVAL_COMMENTS: ApprovalComment[] = [
     id: "comment_004",
     payrollId: "tx_003",
     action: "requested_changes",
-    comment: "Treasury balance is insufficient. Please fund the treasury before this payroll can proceed.",
+    comment:
+      "Treasury balance is insufficient. Please fund the treasury before this payroll can proceed.",
     createdBy: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN",
     createdByName: "Kwame Asante (Treasury)",
     createdAt: "2025-03-28T10:30:00Z",
+    attachmentMetadata: {
+      fileName: "treasury-funding-confirmation.pdf",
+      uploadedAt: "2025-03-28T10:31:00Z",
+      owner: "Kwame Asante (Treasury)",
+      checksum: "sha256:8f4c2e1a9b7d6c5e4f3a2b1c0d9e8f7a",
+      accessScope: "read-only",
+    },
   },
   {
     id: "comment_005",
     payrollId: "tx_003",
     action: "commented",
-    comment: "I've initiated a treasury top-up. Should be confirmed within 24 hours.",
+    comment:
+      "I've initiated a treasury top-up. Should be confirmed within 24 hours.",
     createdBy: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37",
     createdByName: "Alice Mensah (Admin)",
     createdAt: "2025-03-29T08:15:00Z",
@@ -479,29 +520,65 @@ export const MOCK_MULTI_ASSET_RUNS: MultiAssetPayrollRun[] = [
     proofStatus: "ready",
     assetGroups: [
       {
-        asset: { code: "USDC", issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN" },
+        asset: {
+          code: "USDC",
+          issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+        },
         employees: [
-          { employeeId: "emp_001", name: "Alice Mensah", address: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37", amount: 3500, salaryCommitment: "0xabc123def456" },
-          { employeeId: "emp_002", name: "Kwame Asante", address: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN", amount: 3200, salaryCommitment: "0xdef789ghi012" },
+          {
+            employeeId: "emp_001",
+            name: "Alice Mensah",
+            address: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37",
+            amount: 3500,
+            salaryCommitment: "0xabc123def456",
+          },
+          {
+            employeeId: "emp_002",
+            name: "Kwame Asante",
+            address: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN",
+            amount: 3200,
+            salaryCommitment: "0xdef789ghi012",
+          },
         ],
         totalAmount: 6700,
         transactionCount: 2,
         status: "succeeded",
         txHash: "abc123usdc_tx_001",
         executedAt: "2026-07-02T10:15:00Z",
-        treasuryReadiness: { asset: { code: "USDC", issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN" }, requiredAmount: 6700, availableBalance: 12000, isFunded: true, shortfall: 0 },
+        treasuryReadiness: {
+          asset: {
+            code: "USDC",
+            issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+          },
+          requiredAmount: 6700,
+          availableBalance: 12000,
+          isFunded: true,
+          shortfall: 0,
+        },
       },
       {
         asset: { code: "XLM" },
         employees: [
-          { employeeId: "emp_004", name: "Kofi Boateng", address: "GCZJM2ZPKZM5LZPM2CZJM2ZPKZM5LZPM2CZJM2ZPKZM5LZPM2CZJM2", amount: 15000, salaryCommitment: "0xmno901pqr234" },
+          {
+            employeeId: "emp_004",
+            name: "Kofi Boateng",
+            address: "GCZJM2ZPKZM5LZPM2CZJM2ZPKZM5LZPM2CZJM2ZPKZM5LZPM2CZJM2",
+            amount: 15000,
+            salaryCommitment: "0xmno901pqr234",
+          },
         ],
         totalAmount: 15000,
         transactionCount: 1,
         status: "succeeded",
         txHash: "xlm_tx_001",
         executedAt: "2026-07-02T10:16:00Z",
-        treasuryReadiness: { asset: { code: "XLM" }, requiredAmount: 15000, availableBalance: 45000, isFunded: true, shortfall: 0 },
+        treasuryReadiness: {
+          asset: { code: "XLM" },
+          requiredAmount: 15000,
+          availableBalance: 45000,
+          isFunded: true,
+          shortfall: 0,
+        },
       },
     ],
   },
@@ -516,28 +593,71 @@ export const MOCK_MULTI_ASSET_RUNS: MultiAssetPayrollRun[] = [
     proof: "0xzkproof_multiasset_002",
     assetGroups: [
       {
-        asset: { code: "EURC", issuer: "GDHU6WRG4IEQXM5NZ4BMPKOXHW76MZM4Y2IEMFDVXBSDP6SJY4ITNPP" },
+        asset: {
+          code: "EURC",
+          issuer: "GDHU6WRG4IEQXM5NZ4BMPKOXHW76MZM4Y2IEMFDVXBSDP6SJY4ITNPP",
+        },
         employees: [
-          { employeeId: "emp_001", name: "Alice Mensah", address: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37", amount: 2800, salaryCommitment: "0xabc123def456" },
+          {
+            employeeId: "emp_001",
+            name: "Alice Mensah",
+            address: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37",
+            amount: 2800,
+            salaryCommitment: "0xabc123def456",
+          },
         ],
         totalAmount: 2800,
         transactionCount: 1,
         status: "succeeded",
         txHash: "eurc_tx_002",
         executedAt: "2026-07-10T11:00:00Z",
-        treasuryReadiness: { asset: { code: "EURC", issuer: "GDHU6WRG4IEQXM5NZ4BMPKOXHW76MZM4Y2IEMFDVXBSDP6SJY4ITNPP" }, requiredAmount: 2800, availableBalance: 5000, isFunded: true, shortfall: 0 },
+        treasuryReadiness: {
+          asset: {
+            code: "EURC",
+            issuer: "GDHU6WRG4IEQXM5NZ4BMPKOXHW76MZM4Y2IEMFDVXBSDP6SJY4ITNPP",
+          },
+          requiredAmount: 2800,
+          availableBalance: 5000,
+          isFunded: true,
+          shortfall: 0,
+        },
       },
       {
-        asset: { code: "USDC", issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN" },
+        asset: {
+          code: "USDC",
+          issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+        },
         employees: [
-          { employeeId: "emp_002", name: "Kwame Asante", address: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN", amount: 4500, salaryCommitment: "0xdef789ghi012" },
-          { employeeId: "emp_005", name: "Yaa Asantewaa", address: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W38", amount: 3800, salaryCommitment: "0xstu456vwx789" },
+          {
+            employeeId: "emp_002",
+            name: "Kwame Asante",
+            address: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN",
+            amount: 4500,
+            salaryCommitment: "0xdef789ghi012",
+          },
+          {
+            employeeId: "emp_005",
+            name: "Yaa Asantewaa",
+            address: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W38",
+            amount: 3800,
+            salaryCommitment: "0xstu456vwx789",
+          },
         ],
         totalAmount: 8300,
         transactionCount: 2,
         status: "failed",
-        errorMessage: "Transaction rejected: insufficient trust line limit on receiving account",
-        treasuryReadiness: { asset: { code: "USDC", issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN" }, requiredAmount: 8300, availableBalance: 12000, isFunded: true, shortfall: 0 },
+        errorMessage:
+          "Transaction rejected: insufficient trust line limit on receiving account",
+        treasuryReadiness: {
+          asset: {
+            code: "USDC",
+            issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+          },
+          requiredAmount: 8300,
+          availableBalance: 12000,
+          isFunded: true,
+          shortfall: 0,
+        },
       },
     ],
   },
@@ -551,26 +671,74 @@ export const MOCK_MULTI_ASSET_RUNS: MultiAssetPayrollRun[] = [
     proofStatus: "none",
     assetGroups: [
       {
-        asset: { code: "USDC", issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN" },
+        asset: {
+          code: "USDC",
+          issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+        },
         employees: [
-          { employeeId: "emp_001", name: "Alice Mensah", address: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37", amount: 3500, salaryCommitment: "0xabc123def456" },
-          { employeeId: "emp_002", name: "Kwame Asante", address: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN", amount: 3200, salaryCommitment: "0xdef789ghi012" },
+          {
+            employeeId: "emp_001",
+            name: "Alice Mensah",
+            address: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W37",
+            amount: 3500,
+            salaryCommitment: "0xabc123def456",
+          },
+          {
+            employeeId: "emp_002",
+            name: "Kwame Asante",
+            address: "GAAZI4TCR3TY5OJHCTJC2A4QSY6CJWJH5IAJTGKIN2ER7LBNVKOCCWN",
+            amount: 3200,
+            salaryCommitment: "0xdef789ghi012",
+          },
         ],
         totalAmount: 6700,
         transactionCount: 2,
         status: "funded",
-        treasuryReadiness: { asset: { code: "USDC", issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN" }, requiredAmount: 6700, availableBalance: 12000, isFunded: true, shortfall: 0 },
+        treasuryReadiness: {
+          asset: {
+            code: "USDC",
+            issuer: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+          },
+          requiredAmount: 6700,
+          availableBalance: 12000,
+          isFunded: true,
+          shortfall: 0,
+        },
       },
       {
-        asset: { code: "EURC", issuer: "GDHU6WRG4IEQXM5NZ4BMPKOXHW76MZM4Y2IEMFDVXBSDP6SJY4ITNPP" },
+        asset: {
+          code: "EURC",
+          issuer: "GDHU6WRG4IEQXM5NZ4BMPKOXHW76MZM4Y2IEMFDVXBSDP6SJY4ITNPP",
+        },
         employees: [
-          { employeeId: "emp_004", name: "Kofi Boateng", address: "GCZJM2ZPKZM5LZPM2CZJM2ZPKZM5LZPM2CZJM2ZPKZM5LZPM2CZJM2", amount: 4200, salaryCommitment: "0xmno901pqr234" },
-          { employeeId: "emp_005", name: "Yaa Asantewaa", address: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W38", amount: 3800, salaryCommitment: "0xstu456vwx789" },
+          {
+            employeeId: "emp_004",
+            name: "Kofi Boateng",
+            address: "GCZJM2ZPKZM5LZPM2CZJM2ZPKZM5LZPM2CZJM2ZPKZM5LZPM2CZJM2",
+            amount: 4200,
+            salaryCommitment: "0xmno901pqr234",
+          },
+          {
+            employeeId: "emp_005",
+            name: "Yaa Asantewaa",
+            address: "GDQP2KPQGKIHYJGXNUIYOMHARUARCA7DJT5FO2FFOOKY3B2WSQHG4W38",
+            amount: 3800,
+            salaryCommitment: "0xstu456vwx789",
+          },
         ],
         totalAmount: 8000,
         transactionCount: 2,
         status: "underfunded",
-        treasuryReadiness: { asset: { code: "EURC", issuer: "GDHU6WRG4IEQXM5NZ4BMPKOXHW76MZM4Y2IEMFDVXBSDP6SJY4ITNPP" }, requiredAmount: 8000, availableBalance: 3500, isFunded: false, shortfall: 4500 },
+        treasuryReadiness: {
+          asset: {
+            code: "EURC",
+            issuer: "GDHU6WRG4IEQXM5NZ4BMPKOXHW76MZM4Y2IEMFDVXBSDP6SJY4ITNPP",
+          },
+          requiredAmount: 8000,
+          availableBalance: 3500,
+          isFunded: false,
+          shortfall: 4500,
+        },
       },
     ],
   },
@@ -637,7 +805,8 @@ export const MOCK_COMPLIANCE_EVIDENCE_BUNDLES: ComplianceEvidenceBundle[] = [
         type: "proof_generation_completed",
         timestamp: "2025-02-28T08:45:00Z",
         actor: "WASM ZK Engine",
-        details: "Groth16 Zero-Knowledge proof generated and validated locally.",
+        details:
+          "Groth16 Zero-Knowledge proof generated and validated locally.",
       },
       {
         id: "app_evt_003",
@@ -651,7 +820,8 @@ export const MOCK_COMPLIANCE_EVIDENCE_BUNDLES: ComplianceEvidenceBundle[] = [
         type: "submission_completed",
         timestamp: "2025-02-28T09:01:00Z",
         actor: "Soroban Executor Contract",
-        details: "On-chain transaction submitted and verified in ledger #4892011.",
+        details:
+          "On-chain transaction submitted and verified in ledger #4892011.",
       },
     ],
     verificationStatus: {
@@ -691,9 +861,7 @@ export const MOCK_COMPLIANCE_EVIDENCE_BUNDLES: ComplianceEvidenceBundle[] = [
         timestamp: "2026-07-02T10:16:00Z",
         totalDisbursed: 15000,
         recipientCount: 1,
-        recipientCommitments: [
-          "0xmno901pqr234_xlm_commitment_hash_01",
-        ],
+        recipientCommitments: ["0xmno901pqr234_xlm_commitment_hash_01"],
         status: "verified",
         receiptHash: "0xrcpt_hash_xlm_q3_2026",
         signature: "0xsig_xlm_batch_proof_ok",
@@ -826,7 +994,6 @@ export const MOCK_COMPLIANCE_EVIDENCE_BUNDLES: ComplianceEvidenceBundle[] = [
   },
 ];
 
-
 // ─── Proof freshness references (#335) ───────────────────────────────────────
 // Expiry dates are computed relative to load time so every freshness state
 // stays reachable in the demo data regardless of when the app is opened.
@@ -873,7 +1040,8 @@ export const MOCK_COMPLIANCE_EVIDENCE_POINTERS: ComplianceEvidencePointer[] = [
     reviewCaseId: "case_2025_02_014",
     payrollRunId: "tx_001",
     pointerType: "document-hash",
-    reference: "0x8f3a1c9d4e5b6a7f8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b",
+    reference:
+      "0x8f3a1c9d4e5b6a7f8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b",
     description: "Signed dispute resolution memo (hash of notarized PDF)",
     status: "valid",
     createdAt: "2025-02-28T10:12:00Z",
@@ -915,7 +1083,8 @@ export const MOCK_COMPLIANCE_EVIDENCE_POINTERS: ComplianceEvidencePointer[] = [
   },
 ];
 
-export const MOCK_COMPLIANCE_EVIDENCE_POINTERS_EMPTY: ComplianceEvidencePointer[] = [];
+export const MOCK_COMPLIANCE_EVIDENCE_POINTERS_EMPTY: ComplianceEvidencePointer[] =
+  [];
 
 export const MOCK_APPROVER_THRESHOLD_POLICY: ApproverThresholdPolicy = {
   companyId: "company_001",
@@ -985,4 +1154,7 @@ export const MOCK_FUNDING_RESERVATIONS: FundingReservation[] = [
 ];
 
 /** Audit-ready timelines that have been generated and exported, keyed by payrollId. */
-export const MOCK_EXPORTED_AUDIT_TIMELINE_RUN_IDS: string[] = ["tx_001", "tx_004"];
+export const MOCK_EXPORTED_AUDIT_TIMELINE_RUN_IDS: string[] = [
+  "tx_001",
+  "tx_004",
+];

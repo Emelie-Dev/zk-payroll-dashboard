@@ -85,8 +85,6 @@ export interface CompanyHealthCheckResult {
   timestamp: string;
 }
 
-
-
 export type UserRole = "admin" | "operator" | "auditor";
 
 export interface SessionPayload {
@@ -234,7 +232,13 @@ export interface AuditAccessRequest {
   requesterEmail: string;
   scope: "read-only" | "full-audit";
   rationale: string;
-  status: "pending" | "approved" | "rejected" | "expired" | "revoked" | "export_ready";
+  status:
+    | "pending"
+    | "approved"
+    | "rejected"
+    | "expired"
+    | "revoked"
+    | "export_ready";
   createdAt: string;
   updatedAt?: string;
   viewKeyId?: string;
@@ -308,7 +312,11 @@ export interface MultiAssetPayrollRun {
   proofStatus: "none" | "generating" | "ready" | "expired";
 }
 
-export type ReconciliationGroupStatus = "complete" | "partial" | "failed" | "pending";
+export type ReconciliationGroupStatus =
+  | "complete"
+  | "partial"
+  | "failed"
+  | "pending";
 
 export interface ReconciliationEntry {
   employeeId: string;
@@ -400,7 +408,12 @@ export interface OverduePayrollAlert {
 
 // ─── Approval Comment History (#222) ─────────────────────────────────────────
 
-export type ApprovalAction = "approved" | "rejected" | "requested_changes" | "commented" | "submitted";
+export type ApprovalAction =
+  | "approved"
+  | "rejected"
+  | "requested_changes"
+  | "commented"
+  | "submitted";
 
 export interface ApprovalComment {
   id: string;
@@ -411,6 +424,15 @@ export interface ApprovalComment {
   createdByName: string;
   createdAt: string;
   attachmentUrl?: string | null;
+  attachmentMetadata?: PayrollAttachmentMetadata | null;
+}
+
+export interface PayrollAttachmentMetadata {
+  fileName: string;
+  uploadedAt: string;
+  owner: string;
+  checksum: string;
+  accessScope: "read-only" | "full-audit";
 }
 // ─── Payroll Dispute Resolution Queue (#317) ──────────────────────────────────
 
@@ -537,7 +559,11 @@ export type OnboardingStep =
   | "commitment_generated"
   | "active_status";
 
-export type OnboardingStepStatus = "pending" | "in_progress" | "complete" | "failed";
+export type OnboardingStepStatus =
+  | "pending"
+  | "in_progress"
+  | "complete"
+  | "failed";
 
 export interface EmployeeOnboardingStep {
   step: OnboardingStep;
@@ -656,7 +682,13 @@ export interface WalletRotationRequest {
   reasonCode: WalletRotationReasonCode;
   requestedBy: string;
   requestedAt: string;
-  status: "pending" | "approved" | "rejected" | "cooldown" | "completed" | "failed";
+  status:
+    | "pending"
+    | "approved"
+    | "rejected"
+    | "cooldown"
+    | "completed"
+    | "failed";
   approvedBy?: string;
   approvedAt?: string;
   rejectionReason?: string;
@@ -682,7 +714,11 @@ export interface WalletRotationWarning {
 
 // ─── Compliance Evidence Pointer Manager (#338) ──────────────────────────────
 
-export type EvidencePointerType = "url" | "ipfs" | "document-hash" | "case-reference";
+export type EvidencePointerType =
+  | "url"
+  | "ipfs"
+  | "document-hash"
+  | "case-reference";
 
 export type EvidencePointerStatus = "valid" | "invalid" | "pending";
 
@@ -759,7 +795,6 @@ export interface ApproverThresholdRotationRequest {
 
 // ─── Period Close Reconciliation Dashboard (#341) ────────────────────────────
 
-
 export interface FundingReservation {
   id: string;
   payrollRunId: string;
@@ -769,7 +804,11 @@ export interface FundingReservation {
   releasedAt?: string | null;
 }
 
-export type PeriodCloseBlockerCategory = "holds" | "disputes" | "funding_reservations" | "audit_references";
+export type PeriodCloseBlockerCategory =
+  | "holds"
+  | "disputes"
+  | "funding_reservations"
+  | "audit_references";
 
 export interface PeriodCloseBlocker {
   category: PeriodCloseBlockerCategory;
@@ -808,7 +847,11 @@ export type ExceptionSource =
   | "batch_parser"
   | "oracle_bridge";
 
-export type ExceptionStatus = "open" | "investigating" | "resolved" | "dismissed";
+export type ExceptionStatus =
+  | "open"
+  | "investigating"
+  | "resolved"
+  | "dismissed";
 
 export interface PayrollTriageException {
   id: string;
@@ -834,4 +877,3 @@ export interface PayrollTriageException {
   /** Encrypted or redacted token for proof debugging */
   redactedProofDigest?: string;
 }
-
